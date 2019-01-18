@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: offender-risk-profiler-svc
+  namespace: offender-risk-profiler-dev
+spec:
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: NodePort
+  selector:
+    app: offender-risk-profiler
