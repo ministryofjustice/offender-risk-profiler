@@ -21,14 +21,6 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    ext {
-        drivers = [
-                'chromeHeadless'
-        ]
-    }
-}
-
 project.sourceCompatibility = 11
 project.targetCompatibility = 11
 
