@@ -80,7 +80,7 @@ jobs:
     - run:
         name: Build container and publish to docker hub
         command: |
-          jar xvf build/libs/keyworker-api-*.jar BOOT-INF/classes/META-INF/build-info.properties
+          jar xvf build/libs/offender-risk-profiler-*.jar BOOT-INF/classes/META-INF/build-info.properties
           API_VERSION=$(grep 'build.version=' BOOT-INF/classes/META-INF/build-info.properties | awk -F= '{print $2}')
           rm BOOT-INF/classes/META-INF/build-info.properties
 
