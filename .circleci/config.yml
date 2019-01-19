@@ -55,13 +55,14 @@ jobs:
       - run:
           name: publish image to ecs
           command: |
-            VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
-            BUILD_VERSION=${VERSION}
+            jar xvf build/libs/offender-risk-profiler-*.jar BOOT-INF/classes/META-INF/build-info.properties
+            API_VERSION=$(grep 'build.version=' BOOT-INF/classes/META-INF/build-info.properties | awk -F= '{print $2}')
+            rm BOOT-INF/classes/META-INF/build-info.properties
 
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker pull mojdigitalstudio/offender-risk-profiler:$BUILD_VERSION
+            docker pull mojdigitalstudio/offender-risk-profiler:$API_VERSION
 
-            docker tag mojdigitalstudio/offender-risk-profiler:$BUILD_VERSION "${ECR_ENDPOINT}/omic/offender-risk-profiler:${CIRCLE_SHA1}"
+            docker tag mojdigitalstudio/offender-risk-profiler:$API_VERSION "${ECR_ENDPOINT}/omic/offender-risk-profiler:${CIRCLE_SHA1}"
             docker tag "${ECR_ENDPOINT}/omic/offender-risk-profiler:${CIRCLE_SHA1}" "${ECR_ENDPOINT}/omic/offender-risk-profiler:latest"
             login="$(aws ecr get-login --region eu-west-1 --no-include-email)"
             ${login}

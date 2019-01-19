@@ -13,4 +13,4 @@ spec:
       - path: /
         backend:
           serviceName: offender-risk-profiler-svc
-          servicePort: 3000
+          servicePort: 8080
