@@ -7,8 +7,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
-import uk.gov.justice.digital.hmpps.riskprofiler.dto.ErrorResponse;
 import uk.gov.justice.digital.hmpps.riskprofiler.exception.OffenderNotFoundException;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.ErrorResponse;
 
 
 @org.springframework.web.bind.annotation.RestControllerAdvice(

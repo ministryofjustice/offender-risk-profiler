@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.riskprofiler.dto;
+package uk.gov.justice.digital.hmpps.riskprofiler.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;

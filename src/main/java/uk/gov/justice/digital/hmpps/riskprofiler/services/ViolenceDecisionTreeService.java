@@ -1,0 +1,29 @@
+package uk.gov.justice.digital.hmpps.riskprofiler.services;
+
+import org.springframework.stereotype.Service;
+import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.ViolenceProfile;
+
+import javax.validation.constraints.NotNull;
+
+@Service
+public class ViolenceDecisionTreeService {
+
+    private final DataRepository repository;
+
+    public ViolenceDecisionTreeService(DataRepository repository) {
+        this.repository = repository;
+    }
+
+    public ViolenceProfile getViolenceProfile(@NotNull final String nomsId) {
+
+        var violenceProfile = ViolenceProfile.violenceBuilder()
+                .nomsId(nomsId)
+                .build();
+
+        // etc
+
+        return violenceProfile;
+
+    }
+}

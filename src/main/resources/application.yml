@@ -27,3 +27,12 @@ management:
   endpoints:
     web:
       base-path: /
+
+elite2api:
+  client:
+    clientId: risk-profiler
+    clientSecret: clientsecret
+    accessTokenUri: ${auth.uri.root}/oauth/token
+    tokenName: elite2_token
+    authenticationScheme: header
+    clientAuthenticationScheme: header
