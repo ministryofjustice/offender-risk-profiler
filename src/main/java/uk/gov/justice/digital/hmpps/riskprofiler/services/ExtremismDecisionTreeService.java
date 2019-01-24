@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.ExtremismProfile;
@@ -15,8 +16,9 @@ public class ExtremismDecisionTreeService {
         this.repository = repository;
     }
 
+    @PreAuthorize("hasRole('RISK_PROFILER')")
     public ExtremismProfile getExtremismProfile(@NotNull final String nomsId, boolean previousOffences) {
-        var pathfinderData = repository.getPathfinderData();
+        var pathfinderData = repository.getPathfinderDataByNomsId(nomsId);
 
         var extremism = ExtremismProfile.extremismBuilder()
                 .nomsId(nomsId)
