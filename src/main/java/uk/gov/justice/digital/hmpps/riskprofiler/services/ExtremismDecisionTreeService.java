@@ -17,7 +17,7 @@ public class ExtremismDecisionTreeService {
     }
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
-    public ExtremismProfile getExtremismProfile(@NotNull final String nomsId, boolean previousOffences) {
+    public ExtremismProfile getExtremismProfile(@NotNull final String nomsId, Boolean previousOffences) {
         var pathfinderData = repository.getPathfinderDataByNomsId(nomsId);
 
         var extremism = ExtremismProfile.extremismBuilder()
