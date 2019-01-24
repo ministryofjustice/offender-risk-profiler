@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.dao;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.OCGM;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Pras;
