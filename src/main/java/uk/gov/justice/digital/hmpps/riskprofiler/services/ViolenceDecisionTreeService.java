@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.ViolenceProfile;
@@ -15,6 +16,7 @@ public class ViolenceDecisionTreeService {
         this.repository = repository;
     }
 
+    @PreAuthorize("hasRole('RISK_PROFILER')")
     public ViolenceProfile getViolenceProfile(@NotNull final String nomsId) {
 
         var violenceProfile = ViolenceProfile.violenceBuilder()

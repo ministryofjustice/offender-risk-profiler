@@ -15,7 +15,9 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.ViolenceDecisionTreeSe
 
 import javax.validation.constraints.NotNull;
 
-@Api(tags = {"risk-profile"})
+@Api(tags = {"risk-profile"},
+        authorizations = { @Authorization("RISK_PROFILER") },
+        description = "Provides Offender Risk Profile Information on SOC, Escape, Violence, Extremism")
 
 @RestController
 @RequestMapping(
@@ -39,6 +41,7 @@ public class RiskProfilerResource {
     @ApiOperation(
             value = "Return SOC Risk for offender",
             notes = "Value can be true or false",
+            authorizations = { @Authorization("RISK_PROFILER") },
             nickname="getSoc")
 
     @ApiResponses(value = {
@@ -54,6 +57,7 @@ public class RiskProfilerResource {
     @ApiOperation(
             value = "Return Escape Risk for offender",
             notes = "Value can be true or false",
+            authorizations = { @Authorization("RISK_PROFILER") },
             nickname="getEscape")
 
     @ApiResponses(value = {
@@ -70,6 +74,7 @@ public class RiskProfilerResource {
     @ApiOperation(
             value = "Return Violence Risk for offender",
             notes = "Value can be high, low or none",
+            authorizations = { @Authorization("RISK_PROFILER") },
             nickname="getViolence")
 
     @ApiResponses(value = {
@@ -87,6 +92,7 @@ public class RiskProfilerResource {
     @ApiOperation(
             value = "Return Extremism Risk for offender",
             notes = "Value can be true or false",
+            authorizations = { @Authorization("RISK_PROFILER") },
             nickname="getExtremism")
 
     @ApiResponses(value = {
