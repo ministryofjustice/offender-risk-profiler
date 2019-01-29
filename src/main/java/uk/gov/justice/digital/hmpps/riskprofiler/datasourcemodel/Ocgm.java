@@ -5,11 +5,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Data
 @Builder
+@Data
 @EqualsAndHashCode(of = { "nomisId"})
 @ToString
-public class Pras {
-    public static int NOMIS_IS_POSITION = 11;
+public class Ocgm {
+    public static int NOMIS_ID_POSITION = 0;
+    public static int OCGM_BAND_POSITION = 11;
+    public static int STANDING_POSITION = 12;
+
     private String nomisId;
+    private String ocgmBand;
+    private String standingWithinOcg;
 }
