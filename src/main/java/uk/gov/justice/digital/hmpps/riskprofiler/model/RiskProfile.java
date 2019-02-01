@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 
 @ApiModel(description = "RiskProfile")
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -24,13 +24,12 @@ public abstract class RiskProfile {
     @NotBlank
     private String nomsId;
 
-    @ApiModelProperty(required = true, value = "Risk Type, VIOLENCE, SOC, EXTREMISM, ESCAPE;", example = "EXTREMISM", position = 1)
-    @NotBlank
-    private RiskType riskType;
-
     @ApiModelProperty(required = true, value = "Provisional Categorisation", example = "C", position = 2)
     @NotBlank
     @Builder.Default
     private String provisionalCategorisation = "C";
 
+    @ApiModelProperty(required = true, value = "Risk Type, VIOLENCE, SOC, EXTREMISM, ESCAPE;", example = "EXTREMISM", position = 1)
+    @NotBlank
+    public abstract RiskType getRiskType();
 }

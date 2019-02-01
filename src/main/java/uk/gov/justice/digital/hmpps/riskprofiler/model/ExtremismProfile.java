@@ -14,9 +14,13 @@ public class ExtremismProfile extends RiskProfile {
     @ApiModelProperty(value = "Indicates Regional CT Lead should be informed", example = "false", position = 3)
     private boolean notifyRegionalCTLead;
 
+    public RiskType getRiskType() {
+        return RiskType.EXTREMISM;
+    }
+
     @Builder(builderMethodName = "extremismBuilder")
     public ExtremismProfile(@NotBlank String nomsId, @NotBlank String provisionalCategorisation, boolean notifyRegionalCTLead) {
-        super(nomsId, RiskType.EXTREMISM, provisionalCategorisation);
+        super(nomsId, provisionalCategorisation);
         this.notifyRegionalCTLead = notifyRegionalCTLead;
     }
 }

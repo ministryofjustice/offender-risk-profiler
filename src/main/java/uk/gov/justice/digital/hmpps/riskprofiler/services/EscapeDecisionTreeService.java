@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.services;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.EscapeProfile;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile;
 
 import javax.validation.constraints.NotNull;
 
@@ -21,11 +22,11 @@ public class EscapeDecisionTreeService {
 
         var escape = EscapeProfile.escapeBuilder()
                 .nomsId(nomsId)
-                .build();
+                .provisionalCategorisation(RiskProfile.DEFAULT_CAT);
 
         // etc
 
-        return escape;
+        return escape.build();
 
     }
 }

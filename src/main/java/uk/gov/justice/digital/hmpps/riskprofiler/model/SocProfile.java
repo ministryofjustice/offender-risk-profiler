@@ -14,9 +14,13 @@ public class SocProfile extends RiskProfile {
     @ApiModelProperty(value = "Indicates the offender must be transferred to security", example = "true", position = 4)
     private boolean transferToSecurity;
 
+    public RiskType getRiskType() {
+        return RiskType.SOC;
+    }
+
     @Builder(builderMethodName = "socBuilder")
     public SocProfile(@NotBlank String nomsId, @NotBlank String provisionalCategorisation, boolean transferToSecurity) {
-        super(nomsId, RiskType.SOC, provisionalCategorisation);
+        super(nomsId, provisionalCategorisation);
         this.transferToSecurity = transferToSecurity;
     }
 }

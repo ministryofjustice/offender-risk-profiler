@@ -20,9 +20,13 @@ public class ViolenceProfile extends RiskProfile {
     @ApiModelProperty(value = "Indicates that number of assults and number serious should be displayed", example = "false", position = 4)
     private boolean displayAssaults;
 
+    public RiskType getRiskType() {
+        return RiskType.VIOLENCE;
+    }
+
     @Builder(builderMethodName = "violenceBuilder")
     public ViolenceProfile(@NotBlank String nomsId, @NotBlank String provisionalCategorisation, boolean veryHighRiskViolentOffender, boolean notifySafetyCustodyLead, boolean displayAssaults) {
-        super(nomsId, RiskType.VIOLENCE, provisionalCategorisation);
+        super(nomsId, provisionalCategorisation);
         this.veryHighRiskViolentOffender = veryHighRiskViolentOffender;
         this.notifySafetyCustodyLead = notifySafetyCustodyLead;
         this.displayAssaults = displayAssaults;
