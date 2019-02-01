@@ -69,7 +69,7 @@ public class DataRepository {
 
             var map = new HashMap<String, Pras>();
             csvData.forEach(p -> {
-                var prasLine = Pras.builder().nomisId(p.get(Pras.NOMIS_IS_POSITION)).build();
+                var prasLine = Pras.builder().nomisId(p.get(Pras.NOMIS_ID_POSITION)).build();
 
                 if (map.put(prasLine.getNomisId(), prasLine) != null) {
                     log.warn("Duplicate key found in PRAS Data {}", p);
