@@ -10,6 +10,6 @@ import lombok.ToString;
 @EqualsAndHashCode(of = { "nomisId"})
 @ToString
 public class Pras {
-    public static int NOMIS_IS_POSITION = 11;
+    public static int NOMIS_ID_POSITION = 11;
     private String nomisId;
 }
