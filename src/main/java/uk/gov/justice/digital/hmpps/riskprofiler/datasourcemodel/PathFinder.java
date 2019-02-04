@@ -9,12 +9,15 @@ import lombok.ToString;
 @Builder
 @EqualsAndHashCode(of = { "nomisId"})
 @ToString
-public class PathFinder {
+public class PathFinder implements RiskDataSet {
     public static int NOMIS_ID_POSITION = 3;
     public static int PATH_FINDER_BINDING_POSITION = 6;
 
     private String nomisId;
     private String pathFinderBanding;
 
-
+    @Override
+    public FileType getFileType() {
+        return FileType.PATHFINDER;
+    }
 }

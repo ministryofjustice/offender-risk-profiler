@@ -9,7 +9,12 @@ import lombok.ToString;
 @Builder
 @EqualsAndHashCode(of = { "nomisId"})
 @ToString
-public class Pras {
+public class Pras implements RiskDataSet {
     public static int NOMIS_ID_POSITION = 11;
     private String nomisId;
+
+    @Override
+    public FileType getFileType() {
+        return FileType.PRAS;
+    }
 }
