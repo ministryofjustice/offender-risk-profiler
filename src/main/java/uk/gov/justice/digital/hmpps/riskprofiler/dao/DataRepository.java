@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
 @Slf4j
@@ -31,7 +32,7 @@ public class DataRepository {
         populateData(csvData, filename, extractTimestamp(filename));
     }
 
-    private void populateData(List<List<String>> csvData, String filename, LocalDateTime timestamp) {
+    void populateData(List<List<String>> csvData, String filename, LocalDateTime timestamp) {
 
         boolean skipProcessing = false;
         boolean processedFile = false;
@@ -63,7 +64,7 @@ public class DataRepository {
 
     }
 
-    public static FileType getFileType(String filename) {
+    static FileType getFileType(String filename) {
         if (StringUtils.startsWithIgnoreCase(filename, "OCGM")) {
             return FileType.OCGM;
         }
@@ -85,15 +86,17 @@ public class DataRepository {
             dataSet.setFileName(filename);
 
             var map = new HashMap<String, PathFinder>();
-            csvData.forEach(p -> {
-                var pathFinderLine = PathFinder.builder()
-                        .nomisId(p.get(PathFinder.NOMIS_ID_POSITION))
-                        .pathFinderBanding(p.get(PathFinder.PATH_FINDER_BINDING_POSITION))
-                        .build();
+            var index = new AtomicInteger(0);
+            csvData.stream().filter(p -> index.getAndIncrement() > 0)
+                    .forEach(p -> {
+                    var pathFinderLine = PathFinder.builder()
+                            .nomisId(p.get(PathFinder.NOMIS_ID_POSITION))
+                            .pathFinderBanding(p.get(PathFinder.PATH_FINDER_BINDING_POSITION))
+                            .build();
 
-                if (map.put(pathFinderLine.getNomisId(), pathFinderLine) != null) {
-                    log.warn("Duplicate key found in PathFinder {}", p);
-                }
+                    if (map.put(pathFinderLine.getNomisId(), pathFinderLine) != null) {
+                        log.warn("Duplicate key found in PathFinder {}", p);
+                    }
             });
             dataSet.setDataSet(map);
         }
@@ -109,7 +112,9 @@ public class DataRepository {
             dataSet.setFileName(filename);
 
             var map = new HashMap<String, Ocgm>();
-            csvData.forEach(p -> {
+            var index = new AtomicInteger(0);
+            csvData.stream().filter(p -> index.getAndIncrement() > 0)
+                    .forEach(p -> {
                 var ocgmLine = Ocgm.builder()
                         .nomisId(p.get(Ocgm.NOMIS_ID_POSITION))
                         .ocgmBand(p.get(Ocgm.OCGM_BAND_POSITION))
@@ -134,7 +139,9 @@ public class DataRepository {
             dataSet.setFileName(filename);
 
             var map = new HashMap<String, Pras>();
-            csvData.forEach(p -> {
+            var index = new AtomicInteger(0);
+            csvData.stream().filter(p -> index.getAndIncrement() > 0)
+                    .forEach(p -> {
                 var prasLine = Pras.builder().nomisId(p.get(Pras.NOMIS_ID_POSITION)).build();
 
                 if (map.put(prasLine.getNomisId(), prasLine) != null) {

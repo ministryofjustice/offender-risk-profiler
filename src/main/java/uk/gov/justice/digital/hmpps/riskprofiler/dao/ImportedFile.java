@@ -15,11 +15,4 @@ public class ImportedFile<RiskDataSet> {
     private LocalDateTime fileTimestamp;
     private Map<String, RiskDataSet> dataSet;
 
-    @Builder(builderMethodName = "basic")
-    public ImportedFile(String fileName, LocalDateTime fileTimestamp) {
-        this.fileName = fileName;
-        this.fileTimestamp = fileTimestamp;
-    }
-
-
 }

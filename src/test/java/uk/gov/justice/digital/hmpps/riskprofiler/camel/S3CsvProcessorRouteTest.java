@@ -25,7 +25,7 @@ public class S3CsvProcessorRouteTest extends CamelTestSupport {
     @Override
     public RouteBuilder[] createRouteBuilders() throws Exception {
         MockitoAnnotations.initMocks(this);
-        final FileCsvProcessorRoute fileCsvProcessorRoute = new FileCsvProcessorRoute(service);
+        final CsvProcessorRoute fileCsvProcessorRoute = new CsvProcessorRoute(service);
 
         return new RouteBuilder[]{fileCsvProcessorRoute};
     }
