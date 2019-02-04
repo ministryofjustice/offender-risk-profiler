@@ -9,7 +9,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(of = { "nomisId"})
 @ToString
-public class Ocgm {
+public class Ocgm implements RiskDataSet {
     public static int NOMIS_ID_POSITION = 0;
     public static int OCGM_BAND_POSITION = 11;
     public static int STANDING_POSITION = 12;
@@ -17,4 +17,10 @@ public class Ocgm {
     private String nomisId;
     private String ocgmBand;
     private String standingWithinOcg;
+
+
+    @Override
+    public FileType getFileType() {
+        return FileType.OCGM;
+    }
 }

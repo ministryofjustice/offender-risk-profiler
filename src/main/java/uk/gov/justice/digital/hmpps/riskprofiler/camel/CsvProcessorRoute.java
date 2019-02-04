@@ -7,19 +7,21 @@ import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
 
 @Component
 @ConditionalOnProperty(name = "filesystem.enabled")
-public class FileCsvProcessorRoute extends RouteBuilder {
+public class CsvProcessorRoute extends RouteBuilder {
 
+    static final String PROCESS_CSV = "direct:process-csv";
     private final DataRepository csvProcessor;
 
-    public FileCsvProcessorRoute(DataRepository csvProcessor) {
+    public CsvProcessorRoute(DataRepository csvProcessor) {
         this.csvProcessor = csvProcessor;
     }
 
     @Override
     public void configure() {
 
-        from("file:src/test/resources/?noop=true")
+        from(PROCESS_CSV)
                 .unmarshal().csv()
                 .bean(csvProcessor, "doHandleCsvData");
+
     }
 }
