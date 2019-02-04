@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocgm;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Pras;
@@ -35,18 +36,22 @@ public class DataRepository {
         boolean skipProcessing = false;
         boolean processedFile = false;
 
-        if (StringUtils.startsWithIgnoreCase(filename, "Ocgm")) {
-            skipProcessing = processOcgm(csvData, filename, timestamp, ocgmData);
-            processedFile = true;
+        switch (getFileType(filename)) {
 
-        } else if (StringUtils.startsWithIgnoreCase(filename, "PATHFINDER")) {
-            skipProcessing = processPathfinder(csvData, filename, timestamp, pathfinderData);
-            processedFile = true;
-
-        } else if (StringUtils.startsWithIgnoreCase(filename, "PRAS")) {
-            skipProcessing = processPras(csvData, filename, timestamp, prasData);
-            processedFile = true;
+            case PRAS:
+                skipProcessing = processPras(csvData, filename, timestamp, prasData);
+                processedFile = true;
+                break;
+            case OCGM:
+                skipProcessing = processOcgm(csvData, filename, timestamp, ocgmData);
+                processedFile = true;
+                break;
+            case PATHFINDER:
+                skipProcessing = processPathfinder(csvData, filename, timestamp, pathfinderData);
+                processedFile = true;
+                break;
         }
+
 
         if (skipProcessing) {
             log.warn("File {} skipped", filename);
@@ -56,6 +61,19 @@ public class DataRepository {
             log.warn("Unknown file {}", filename);
         }
 
+    }
+
+    public static FileType getFileType(String filename) {
+        if (StringUtils.startsWithIgnoreCase(filename, "OCGM")) {
+            return FileType.OCGM;
+        }
+        if (StringUtils.startsWithIgnoreCase(filename, "PATHFINDER")) {
+            return FileType.PATHFINDER;
+        }
+        if (StringUtils.startsWithIgnoreCase(filename, "PRAS")) {
+            return FileType.PRAS;
+        }
+        return FileType.UNKNOWN;
     }
 
 
@@ -84,7 +102,7 @@ public class DataRepository {
     }
 
     private boolean processOcgm(List<List<String>> csvData, final String filename, final LocalDateTime timestamp, final ImportedFile<Ocgm> dataSet) {
-        boolean skipProcessing = dataSet.getFileTimestamp() != null && dataSet.getFileTimestamp().isAfter(timestamp);
+        boolean skipProcessing = dataSet.getFileTimestamp() != null && dataSet.getFileTimestamp().compareTo(timestamp) >= 0;
 
         if (!skipProcessing) {
             dataSet.setFileTimestamp(timestamp);

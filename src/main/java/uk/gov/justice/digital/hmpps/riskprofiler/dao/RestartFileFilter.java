@@ -5,12 +5,10 @@ import org.apache.camel.component.file.GenericFileFilter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CurrentFileFilter implements GenericFileFilter {
-
+public class RestartFileFilter implements GenericFileFilter {
     private final DataRepository dataRepository;
 
-
-    public CurrentFileFilter(DataRepository dataRepository) {
+    public RestartFileFilter(DataRepository dataRepository) {
         this.dataRepository = dataRepository;
     }
 
@@ -21,13 +19,13 @@ public class CurrentFileFilter implements GenericFileFilter {
         switch (DataRepository.getFileType(file.getFileName())) {
 
             case PRAS:
-                process = !(dataRepository.getPrasData() != null && file.getFileName().equalsIgnoreCase(dataRepository.getPrasData().getFileName()));
+                process = dataRepository.getPrasData().getFileName() == null;
                 break;
             case OCGM:
-                process = !(dataRepository.getOcgmData() != null && file.getFileName().equalsIgnoreCase(dataRepository.getOcgmData().getFileName()));
+                process = dataRepository.getOcgmData().getFileName() == null;
                 break;
             case PATHFINDER:
-                process = !(dataRepository.getPathfinderData() != null && file.getFileName().equalsIgnoreCase(dataRepository.getPathfinderData().getFileName()));
+                process = dataRepository.getPathfinderData().getFileName() == null;
                 break;
             default:
                 break;
