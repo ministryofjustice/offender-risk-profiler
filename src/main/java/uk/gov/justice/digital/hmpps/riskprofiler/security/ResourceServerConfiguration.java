@@ -147,7 +147,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     }
 
     @Bean
-    @ConditionalOnProperty(name = "aws.s3.enabled")
+    @ConditionalOnProperty(name = "file.process.type", havingValue = "s3")
     public AmazonS3 s3client(@Value("${aws.access.key.id}") String accessKey, @Value("${aws.secret.access.key}") String secretKey) {
         var creds = new BasicAWSCredentials(accessKey, secretKey);
         return AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(creds)).build();

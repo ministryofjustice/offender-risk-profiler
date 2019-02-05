@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.dao;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType;
@@ -10,7 +9,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Pras;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -24,15 +22,48 @@ public class DataRepository {
     private final ImportedFile<PathFinder> pathfinderData = new ImportedFile<>();
     private final ImportedFile<Ocgm> ocgmData = new ImportedFile<>();
 
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+    public boolean isCanBeReprocessed(String fileName) {
+        boolean process = false;
+        switch (DataRepository.getFileType(fileName)) {
 
-    public void doHandleCsvData(List<List<String>> csvData, Exchange exchange) {
-        var filename = exchange.getIn().getHeader("CamelFileName", String.class);
-        log.info("Processing file {}", filename);
-        populateData(csvData, filename, extractTimestamp(filename));
+            case PRAS:
+                process = getPrasData().getFileName() == null;
+                break;
+            case OCGM:
+                process = getOcgmData().getFileName() == null;
+                break;
+            case PATHFINDER:
+                process = getPathfinderData().getFileName() == null;
+                break;
+            default:
+                break;
+        }
+
+        return process;
     }
 
-    void populateData(List<List<String>> csvData, String filename, LocalDateTime timestamp) {
+    public boolean isCanBeArchived(String fileName) {
+        boolean process = false;
+        switch (DataRepository.getFileType(fileName)) {
+
+            case PRAS:
+                process = getPrasData().getFileName() != null && !fileName.equalsIgnoreCase(getPrasData().getFileName());
+                break;
+            case OCGM:
+                process = getOcgmData().getFileName() != null && !fileName.equalsIgnoreCase(getOcgmData().getFileName());
+                break;
+            case PATHFINDER:
+                process = getPathfinderData().getFileName() != null && !fileName.equalsIgnoreCase(getPathfinderData().getFileName());
+                break;
+            default:
+                break;
+        }
+
+        return process;
+    }
+
+
+    public void populateData(List<List<String>> csvData, String filename, LocalDateTime timestamp) {
 
         boolean skipProcessing = false;
         boolean processedFile = false;
@@ -89,15 +120,15 @@ public class DataRepository {
             var index = new AtomicInteger(0);
             csvData.stream().filter(p -> index.getAndIncrement() > 0)
                     .forEach(p -> {
-                    var pathFinderLine = PathFinder.builder()
-                            .nomisId(p.get(PathFinder.NOMIS_ID_POSITION))
-                            .pathFinderBanding(p.get(PathFinder.PATH_FINDER_BINDING_POSITION))
-                            .build();
+                        var pathFinderLine = PathFinder.builder()
+                                .nomisId(p.get(PathFinder.NOMIS_ID_POSITION))
+                                .pathFinderBanding(p.get(PathFinder.PATH_FINDER_BINDING_POSITION))
+                                .build();
 
-                    if (map.put(pathFinderLine.getNomisId(), pathFinderLine) != null) {
-                        log.warn("Duplicate key found in PathFinder {}", p);
-                    }
-            });
+                        if (map.put(pathFinderLine.getNomisId(), pathFinderLine) != null) {
+                            log.warn("Duplicate key found in PathFinder {}", p);
+                        }
+                    });
             dataSet.setDataSet(map);
         }
         return skipProcessing;
@@ -115,16 +146,16 @@ public class DataRepository {
             var index = new AtomicInteger(0);
             csvData.stream().filter(p -> index.getAndIncrement() > 0)
                     .forEach(p -> {
-                var ocgmLine = Ocgm.builder()
-                        .nomisId(p.get(Ocgm.NOMIS_ID_POSITION))
-                        .ocgmBand(p.get(Ocgm.OCGM_BAND_POSITION))
-                        .standingWithinOcg(p.get(Ocgm.STANDING_POSITION))
-                        .build();
+                        var ocgmLine = Ocgm.builder()
+                                .nomisId(p.get(Ocgm.NOMIS_ID_POSITION))
+                                .ocgmBand(p.get(Ocgm.OCGM_BAND_POSITION))
+                                .standingWithinOcg(p.get(Ocgm.STANDING_POSITION))
+                                .build();
 
-                if (map.put(ocgmLine.getNomisId(), ocgmLine) != null) {
-                    log.warn("Duplicate key found in OCGM Data {}", p);
-                }
-            });
+                        if (map.put(ocgmLine.getNomisId(), ocgmLine) != null) {
+                            log.warn("Duplicate key found in OCGM Data {}", p);
+                        }
+                    });
             dataSet.setDataSet(map);
         }
         return skipProcessing;
@@ -142,21 +173,16 @@ public class DataRepository {
             var index = new AtomicInteger(0);
             csvData.stream().filter(p -> index.getAndIncrement() > 0)
                     .forEach(p -> {
-                var prasLine = Pras.builder().nomisId(p.get(Pras.NOMIS_ID_POSITION)).build();
+                        var prasLine = Pras.builder().nomisId(p.get(Pras.NOMIS_ID_POSITION)).build();
 
-                if (map.put(prasLine.getNomisId(), prasLine) != null) {
-                    log.warn("Duplicate key found in PRAS Data {}", p);
-                }
-            });
+                        if (map.put(prasLine.getNomisId(), prasLine) != null) {
+                            log.warn("Duplicate key found in PRAS Data {}", p);
+                        }
+                    });
             dataSet.setDataSet(map);
         }
         return skipProcessing;
 
-    }
-
-    private static LocalDateTime extractTimestamp(String filename) {
-        var lastExt = filename.lastIndexOf(".");
-        return LocalDateTime.parse(StringUtils.substring(filename, lastExt - 17, lastExt), formatter);
     }
 
     public Optional<Ocgm> getOcgmDataByNomsId(String nomsId) {

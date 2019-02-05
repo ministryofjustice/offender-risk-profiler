@@ -4,10 +4,10 @@ import org.apache.camel.builder.RouteBuilder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import static uk.gov.justice.digital.hmpps.riskprofiler.camel.CsvProcessorRoute.PROCESS_CSV;
+import static uk.gov.justice.digital.hmpps.riskprofiler.camel.CsvProcessor.PROCESS_CSV;
 
 @Component
-@ConditionalOnProperty(name = "filesystem.enabled")
+@ConditionalOnProperty(name = "file.process.type", havingValue = "file")
 public class PrasCsvProcessorRoute extends RouteBuilder {
 
     @Override
@@ -19,7 +19,7 @@ public class PrasCsvProcessorRoute extends RouteBuilder {
         from("file:src/test/resources/buckets/pras/processed?filter=#restartFileFilter&move=../pending&delay=10000")
                 .log("Move to pending ${file:name}");
 
-        from("file:src/test/resources/buckets/pras/processed?filter=#currentFileFilter&move=../archive&delay=300000&initialDelay=30000")
+        from("file:src/test/resources/buckets/pras/processed?filter=#currentFileFilter&move=../archive&delay=30000&initialDelay=30000")
                 .log("Archived ${file:name}");
 
         from("file:src/test/resources/buckets/pras/pending?move=../processed&moveFailed=../error")

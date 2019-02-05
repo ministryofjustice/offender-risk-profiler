@@ -10,17 +10,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
 
 
 @Slf4j
 @RunWith(MockitoJUnitRunner.class)
-public class S3CsvProcessorRouteTest extends CamelTestSupport {
+public class OcgmS3CsvProcessorRouteTest extends CamelTestSupport {
 
     private final static String SUBMIT_ENDPOINT = "mock:result";
 
     @Mock
-    private DataRepository service;
+    private CsvProcessor service;
 
     @Override
     public RouteBuilder[] createRouteBuilders() throws Exception {
@@ -44,18 +43,7 @@ public class S3CsvProcessorRouteTest extends CamelTestSupport {
     @Test
     public void testUpdateStatus() throws Exception {
 
-//        template.send(ProcessDataFeedRoute.DIRECT_UPDATE_STATUS, exchange -> {
-//        });
-//
-//        assertMockEndpointsSatisfied();
-//        final MockEndpoint mockEndpoint = getMockEndpoint(SUBMIT_ENDPOINT);
-//        mockEndpoint.assertIsSatisfied();
-//
-//        final List<Exchange> receivedExchanges = mockEndpoint.getReceivedExchanges();
-//        assertEquals(1, receivedExchanges.size());
-//        String appData = receivedExchanges.get(0).getIn().getBody(String.class);
-//
-//        verify(service).doHandleCsvData(eq);
+
     }
 
 
