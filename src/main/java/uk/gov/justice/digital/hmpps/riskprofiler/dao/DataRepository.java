@@ -27,13 +27,13 @@ public class DataRepository {
         switch (DataRepository.getFileType(fileName)) {
 
             case PRAS:
-                process = getPrasData().getFileName() == null;
+                process = prasData.getFileName() == null;
                 break;
             case OCGM:
-                process = getOcgmData().getFileName() == null;
+                process = ocgmData.getFileName() == null;
                 break;
             case PATHFINDER:
-                process = getPathfinderData().getFileName() == null;
+                process = pathfinderData.getFileName() == null;
                 break;
             default:
                 break;
@@ -47,13 +47,13 @@ public class DataRepository {
         switch (DataRepository.getFileType(fileName)) {
 
             case PRAS:
-                process = getPrasData().getFileName() != null && !fileName.equalsIgnoreCase(getPrasData().getFileName());
+                process = prasData.getFileName() != null && !fileName.equalsIgnoreCase(prasData.getFileName());
                 break;
             case OCGM:
-                process = getOcgmData().getFileName() != null && !fileName.equalsIgnoreCase(getOcgmData().getFileName());
+                process = ocgmData.getFileName() != null && !fileName.equalsIgnoreCase(ocgmData.getFileName());
                 break;
             case PATHFINDER:
-                process = getPathfinderData().getFileName() != null && !fileName.equalsIgnoreCase(getPathfinderData().getFileName());
+                process = pathfinderData.getFileName() != null && !fileName.equalsIgnoreCase(pathfinderData.getFileName());
                 break;
             default:
                 break;
@@ -95,7 +95,7 @@ public class DataRepository {
 
     }
 
-    static FileType getFileType(String filename) {
+    private static FileType getFileType(String filename) {
         if (StringUtils.startsWithIgnoreCase(filename, "OCGM")) {
             return FileType.OCGM;
         }
@@ -195,17 +195,5 @@ public class DataRepository {
 
     public Optional<Pras> getPrasDataByNomsId(String nomsId) {
         return Optional.ofNullable(prasData.getDataSet().get(nomsId));
-    }
-
-    public ImportedFile<Pras> getPrasData() {
-        return prasData;
-    }
-
-    public ImportedFile<PathFinder> getPathfinderData() {
-        return pathfinderData;
-    }
-
-    public ImportedFile<Ocgm> getOcgmData() {
-        return ocgmData;
     }
 }

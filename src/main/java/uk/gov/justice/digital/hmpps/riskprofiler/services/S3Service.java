@@ -30,29 +30,37 @@ public class S3Service {
 
     public void moveToPending(InputStream stream, Exchange exchange) throws IOException {
         var filename = exchange.getIn().getHeader("CamelAwsS3Key", String.class);
+        var baseBucketName = exchange.getProperty("baseBucketName", String.class);
 
         String timestampFile = createTimestampFile(filename);
-        moveFile(stream, "risk-profile-ocgm-pending", timestampFile);
+        moveFile(stream, baseBucketName+"-pending", timestampFile);
         log.info("Moved to pending {}", timestampFile);
     }
 
     public void moveToProcessed(InputStream stream, Exchange exchange) throws IOException {
         var filename = exchange.getIn().getHeader("CamelAwsS3Key", String.class);
-        moveFile(stream, "risk-profile-ocgm-processed", filename);
+        var baseBucketName = exchange.getProperty("baseBucketName", String.class);
+        moveFile(stream, baseBucketName+"-processed", filename);
         log.info("Moved to processed {}", filename);
     }
 
     public void resetFile(InputStream stream, Exchange exchange) throws IOException {
         var filename = exchange.getIn().getHeader("CamelAwsS3Key", String.class);
+        var baseBucketName = exchange.getProperty("baseBucketName", String.class);
 
+        boolean fileMoved = false;
         if (dataRepository.isCanBeArchived(filename)) {
             log.info("Moving {} to archive", filename);
-            moveFile(stream, "risk-profile-ocgm-archive", filename);
-            s3client.deleteObject("risk-profile-ocgm-processed", filename);
+            moveFile(stream, baseBucketName+"-archive", filename);
+            fileMoved = true;
         } else if (dataRepository.isCanBeReprocessed(filename)) {
             log.info("Moving {} to pending", filename);
-            moveFile(stream, "risk-profile-ocgm-pending", filename);
-            s3client.deleteObject("risk-profile-ocgm-processed", filename);
+            moveFile(stream, baseBucketName+"-pending", filename);
+            fileMoved = true;
+        }
+
+        if (fileMoved) {
+            s3client.deleteObject(baseBucketName+"-processed", filename);
         }
         IOUtils.drainInputStream(stream);
     }
