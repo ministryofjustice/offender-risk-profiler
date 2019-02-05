@@ -21,20 +21,20 @@ public class OcgmS3CsvProcessorRoute extends RouteBuilder {
     @Override
     public void configure() {
 
-        from("aws-s3://risk-profile-ocgm?amazonS3Client=#s3client&delay=5000")
-                .setProperty("baseBucketName", simple("risk-profile-ocgm"))
+        from("aws-s3://{{s3.bucket.ocgm}}?amazonS3Client=#s3client&delay=5000")
+                .setProperty("baseBucketName", simple("{{s3.bucket.ocgm}}"))
                 .bean(s3Service, "moveToPending");
 
-        from("aws-s3://risk-profile-ocgm-pending?amazonS3Client=#s3client&delay=5000")
+        from("aws-s3://{{s3.bucket.ocgm}}-pending?amazonS3Client=#s3client&delay=5000")
                 .convertBodyTo(byte[].class)
                 .setHeader("pendingFile", body())
                 .to(PROCESS_CSV)
                 .setBody(header("pendingFile"))
-                .setProperty("baseBucketName", simple("risk-profile-ocgm"))
+                .setProperty("baseBucketName", simple("{{s3.bucket.ocgm}}"))
                 .bean(s3Service, "moveToProcessed");
 
-        from("aws-s3://risk-profile-ocgm-processed?amazonS3Client=#s3client&delay=10000&deleteAfterRead=false")
-                .setProperty("baseBucketName", simple("risk-profile-ocgm"))
+        from("aws-s3://{{s3.bucket.ocgm}}-processed?amazonS3Client=#s3client&delay=10000&deleteAfterRead=false")
+                .setProperty("baseBucketName", simple("{{s3.bucket.ocgm}}"))
                 .bean(s3Service, "resetFile");
     }
 }

@@ -21,20 +21,20 @@ public class PrasS3CsvProcessorRoute extends RouteBuilder {
     @Override
     public void configure() {
 
-        from("aws-s3://risk-profile-pras?amazonS3Client=#s3client&delay=5000")
-                .setProperty("baseBucketName", simple("risk-profile-pras"))
+        from("aws-s3://{{s3.bucket.pras}}?amazonS3Client=#s3client&delay=5000")
+                .setProperty("baseBucketName", simple("{{s3.bucket.pras}}"))
                 .bean(s3Service, "moveToPending");
 
-        from("aws-s3://risk-profile-pras-pending?amazonS3Client=#s3client&delay=5000")
+        from("aws-s3://{{s3.bucket.pras}}-pending?amazonS3Client=#s3client&delay=5000")
                 .convertBodyTo(byte[].class)
                 .setHeader("pendingFile", body())
                 .to(PROCESS_CSV)
                 .setBody(header("pendingFile"))
-                .setProperty("baseBucketName", simple("risk-profile-pras"))
+                .setProperty("baseBucketName", simple("{{s3.bucket.pras}}"))
                 .bean(s3Service, "moveToProcessed");
 
-        from("aws-s3://risk-profile-pras-processed?amazonS3Client=#s3client&delay=10000&deleteAfterRead=false")
-                .setProperty("baseBucketName", simple("risk-profile-pras"))
+        from("aws-s3://{{s3.bucket.pras}}-processed?amazonS3Client=#s3client&delay=10000&deleteAfterRead=false")
+                .setProperty("baseBucketName", simple("{{s3.bucket.pras}}"))
                 .bean(s3Service, "resetFile");
     }
 }
