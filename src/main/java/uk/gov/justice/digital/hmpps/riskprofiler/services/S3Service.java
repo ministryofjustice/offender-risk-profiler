@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,11 +20,11 @@ import static uk.gov.justice.digital.hmpps.riskprofiler.utils.FileFormatUtils.cr
 public class S3Service {
 
     private final AmazonS3 s3client;
-    private final DataRepository dataRepository;
+    private final DataService dataService;
 
-    public S3Service(AmazonS3 s3client, DataRepository dataRepository) {
+    public S3Service(AmazonS3 s3client, DataService dataService) {
         this.s3client = s3client;
-        this.dataRepository = dataRepository;
+        this.dataService = dataService;
     }
 
     public void moveToPending(InputStream stream, Exchange exchange) throws IOException {
@@ -49,11 +48,11 @@ public class S3Service {
         var baseBucketName = exchange.getProperty("baseBucketName", String.class);
 
         boolean fileMoved = false;
-        if (dataRepository.isCanBeArchived(filename)) {
+        if (dataService.isCanBeArchived(filename)) {
             log.info("Moving {} to archive", filename);
             moveFile(stream, baseBucketName+"-archive", filename);
             fileMoved = true;
-        } else if (dataRepository.isCanBeReprocessed(filename)) {
+        } else if (dataService.isCanBeReprocessed(filename)) {
             log.info("Moving {} to pending", filename);
             moveFile(stream, baseBucketName+"-pending", filename);
             fileMoved = true;

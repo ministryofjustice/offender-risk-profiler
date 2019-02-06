@@ -4,6 +4,7 @@ import org.junit.Test;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocgm;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Pras;
+import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class TestParseCsv {
                 "Rel");
 
         List<List<String>> ocgmList = Arrays.asList(row1, row2);
-        DataRepository c = new DataRepository();
+        DataService c = new DataService(ocgmRepository, pathfinderRepository, prasRepository);
         c.populateData(ocgmList, "Ocgm-20190204163820000.csv", LocalDateTime.now());
         Optional<Ocgm> isThere = c.getOcgmDataByNomsId("NomisId");
         assertTrue(isThere.isEmpty());
@@ -56,7 +57,7 @@ public class TestParseCsv {
         row2.set(11, "A1234AA");
         List<List<String>> prasList = Arrays.asList(row1, row2);
 
-        DataRepository c = new DataRepository();
+        DataService c = new DataService(ocgmRepository, pathfinderRepository, prasRepository);
         c.populateData(prasList, "Pras-20190204163820000.csv", LocalDateTime.now());
         Optional<Pras> isThere = c.getPrasDataByNomsId("NomisId");
         assertTrue(isThere.isEmpty());
@@ -74,7 +75,7 @@ public class TestParseCsv {
         List<String> row1 = Arrays.asList("Surname", "Name", "071080", "NomisId", "Status", "status", "Band 1", "est");
         List<String> row2 = Arrays.asList("Surname", "Name", "071080", "A1234AA", "Status", "status", "Band 2", "est");
         List<List<String>> pathFinderList = Arrays.asList(row1, row2);
-        DataRepository c = new DataRepository();
+        DataService c = new DataService(ocgmRepository, pathfinderRepository, prasRepository);
         c.populateData(pathFinderList, "Pathfinder-20190204163820000.csv", LocalDateTime.now());
 
 
