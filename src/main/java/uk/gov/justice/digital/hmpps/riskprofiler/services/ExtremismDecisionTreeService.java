@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
@@ -9,6 +10,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.ExtremismProfile;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 @Service
 public class ExtremismDecisionTreeService {
@@ -21,14 +23,34 @@ public class ExtremismDecisionTreeService {
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
     public ExtremismProfile getExtremismProfile(@NotNull final String nomsId, Boolean previousOffences) {
-        var pathfinderData = repository.getByKey(nomsId);
+        return decisionProcess(nomsId, previousOffences, repository.getByKey(nomsId));
+    }
 
+    private ExtremismProfile decisionProcess(String nomsId, Boolean previousOffences, Optional<PathFinder> pathFinder) {
         var extremism = ExtremismProfile.extremismBuilder()
                 .nomsId(nomsId)
                 .provisionalCategorisation(RiskProfile.DEFAULT_CAT);
-        // etc
+
+        pathFinder.ifPresent(pf -> {
+            var banding = StringUtils.upperCase(pf.getPathFinderBanding());
+            if (banding.contains("BAND 1") || banding.contains("BAND 2")) {
+                extremism.notifyRegionalCTLead(true);
+
+                if (previousOffences) {
+                    extremism.provisionalCategorisation("B");
+                } else {
+                    extremism.provisionalCategorisation("C");
+                }
+            } else {
+                if (banding.contains("BAND 3")) {
+                    extremism.notifyRegionalCTLead(true);
+                    extremism.provisionalCategorisation("?");
+                } else {
+                    extremism.provisionalCategorisation("C");
+                }
+            }
+        });
 
         return extremism.build();
-
     }
 }

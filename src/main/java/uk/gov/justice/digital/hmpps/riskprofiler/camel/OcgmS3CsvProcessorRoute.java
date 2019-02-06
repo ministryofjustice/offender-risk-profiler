@@ -28,6 +28,7 @@ public class OcgmS3CsvProcessorRoute extends RouteBuilder {
         from("aws-s3://{{s3.bucket.ocgm}}-pending?amazonS3Client=#s3client&delay=5000")
                 .convertBodyTo(byte[].class)
                 .setHeader("pendingFile", body())
+                .setHeader("dataFileType", simple("OCGM"))
                 .to(PROCESS_CSV)
                 .setBody(header("pendingFile"))
                 .setProperty("baseBucketName", simple("{{s3.bucket.ocgm}}"))

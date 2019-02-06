@@ -10,32 +10,32 @@ import static uk.gov.justice.digital.hmpps.riskprofiler.camel.CsvProcessor.PROCE
 
 @Component
 @ConditionalOnProperty(name = "file.process.type", havingValue = "s3")
-public class PrasS3CsvProcessorRoute extends RouteBuilder {
+public class ViperS3CsvProcessorRoute extends RouteBuilder {
 
     private final S3Service s3Service;
 
-    public PrasS3CsvProcessorRoute(S3Service s3Service) {
+    public ViperS3CsvProcessorRoute(S3Service s3Service) {
         this.s3Service = s3Service;
     }
 
     @Override
     public void configure() {
 
-        from("aws-s3://{{s3.bucket.pras}}?amazonS3Client=#s3client&delay=5000")
-                .setProperty("baseBucketName", simple("{{s3.bucket.pras}}"))
+        from("aws-s3://{{s3.bucket.viper}}?amazonS3Client=#s3client&delay=5000")
+                .setProperty("baseBucketName", simple("{{s3.bucket.viper}}"))
                 .bean(s3Service, "moveToPending");
 
-        from("aws-s3://{{s3.bucket.pras}}-pending?amazonS3Client=#s3client&delay=5000")
+        from("aws-s3://{{s3.bucket.viper}}-pending?amazonS3Client=#s3client&delay=5000")
                 .convertBodyTo(byte[].class)
                 .setHeader("pendingFile", body())
-                .setHeader("dataFileType", simple("PRAS"))
+                .setHeader("dataFileType", simple("VIPER"))
                 .to(PROCESS_CSV)
                 .setBody(header("pendingFile"))
-                .setProperty("baseBucketName", simple("{{s3.bucket.pras}}"))
+                .setProperty("baseBucketName", simple("{{s3.bucket.viper}}"))
                 .bean(s3Service, "moveToProcessed");
 
-        from("aws-s3://{{s3.bucket.pras}}-processed?amazonS3Client=#s3client&delay=10000&deleteAfterRead=false")
-                .setProperty("baseBucketName", simple("{{s3.bucket.pras}}"))
+        from("aws-s3://{{s3.bucket.viper}}-processed?amazonS3Client=#s3client&delay=10000&deleteAfterRead=false")
+                .setProperty("baseBucketName", simple("{{s3.bucket.viper}}"))
                 .bean(s3Service, "resetFile");
     }
 }

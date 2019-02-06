@@ -8,22 +8,22 @@ import static uk.gov.justice.digital.hmpps.riskprofiler.camel.CsvProcessor.PROCE
 
 @Component
 @ConditionalOnProperty(name = "file.process.type", havingValue = "file")
-public class PrasCsvProcessorRoute extends RouteBuilder {
+public class ViperCsvProcessorRoute extends RouteBuilder {
 
     @Override
     public void configure() {
 
-        from("file:src/test/resources/buckets/pras?move=pending/${file:name.noext}-${date:now:yyyyMMddHHmmssSSS}.${file:ext}&moveFailed=../error&delay=5000")
+        from("file:src/test/resources/buckets/viper?move=pending/${file:name.noext}-${date:now:yyyyMMddHHmmssSSS}.${file:ext}&moveFailed=../error&delay=5000")
                 .log("Moved ${file:name}");
 
-        from("file:src/test/resources/buckets/pras/processed?filter=#restartFileFilter&move=../pending&delay=10000")
+        from("file:src/test/resources/buckets/viper/processed?filter=#restartFileFilter&move=../pending&delay=10000")
                 .log("Move to pending ${file:name}");
 
-        from("file:src/test/resources/buckets/pras/processed?filter=#currentFileFilter&move=../archive&delay=30000&initialDelay=30000")
+        from("file:src/test/resources/buckets/viper/processed?filter=#currentFileFilter&move=../archive&delay=30000&initialDelay=30000")
                 .log("Archived ${file:name}");
 
-        from("file:src/test/resources/buckets/pras/pending?move=../processed&moveFailed=../error")
-                .setHeader("dataFileType", simple("PRAS"))
+        from("file:src/test/resources/buckets/viper/pending?move=../processed&moveFailed=../error")
+                .setHeader("dataFileType", simple("VIPER"))
                 .to(PROCESS_CSV);
 
     }
