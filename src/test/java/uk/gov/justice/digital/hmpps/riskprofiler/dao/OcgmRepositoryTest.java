@@ -23,19 +23,18 @@ public class OcgmRepositoryTest {
                 "Rel");
 
         List<List<String>> ocgmList = Arrays.asList(row1, row2);
-        OcgmRepository ocgmRepository = new OcgmRepository();
-        ocgmRepository.process(ocgmList, "Ocgm-20190204163820000.csv", LocalDateTime.now());
-        Optional<Ocgm> isThere = ocgmRepository.getOcgmDataByNomsId("NomisId");
+        DataRepository<Ocgm> repository = new OcgmRepository();
+        repository.process(ocgmList, "Ocgm-20190204163820000.csv", LocalDateTime.now());
+        Optional<Ocgm> isThere = repository.getByKey("NomisId");
         assertTrue(isThere.isEmpty());
 
-        isThere = ocgmRepository.getOcgmDataByNomsId("A1234AA");
+        isThere = repository.getByKey("A1234AA");
         assertTrue(isThere.isPresent());
         Ocgm ocgm = isThere.get();
-        assertEquals(ocgm.getNomisId(), "A1234AA");
-        assertEquals(ocgm.getOcgmBand(), "15A");
+        assertEquals(ocgm.getKey(), "A1234AA");
         assertEquals(ocgm.getStandingWithinOcg(), "PrincipalSubject");
 
-        assertTrue(ocgmRepository.getOcgmDataByNomsId("NotThere").isEmpty());
+        assertTrue(repository.getByKey("NotThere").isEmpty());
 
     }
 

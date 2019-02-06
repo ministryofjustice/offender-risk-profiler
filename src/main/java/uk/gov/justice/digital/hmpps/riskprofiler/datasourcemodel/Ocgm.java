@@ -11,13 +11,20 @@ import lombok.ToString;
 @ToString
 public class Ocgm implements RiskDataSet {
     public static int NOMIS_ID_POSITION = 0;
-    public static int OCGM_BAND_POSITION = 11;
-    public static int STANDING_POSITION = 12;
+    public static int OCG_ID_POSITION = 1;
+    public static int STANDING_POSITION = 8;
 
     private String nomisId;
-    private String ocgmBand;
+    private String ocgId;
     private String standingWithinOcg;
 
+    public String getKey() {
+        return nomisId;
+    }
+
+    public int getKeyPosition() {
+        return NOMIS_ID_POSITION;
+    }
 
     @Override
     public FileType getFileType() {

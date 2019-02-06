@@ -19,7 +19,7 @@ public class SocDecisionTreeService {
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
     public SocProfile getSocData(@NotNull final String nomsId) {
-        var prasData = repository.getPrasDataByNomsId(nomsId);
+        var prasData = repository.getByKey(nomsId);
 
         var soc = SocProfile.socBuilder()
                 .nomsId(nomsId)

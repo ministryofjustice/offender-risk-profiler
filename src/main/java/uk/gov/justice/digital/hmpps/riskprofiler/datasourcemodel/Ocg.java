@@ -5,24 +5,27 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Data
 @Builder
-@EqualsAndHashCode(of = { "nomisId"})
+@Data
+@EqualsAndHashCode(of = { "ocgId"})
 @ToString
-public class Pras implements RiskDataSet {
-    public static int NOMIS_ID_POSITION = 11;
-    private String nomisId;
+public class Ocg implements RiskDataSet {
+    public static int OCG_ID_POSITION = 0;
+    public static int OCGM_BAND_POSITION = 1;
+
+    private String ocgId;
+    private String ocgmBand;
 
     public String getKey() {
-        return nomisId;
+        return ocgId;
     }
 
     public int getKeyPosition() {
-        return NOMIS_ID_POSITION;
+        return OCG_ID_POSITION;
     }
 
     @Override
     public FileType getFileType() {
-        return FileType.PRAS;
+        return FileType.OCG;
     }
 }

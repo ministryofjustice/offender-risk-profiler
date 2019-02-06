@@ -28,16 +28,16 @@ public class PrasRepositoryTest {
         row2.set(11, "A1234AA");
         List<List<String>> prasList = Arrays.asList(row1, row2);
 
-        PrasRepository prasRepository = new PrasRepository();
-        prasRepository.process(prasList, "Pras-20190204163820000.csv", LocalDateTime.now());
-        Optional<Pras> isThere = prasRepository.getPrasDataByNomsId("NomisId");
+        DataRepository<Pras> repository = new PrasRepository();
+        repository.process(prasList, "Pras-20190204163820000.csv", LocalDateTime.now());
+        Optional<Pras> isThere = repository.getByKey("NomisId");
         assertTrue(isThere.isEmpty());
 
-        isThere = prasRepository.getPrasDataByNomsId("A1234AA");
+        isThere = repository.getByKey("A1234AA");
         assertTrue(isThere.isPresent());
-        assertEquals(isThere.get().getNomisId(), "A1234AA");
+        assertEquals(isThere.get().getKey(), "A1234AA");
 
-        assertTrue(prasRepository.getPrasDataByNomsId("Nomis3").isEmpty());
+        assertTrue(repository.getByKey("Nomis3").isEmpty());
 
     }
 

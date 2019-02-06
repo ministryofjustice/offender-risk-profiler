@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.services;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.digital.hmpps.riskprofiler.dao.OcgRepository;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.OcgmRepository;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.PathfinderRepository;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.PrasRepository;
@@ -16,11 +17,13 @@ import java.util.List;
 public class DataService {
 
     private final OcgmRepository ocgmRepository;
+    private final OcgRepository ocgRepository;
     private final PathfinderRepository pathfinderRepository;
     private final PrasRepository prasRepository;
 
-    public DataService(OcgmRepository ocgmRepository, PathfinderRepository pathfinderRepository, PrasRepository prasRepository) {
+    public DataService(OcgmRepository ocgmRepository, OcgRepository ocgRepository, PathfinderRepository pathfinderRepository, PrasRepository prasRepository) {
         this.ocgmRepository = ocgmRepository;
+        this.ocgRepository = ocgRepository;
         this.pathfinderRepository = pathfinderRepository;
         this.prasRepository = prasRepository;
     }
@@ -34,6 +37,9 @@ public class DataService {
                 break;
             case OCGM:
                 process =  ocgmRepository.isCanBeReprocessed();
+                break;
+            case OCG:
+                process =  ocgRepository.isCanBeReprocessed();
                 break;
             case PATHFINDER:
                 process =  pathfinderRepository.isCanBeReprocessed();
@@ -54,6 +60,9 @@ public class DataService {
                 break;
             case OCGM:
                 process = ocgmRepository.isCanBeArchived(fileName);
+                break;
+            case OCG:
+                process = ocgRepository.isCanBeArchived(fileName);
                 break;
             case PATHFINDER:
                 process = pathfinderRepository.isCanBeArchived(fileName);
@@ -81,6 +90,10 @@ public class DataService {
                 skipProcessing = ocgmRepository.process(csvData, filename, timestamp);
                 processedFile = true;
                 break;
+            case OCG:
+                skipProcessing = ocgRepository.process(csvData, filename, timestamp);
+                processedFile = true;
+                break;
             case PATHFINDER:
                 skipProcessing = pathfinderRepository.process(csvData, filename, timestamp);
                 processedFile = true;
@@ -99,13 +112,16 @@ public class DataService {
     }
 
     private static FileType getFileType(String filename) {
-        if (StringUtils.startsWithIgnoreCase(filename, "OCGM")) {
+        if (StringUtils.contains(StringUtils.upperCase(filename), "OCGM")) {
             return FileType.OCGM;
         }
-        if (StringUtils.startsWithIgnoreCase(filename, "PATHFINDER")) {
+        if (StringUtils.contains(StringUtils.upperCase(filename), "OCG")) {
+            return FileType.OCG;
+        }
+        if (StringUtils.contains(StringUtils.upperCase(filename), "PATHFINDER")) {
             return FileType.PATHFINDER;
         }
-        if (StringUtils.startsWithIgnoreCase(filename, "PRAS")) {
+        if (StringUtils.contains(StringUtils.upperCase(filename), "PRAS")) {
             return FileType.PRAS;
         }
         return FileType.UNKNOWN;

@@ -18,20 +18,20 @@ public class PathfinderRepositoryTest {
         List<String> row1 = Arrays.asList("Surname", "Name", "071080", "NomisId", "Status", "status", "Band 1", "est");
         List<String> row2 = Arrays.asList("Surname", "Name", "071080", "A1234AA", "Status", "status", "Band 2", "est");
         List<List<String>> pathFinderList = Arrays.asList(row1, row2);
-        PathfinderRepository pathfinderRepository = new PathfinderRepository();
-        pathfinderRepository.process(pathFinderList, "Pathfinder-20190204163820000.csv", LocalDateTime.now());
+        DataRepository<PathFinder> repository = new PathfinderRepository();
+        repository.process(pathFinderList, "Pathfinder-20190204163820000.csv", LocalDateTime.now());
 
 
-        Optional<PathFinder> isThere = pathfinderRepository.getPathfinderDataByNomsId("NomisId");
+        Optional<PathFinder> isThere = repository.getByKey("NomisId");
         assertTrue(isThere.isEmpty());
 
-        isThere = pathfinderRepository.getPathfinderDataByNomsId("A1234AA");
+        isThere = repository.getByKey("A1234AA");
         assertTrue(isThere.isPresent());
         var obj = isThere.get();
-        assertEquals(obj.getNomisId(), "A1234AA");
+        assertEquals(obj.getKey(), "A1234AA");
         assertEquals(obj.getPathFinderBanding(), "Band 2");
 
-        assertTrue(pathfinderRepository.getPathfinderDataByNomsId("No there").isEmpty());
+        assertTrue(repository.getByKey("No there").isEmpty());
     }
 
 }
