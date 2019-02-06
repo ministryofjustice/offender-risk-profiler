@@ -16,23 +16,8 @@ public class CurrentFileFilter implements GenericFileFilter {
 
     @Override
     public boolean accept(GenericFile file) {
-
-        boolean process = false;
-        switch (DataRepository.getFileType(file.getFileName())) {
-
-            case PRAS:
-                process = !(dataRepository.getPrasData() != null && file.getFileName().equalsIgnoreCase(dataRepository.getPrasData().getFileName()));
-                break;
-            case OCGM:
-                process = !(dataRepository.getOcgmData() != null && file.getFileName().equalsIgnoreCase(dataRepository.getOcgmData().getFileName()));
-                break;
-            case PATHFINDER:
-                process = !(dataRepository.getPathfinderData() != null && file.getFileName().equalsIgnoreCase(dataRepository.getPathfinderData().getFileName()));
-                break;
-            default:
-                break;
-        }
-
-        return process;
+        return dataRepository.isCanBeArchived(file.getFileName());
     }
+
+
 }

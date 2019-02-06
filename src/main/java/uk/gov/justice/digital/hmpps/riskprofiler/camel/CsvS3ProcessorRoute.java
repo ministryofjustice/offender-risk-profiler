@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 import static uk.gov.justice.digital.hmpps.riskprofiler.camel.CsvProcessor.PROCESS_CSV;
 
 @Component
-@ConditionalOnProperty(name = "file.process.type", havingValue = "file")
-public class CsvProcessorRoute extends RouteBuilder {
+@ConditionalOnProperty(name = "file.process.type", havingValue = "s3")
+public class CsvS3ProcessorRoute extends RouteBuilder {
 
     private final CsvProcessor csvProcessor;
 
-    public CsvProcessorRoute(CsvProcessor csvProcessor) {
+    public CsvS3ProcessorRoute(CsvProcessor csvProcessor) {
         this.csvProcessor = csvProcessor;
     }
 
@@ -21,7 +21,6 @@ public class CsvProcessorRoute extends RouteBuilder {
 
         from(PROCESS_CSV)
                 .unmarshal().csv()
-                .bean(csvProcessor, "doHandleFileCsvData");
-
+                .bean(csvProcessor, "doHandleS3CsvData");
     }
 }
