@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -32,7 +33,7 @@ public class OcgmRepositoryTest {
         assertTrue(isThere.isPresent());
         Ocgm ocgm = isThere.get();
         assertEquals(ocgm.getKey(), "A1234AA");
-        assertEquals(ocgm.getStandingWithinOcg(), "PrincipalSubject");
+        assertThat(ocgm.getStandingWithinOcg()).isEqualTo("RD");
 
         assertTrue(repository.getByKey("NotThere").isEmpty());
 
