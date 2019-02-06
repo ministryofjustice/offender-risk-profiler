@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.camel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
+import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService;
 
 import java.util.List;
 
@@ -15,10 +15,10 @@ public class CsvProcessor {
 
     static final String PROCESS_CSV = "direct:process-csv";
 
-    private final DataRepository dataRepository;
+    private final DataService dataService;
 
-    public CsvProcessor(DataRepository dataRepository) {
-        this.dataRepository = dataRepository;
+    public CsvProcessor(DataService dataService) {
+        this.dataService = dataService;
     }
 
     public void doHandleFileCsvData(List<List<String>> csvData, Exchange exchange) {
@@ -31,7 +31,7 @@ public class CsvProcessor {
 
     private void process(List<List<String>> csvData, String filename) {
         log.info("Processing file {}", filename);
-        dataRepository.populateData(csvData, filename, extractTimestamp(filename));
+        dataService.populateData(csvData, filename, extractTimestamp(filename));
     }
 
 

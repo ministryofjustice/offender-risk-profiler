@@ -3,17 +3,18 @@ package uk.gov.justice.digital.hmpps.riskprofiler.dao;
 import org.apache.camel.component.file.GenericFile;
 import org.apache.camel.component.file.GenericFileFilter;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService;
 
 @Component
 public class RestartFileFilter implements GenericFileFilter {
-    private final DataRepository dataRepository;
+    private final DataService dataService;
 
-    public RestartFileFilter(DataRepository dataRepository) {
-        this.dataRepository = dataRepository;
+    public RestartFileFilter(DataService dataService) {
+        this.dataService = dataService;
     }
 
     @Override
     public boolean accept(GenericFile file) {
-        return dataRepository.isCanBeReprocessed(file.getFileName());
+        return dataService.isCanBeReprocessed(file.getFileName());
     }
 }
