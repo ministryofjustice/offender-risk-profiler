@@ -16,6 +16,14 @@ public class PathFinder implements RiskDataSet {
     private String nomisId;
     private String pathFinderBanding;
 
+    public String getKey() {
+        return nomisId;
+    }
+
+    public int getKeyPosition() {
+        return NOMIS_ID_POSITION;
+    }
+
     @Override
     public FileType getFileType() {
         return FileType.PATHFINDER;

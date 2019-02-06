@@ -4,5 +4,7 @@ public interface RiskDataSet {
 
     FileType getFileType();
 
-    String getNomisId();
+    String getKey();
+
+    int getKeyPosition();
 }
