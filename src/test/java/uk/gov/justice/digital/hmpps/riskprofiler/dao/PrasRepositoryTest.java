@@ -1,0 +1,44 @@
+package uk.gov.justice.digital.hmpps.riskprofiler.dao;
+
+import org.junit.Test;
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Pras;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class PrasRepositoryTest {
+
+    @Test
+    public void testPRAS() {
+        List<String> row1 = new ArrayList<>();
+        List<String> row2 = new ArrayList<>();
+
+        for (int i = 0; i < 33; i++) {
+            row1.add("Some Value");
+            row2.add("Some Value");
+        }
+
+        row1.set(11, "NomisId");
+        row2.set(11, "A1234AA");
+        List<List<String>> prasList = Arrays.asList(row1, row2);
+
+        PrasRepository prasRepository = new PrasRepository();
+        prasRepository.process(prasList, "Pras-20190204163820000.csv", LocalDateTime.now());
+        Optional<Pras> isThere = prasRepository.getPrasDataByNomsId("NomisId");
+        assertTrue(isThere.isEmpty());
+
+        isThere = prasRepository.getPrasDataByNomsId("A1234AA");
+        assertTrue(isThere.isPresent());
+        assertEquals(isThere.get().getNomisId(), "A1234AA");
+
+        assertTrue(prasRepository.getPrasDataByNomsId("Nomis3").isEmpty());
+
+    }
+
+}
