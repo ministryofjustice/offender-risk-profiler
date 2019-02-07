@@ -17,20 +17,8 @@ public class ViperRepository implements DataRepository<Viper> {
     private final ImportedFile<Viper> data = new ImportedFile<>();
 
     @Override
-    public boolean isCanBeReprocessed() {
-        return data.getFileName() == null;
-    }
+    public void process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
 
-    @Override
-    public boolean isCanBeArchived(String fileName) {
-       return data.getFileName() != null && !fileName.equalsIgnoreCase(data.getFileName());
-    }
-
-    @Override
-    public boolean process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
-        boolean skipProcessing = data.getFileTimestamp() != null && data.getFileTimestamp().compareTo(timestamp) >= 0;
-
-        if (!skipProcessing) {
             data.setFileTimestamp(timestamp);
             data.setFileName(filename);
             data.reset();
@@ -71,9 +59,15 @@ public class ViperRepository implements DataRepository<Viper> {
             log.info("Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.getIndex().get(),
                     data.getLinesProcessed().get(), data.getLinesDup().get(), data.getLinesInvalid().get(), data.getLinesError().get());
 
-        }
-        return skipProcessing;
 
+    }
+
+    public LocalDateTime getFileTimestamp() {
+        return data.getFileTimestamp();
+    }
+
+    public ImportedFile<Viper> getData() {
+        return data;
     }
 
     @Override

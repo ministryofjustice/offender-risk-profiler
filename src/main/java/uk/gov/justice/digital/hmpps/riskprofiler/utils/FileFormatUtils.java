@@ -3,16 +3,21 @@ package uk.gov.justice.digital.hmpps.riskprofiler.utils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 
 public class FileFormatUtils {
 
     public static DateTimeFormatter DATETIMEFORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
 
-    public static String createTimestampFile(String filename) {
+    public static String createTimestampFile(String filename, Date timestamp) {
         var lastExt = filename.lastIndexOf(".");
-        var now = LocalDateTime.now();
+        var now = timestamp.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
         return String.format("%s-%s.%s",
                 StringUtils.left(filename, lastExt), DATETIMEFORMAT.format(now),
                 StringUtils.substring(filename, lastExt+1));

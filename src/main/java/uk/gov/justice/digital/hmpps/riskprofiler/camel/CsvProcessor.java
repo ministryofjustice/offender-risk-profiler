@@ -14,8 +14,6 @@ import static uk.gov.justice.digital.hmpps.riskprofiler.utils.FileFormatUtils.ex
 @Slf4j
 public class CsvProcessor {
 
-    static final String PROCESS_CSV = "direct:process-csv";
-
     private final DataService dataService;
 
     public CsvProcessor(DataService dataService) {
@@ -23,18 +21,10 @@ public class CsvProcessor {
     }
 
     public void doHandleFileCsvData(List<List<String>> csvData, Exchange exchange) {
-        String fileType = exchange.getIn().getHeader("dataFileType", String.class);
-        process(csvData, exchange.getIn().getHeader("CamelFileName", String.class), fileType);
-    }
-
-    public void doHandleS3CsvData(List<List<String>> csvData, Exchange exchange) {
-        String fileType = exchange.getIn().getHeader("dataFileType", String.class);
-        process(csvData, exchange.getIn().getHeader("CamelAwsS3Key", String.class), fileType);
-    }
-
-    private void process(List<List<String>> csvData, String filename, String fileType) {
-        log.info("Processing file {}", filename);
-        dataService.populateData(csvData, filename, FileType.valueOf(fileType), extractTimestamp(filename));
+        String fileName = exchange.getIn().getHeader("fileName", String.class);
+        String fileType = exchange.getIn().getHeader("fileType", String.class);
+        log.info("Processing file {}", fileName);
+        dataService.populateData(csvData, fileName, FileType.valueOf(fileType), extractTimestamp(fileName));
     }
 
 
