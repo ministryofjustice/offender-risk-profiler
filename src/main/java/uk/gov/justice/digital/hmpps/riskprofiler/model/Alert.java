@@ -31,4 +31,5 @@ public class Alert {
     private String addedByLastName;
     private String expiredByFirstName;
     private String expiredByLastName;
+    private int ranking;
 }

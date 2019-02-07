@@ -32,7 +32,7 @@ elite2api:
   client:
     clientId: risk-profiler
     clientSecret: clientsecret
-    accessTokenUri: ${auth.uri.root}/oauth/token
+    accessTokenUri: ${nomis.auth.url}/oauth/token
     tokenName: elite2_token
     authenticationScheme: header
     clientAuthenticationScheme: header
