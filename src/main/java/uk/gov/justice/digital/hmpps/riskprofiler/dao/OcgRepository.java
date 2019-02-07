@@ -43,7 +43,7 @@ public class OcgRepository implements DataRepository<Ocg> {
                                 } else {
                                     var ocgLine = Ocg.builder()
                                             .ocgId(key)
-                                            .ocgmBand(p.get(Ocg.OCGM_BAND_POSITION))
+                                            .ocgmBand(StringUtils.trimToNull(p.get(Ocg.OCGM_BAND_POSITION)))
                                             .build();
 
                                     data.getDataSet().put(key, ocgLine);

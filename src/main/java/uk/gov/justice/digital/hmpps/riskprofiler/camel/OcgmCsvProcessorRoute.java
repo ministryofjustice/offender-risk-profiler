@@ -23,6 +23,7 @@ public class OcgmCsvProcessorRoute extends RouteBuilder {
                 .log("Archived ${file:name}");
 
         from("file:src/test/resources/buckets/ocgm/pending?move=../processed&moveFailed=../error")
+                .setHeader("dataFileType", simple("OCGM"))
                 .to(PROCESS_CSV);
 
     }

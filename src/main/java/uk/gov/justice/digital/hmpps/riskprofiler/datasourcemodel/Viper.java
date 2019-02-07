@@ -5,16 +5,18 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Data
+import java.math.BigDecimal;
+
 @Builder
+@Data
 @EqualsAndHashCode(of = { "nomisId"})
 @ToString
-public class PathFinder implements RiskDataSet {
-    public static int NOMIS_ID_POSITION = 3;
-    public static int PATH_FINDER_BANDING_POSITION = 6;
+public class Viper implements RiskDataSet {
+    public static int NOMIS_ID_POSITION = 0;
+    public static int SCORE_POSITION = 1;
 
     private String nomisId;
-    private String pathFinderBanding;
+    private BigDecimal score;
 
     public String getKey() {
         return nomisId;
@@ -26,6 +28,6 @@ public class PathFinder implements RiskDataSet {
 
     @Override
     public FileType getFileType() {
-        return FileType.PATHFINDER;
+        return FileType.VIPER;
     }
 }

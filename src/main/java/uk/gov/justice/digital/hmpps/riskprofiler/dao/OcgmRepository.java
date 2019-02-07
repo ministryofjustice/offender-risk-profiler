@@ -44,14 +44,20 @@ public class OcgmRepository implements DataRepository<Ocgm> {
                                     log.warn("Duplicate key found in line {} for key {}", data.getIndex().get(), key);
                                     data.getLinesDup().incrementAndGet();
                                 } else {
-                                    var ocgmLine = Ocgm.builder()
-                                            .nomisId(key)
-                                            .ocgId(p.get(Ocgm.OCG_ID_POSITION))
-                                            .standingWithinOcg(p.get(Ocgm.STANDING_POSITION))
-                                            .build();
+                                    var ocgId = p.get(Ocgm.OCG_ID_POSITION);
+                                    if (StringUtils.isBlank(ocgId)) {
+                                        log.warn("No OCG Id in line {} for Key {}", data.getIndex().get(), key);
+                                        data.getLinesInvalid().incrementAndGet();
+                                    } else {
+                                        var ocgmLine = Ocgm.builder()
+                                                .nomisId(key)
+                                                .ocgId(StringUtils.trimToNull(ocgId))
+                                                .standingWithinOcg(StringUtils.trimToNull(p.get(Ocgm.STANDING_POSITION)))
+                                                .build();
 
-                                    data.getDataSet().put(key, ocgmLine);
-                                    data.getLinesProcessed().incrementAndGet();
+                                        data.getDataSet().put(key, ocgmLine);
+                                        data.getLinesProcessed().incrementAndGet();
+                                    }
                                 }
                             } else {
                                 log.warn("Missing key in line {}", data.getIndex().get(), key);

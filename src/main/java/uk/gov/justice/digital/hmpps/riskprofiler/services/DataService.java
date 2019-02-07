@@ -3,10 +3,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.services;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.OcgRepository;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.OcgmRepository;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.PathfinderRepository;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.PrasRepository;
+import uk.gov.justice.digital.hmpps.riskprofiler.dao.*;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType;
 
 import java.time.LocalDateTime;
@@ -20,12 +17,14 @@ public class DataService {
     private final OcgRepository ocgRepository;
     private final PathfinderRepository pathfinderRepository;
     private final PrasRepository prasRepository;
+    private final ViperRepository viperRepository;
 
-    public DataService(OcgmRepository ocgmRepository, OcgRepository ocgRepository, PathfinderRepository pathfinderRepository, PrasRepository prasRepository) {
+    public DataService(OcgmRepository ocgmRepository, OcgRepository ocgRepository, PathfinderRepository pathfinderRepository, PrasRepository prasRepository, ViperRepository viperRepository) {
         this.ocgmRepository = ocgmRepository;
         this.ocgRepository = ocgRepository;
         this.pathfinderRepository = pathfinderRepository;
         this.prasRepository = prasRepository;
+        this.viperRepository = viperRepository;
     }
 
     public boolean isCanBeReprocessed(String fileName) {
@@ -43,6 +42,9 @@ public class DataService {
                 break;
             case PATHFINDER:
                 process =  pathfinderRepository.isCanBeReprocessed();
+                break;
+            case VIPER:
+                process =  viperRepository.isCanBeReprocessed();
                 break;
             default:
                 break;
@@ -67,6 +69,9 @@ public class DataService {
             case PATHFINDER:
                 process = pathfinderRepository.isCanBeArchived(fileName);
                 break;
+            case VIPER:
+                process =  viperRepository.isCanBeArchived(fileName);
+                break;
             default:
                 break;
         }
@@ -75,12 +80,12 @@ public class DataService {
     }
 
 
-    public void populateData(List<List<String>> csvData, String filename, LocalDateTime timestamp) {
+    public void populateData(List<List<String>> csvData, String filename, FileType fileType, LocalDateTime timestamp) {
 
         boolean skipProcessing = false;
         boolean processedFile = false;
 
-        switch (getFileType(filename)) {
+        switch (fileType) {
 
             case PRAS:
                 skipProcessing = prasRepository.process(csvData, filename, timestamp);
@@ -98,6 +103,10 @@ public class DataService {
                 skipProcessing = pathfinderRepository.process(csvData, filename, timestamp);
                 processedFile = true;
                 break;
+            case VIPER:
+                skipProcessing = viperRepository.process(csvData, filename, timestamp);
+                processedFile = true;
+                break;
         }
 
 
@@ -111,7 +120,7 @@ public class DataService {
 
     }
 
-    private static FileType getFileType(String filename) {
+    public static FileType getFileType(String filename) {
         if (StringUtils.contains(StringUtils.upperCase(filename), "OCGM")) {
             return FileType.OCGM;
         }
@@ -123,6 +132,9 @@ public class DataService {
         }
         if (StringUtils.contains(StringUtils.upperCase(filename), "PRAS")) {
             return FileType.PRAS;
+        }
+        if (StringUtils.contains(StringUtils.upperCase(filename), "VIPER")) {
+            return FileType.VIPER;
         }
         return FileType.UNKNOWN;
     }

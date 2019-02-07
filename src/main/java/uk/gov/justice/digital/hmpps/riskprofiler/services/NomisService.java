@@ -4,9 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriTemplate;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.Assault;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.EscapeList;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,4 +34,11 @@ public class NomisService {
         return Optional.ofNullable(escapeList.size() > 0 ? escapeList.get(0) : null);
     }
 
+    public List<Alert> getAlertsForOffender(String nomsId, String alertType) {
+        return Collections.emptyList();
+    }
+
+    public List<Assault> getAssaults(String nomsId) {
+        return Collections.emptyList();
+    }
 }

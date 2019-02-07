@@ -23,6 +23,7 @@ public class PathfinderCsvProcessorRoute extends RouteBuilder {
                 .log("Archived ${file:name}");
 
         from("file:src/test/resources/buckets/pathfinder/pending?move=../processed&moveFailed=../error")
+                .setHeader("dataFileType", simple("PATHFINDER"))
                 .to(PROCESS_CSV);
 
     }
