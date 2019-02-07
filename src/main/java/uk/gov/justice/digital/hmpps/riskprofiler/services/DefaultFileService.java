@@ -4,15 +4,15 @@ import com.amazonaws.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.digital.hmpps.riskprofiler.utils.FileFormatUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 
 @Component
 @Slf4j
@@ -31,10 +31,8 @@ public class DefaultFileService implements FileService {
                     .map( f -> {
                         try {
                             return PendingFile.builder()
-                                    .fileName(FileFormatUtils.createTimestampFile(f.getName(), new Date(f.lastModified())))
-                                    .fileTimestamp(new Date(f.lastModified()).toInstant()
-                                            .atZone(ZoneId.systemDefault())
-                                            .toLocalDateTime())
+                                    .fileName(f.getName())
+                                    .fileTimestamp(LocalDateTime.ofInstant(Instant.ofEpochMilli(f.lastModified()), ZoneId.systemDefault()))
                                     .data(IOUtils.toByteArray(new FileInputStream(f)))
                                     .build();
                         } catch (IOException e) {

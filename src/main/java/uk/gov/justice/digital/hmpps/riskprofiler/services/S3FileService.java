@@ -7,7 +7,6 @@ import com.amazonaws.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.digital.hmpps.riskprofiler.utils.FileFormatUtils;
 
 import java.io.IOException;
 import java.time.ZoneId;
@@ -36,7 +35,7 @@ public class S3FileService implements FileService {
                     try {
                         var s3Object = s3client.getObject(bucketName, o.getKey());
                         return PendingFile.builder()
-                                .fileName(FileFormatUtils.createTimestampFile(o.getKey(), o.getLastModified()))
+                                .fileName(o.getKey())
                                 .fileTimestamp(o.getLastModified().toInstant()
                                         .atZone(ZoneId.systemDefault())
                                         .toLocalDateTime())
