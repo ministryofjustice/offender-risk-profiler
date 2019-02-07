@@ -148,8 +148,11 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
     @Bean
     @ConditionalOnProperty(name = "file.process.type", havingValue = "s3")
-    public AmazonS3 s3client(@Value("${aws.access.key.id}") String accessKey, @Value("${aws.secret.access.key}") String secretKey) {
+    public AmazonS3 s3client(@Value("${aws.access.key.id}") String accessKey, @Value("${aws.secret.access.key}") String secretKey, @Value("${aws.region}")String region) {
         var creds = new BasicAWSCredentials(accessKey, secretKey);
-        return AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(creds)).build();
+        return AmazonS3ClientBuilder.standard()
+                .withRegion(region)
+                .withCredentials(new AWSStaticCredentialsProvider(creds))
+                .build();
     }
 }
