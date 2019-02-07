@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType.PATHFINDER;
+
 @Repository
 @Slf4j
 public class PathfinderRepository implements DataRepository<PathFinder>{
@@ -18,6 +20,7 @@ public class PathfinderRepository implements DataRepository<PathFinder>{
     public void process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
         data.setFileTimestamp(timestamp);
         data.setFileName(filename);
+        data.setFileType(PATHFINDER);
         data.reset();
 
         csvData.stream().filter(p -> data.getIndex().getAndIncrement() > 0)
@@ -26,23 +29,28 @@ public class PathfinderRepository implements DataRepository<PathFinder>{
                         final var key = p.get(PathFinder.NOMIS_ID_POSITION);
                         if (StringUtils.isNotBlank(key)) {
 
-                            if (data.getDataSet().get(key) != null) {
-                                log.warn("Duplicate key found in line {} for Key {}", data.getIndex().get(), key);
-                                data.getLinesDup().incrementAndGet();
+                            if (!NOMS_ID_REGEX.matcher(key).matches()) {
+                                log.warn("Invalid Key in line {} for Key {}", data.getIndex().get(), key);
+                                data.getLinesInvalid().incrementAndGet();
                             } else {
-
-                                var banding = p.get(PathFinder.PATH_FINDER_BANDING_POSITION);
-                                if (StringUtils.isBlank(banding)) {
-                                    log.warn("No Banding set in line {} for Key {}", data.getIndex().get(), key);
-                                    data.getLinesInvalid().incrementAndGet();
+                                if (data.getDataSet().get(key) != null) {
+                                    log.warn("Duplicate key found in line {} for Key {}", data.getIndex().get(), key);
+                                    data.getLinesDup().incrementAndGet();
                                 } else {
-                                    var ocgLine = PathFinder.builder()
-                                            .nomisId(key)
-                                            .pathFinderBanding(StringUtils.trimToNull(banding))
-                                            .build();
 
-                                    data.getDataSet().put(key, ocgLine);
-                                    data.getLinesProcessed().incrementAndGet();
+                                    var banding = p.get(PathFinder.PATH_FINDER_BANDING_POSITION);
+                                    if (StringUtils.isBlank(banding)) {
+                                        log.warn("No Banding set in line {} for Key {}", data.getIndex().get(), key);
+                                        data.getLinesInvalid().incrementAndGet();
+                                    } else {
+                                        var ocgLine = PathFinder.builder()
+                                                .nomisId(key)
+                                                .pathFinderBanding(StringUtils.trimToNull(banding))
+                                                .build();
+
+                                        data.getDataSet().put(key, ocgLine);
+                                        data.getLinesProcessed().incrementAndGet();
+                                    }
                                 }
                             }
                         } else {

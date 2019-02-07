@@ -1,9 +1,12 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.ExchangeProperty;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.*;
-import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.*;
+import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
+import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepositoryFactory;
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType;
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.RiskDataSet;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,68 +15,24 @@ import java.util.List;
 @Slf4j
 public class DataService {
 
-    private final DataRepository<Ocgm> ocgmRepository;
-    private final DataRepository<Ocg> ocgRepository;
-    private final DataRepository<PathFinder> pathfinderRepository;
-    private final DataRepository<Pras> prasRepository;
-    private final DataRepository<Viper> viperRepository;
+    private final DataRepositoryFactory factory;
 
-    public DataService(OcgmRepository ocgmRepository, OcgRepository ocgRepository, PathfinderRepository pathfinderRepository, PrasRepository prasRepository, ViperRepository viperRepository) {
-        this.ocgmRepository = ocgmRepository;
-        this.ocgRepository = ocgRepository;
-        this.pathfinderRepository = pathfinderRepository;
-        this.prasRepository = prasRepository;
-        this.viperRepository = viperRepository;
+    public DataService(DataRepositoryFactory factory) {
+        this.factory = factory;
     }
 
-    public void populateData(List<List<String>> csvData, String filename, FileType fileType, LocalDateTime timestamp) {
+    public void process(List<List<String>> csvData, @ExchangeProperty("fileType") FileType fileType, @ExchangeProperty("fileInfo") PendingFile fileInfo) {
 
-        boolean skipProcessing = true;
-
-        switch (fileType) {
-
-            case PRAS:
-                skipProcessing = isSkipProcessing(prasRepository, timestamp);
-                if (!skipProcessing) {
-                    prasRepository.process(csvData, filename, timestamp);
-                }
-                break;
-            case OCGM:
-                skipProcessing = isSkipProcessing(ocgmRepository, timestamp);
-                if (!skipProcessing) {
-                    ocgmRepository.process(csvData, filename, timestamp);
-                }
-                break;
-            case OCG:
-                skipProcessing = isSkipProcessing(ocgRepository, timestamp);
-                if (!skipProcessing) {
-                    ocgRepository.process(csvData, filename, timestamp);
-                }
-                break;
-            case PATHFINDER:
-                skipProcessing = isSkipProcessing(pathfinderRepository, timestamp);
-                if (!skipProcessing) {
-                    pathfinderRepository.process(csvData, filename, timestamp);
-                }
-                break;
-            case VIPER:
-                skipProcessing = isSkipProcessing(viperRepository, timestamp);
-                if (!skipProcessing) {
-                    viperRepository.process(csvData, filename, timestamp);
-                }
-                break;
-        }
-
-
-        if (skipProcessing) {
-            log.warn("File {} skipped", filename);
+        var repository = factory.getRepository(fileType);
+        if (isFileShouldBeProcessed(repository, fileInfo.getFileTimestamp())) {
+            repository.process(csvData, fileInfo.getFileName(), fileInfo.getFileTimestamp());
+            log.info("Processed {}", fileInfo.getFileName());
         } else {
-            log.info("Processed {}", filename);
+            log.warn("Skipped {}", fileInfo.getFileName());
         }
-
     }
 
-    private boolean isSkipProcessing(DataRepository<?> data, LocalDateTime timestamp) {
-        return data.getFileTimestamp() != null && data.getFileTimestamp().compareTo(timestamp) >= 0;
+    private boolean isFileShouldBeProcessed(DataRepository<? extends RiskDataSet> data, LocalDateTime timestamp) {
+        return data.getFileTimestamp() == null || data.getFileTimestamp().compareTo(timestamp) < 0;
     }
 }
