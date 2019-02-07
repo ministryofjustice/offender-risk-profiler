@@ -4,29 +4,28 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.util.IOUtils;
-import com.microsoft.applicationinsights.core.dependencies.apachecommons.io.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.FileFormatUtils;
 
-import java.io.File;
 import java.io.IOException;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 
 @Component
 @Slf4j
 @ConditionalOnProperty(name = "file.process.type", havingValue = "s3")
-public class S3Service {
+public class S3FileService implements FileService {
 
     private final AmazonS3 s3client;
 
-    public S3Service(AmazonS3 s3client) {
+    public S3FileService(AmazonS3 s3client) {
         this.s3client = s3client;
     }
 
-    public File getLatestFile(String bucketName) {
+    public PendingFile getLatestFile(String bucketName) {
         ListObjectsV2Result result = s3client.listObjectsV2(bucketName);
         List<S3ObjectSummary> objects = result.getObjectSummaries();
 
@@ -35,10 +34,15 @@ public class S3Service {
                 .max(Comparator.comparing(S3ObjectSummary::getLastModified))
                 .map(o -> {
                     try {
-                        File file = new File(FileFormatUtils.createTimestampFile(o.getKey(), o.getLastModified()));
                         var s3Object = s3client.getObject(bucketName, o.getKey());
-                        FileUtils.writeByteArrayToFile(file, IOUtils.toByteArray(s3Object.getObjectContent()));
-                        return file;
+                        return PendingFile.builder()
+                                .fileName(FileFormatUtils.createTimestampFile(o.getKey(), o.getLastModified()))
+                                .fileTimestamp(o.getLastModified().toInstant()
+                                        .atZone(ZoneId.systemDefault())
+                                        .toLocalDateTime())
+                                .data(IOUtils.toByteArray(s3Object.getObjectContent()))
+                                .build();
+
                     } catch (IOException e) {
                         return null;
                     }
