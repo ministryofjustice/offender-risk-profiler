@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.dao;
 
 import lombok.*;
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public class ImportedFile<RiskDataSet> {
     private String fileName;
     private LocalDateTime fileTimestamp;
     private Map<String, RiskDataSet> dataSet;
+    private FileType fileType;
 
     @Builder.Default
     private AtomicInteger index = new AtomicInteger();

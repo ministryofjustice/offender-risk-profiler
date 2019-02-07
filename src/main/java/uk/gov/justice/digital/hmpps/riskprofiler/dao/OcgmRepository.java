@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType.OCGM;
+
 @Repository
 @Slf4j
 public class OcgmRepository implements DataRepository<Ocgm> {
@@ -20,6 +22,7 @@ public class OcgmRepository implements DataRepository<Ocgm> {
 
         data.setFileTimestamp(timestamp);
         data.setFileName(filename);
+        data.setFileType(OCGM);
         data.reset();
 
         csvData.stream().filter(p -> data.getIndex().getAndIncrement() > 0)
@@ -27,24 +30,28 @@ public class OcgmRepository implements DataRepository<Ocgm> {
                     try {
                         final var key = p.get(Ocgm.NOMIS_ID_POSITION);
                         if (StringUtils.isNotBlank(key)) {
-
-                            if (data.getDataSet().get(key) != null) {
-                                log.warn("Duplicate key found in line {} for key {}", data.getIndex().get(), key);
-                                data.getLinesDup().incrementAndGet();
+                            if (!NOMS_ID_REGEX.matcher(key).matches()) {
+                                log.warn("Invalid Key in line {} for Key {}", data.getIndex().get(), key);
+                                data.getLinesInvalid().incrementAndGet();
                             } else {
-                                var ocgId = p.get(Ocgm.OCG_ID_POSITION);
-                                if (StringUtils.isBlank(ocgId)) {
-                                    log.warn("No OCG Id in line {} for Key {}", data.getIndex().get(), key);
-                                    data.getLinesInvalid().incrementAndGet();
+                                if (data.getDataSet().get(key) != null) {
+                                    log.warn("Duplicate key found in line {} for key {}", data.getIndex().get(), key);
+                                    data.getLinesDup().incrementAndGet();
                                 } else {
-                                    var ocgmLine = Ocgm.builder()
-                                            .nomisId(key)
-                                            .ocgId(StringUtils.trimToNull(ocgId))
-                                            .standingWithinOcg(StringUtils.trimToNull(p.get(Ocgm.STANDING_POSITION)))
-                                            .build();
+                                    var ocgId = p.get(Ocgm.OCG_ID_POSITION);
+                                    if (StringUtils.isBlank(ocgId)) {
+                                        log.warn("No OCG Id in line {} for Key {}", data.getIndex().get(), key);
+                                        data.getLinesInvalid().incrementAndGet();
+                                    } else {
+                                        var ocgmLine = Ocgm.builder()
+                                                .nomisId(key)
+                                                .ocgId(StringUtils.trimToNull(ocgId))
+                                                .standingWithinOcg(StringUtils.trimToNull(p.get(Ocgm.STANDING_POSITION)))
+                                                .build();
 
-                                    data.getDataSet().put(key, ocgmLine);
-                                    data.getLinesProcessed().incrementAndGet();
+                                        data.getDataSet().put(key, ocgmLine);
+                                        data.getLinesProcessed().incrementAndGet();
+                                    }
                                 }
                             }
                         } else {

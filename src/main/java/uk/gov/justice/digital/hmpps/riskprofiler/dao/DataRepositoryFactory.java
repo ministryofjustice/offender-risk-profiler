@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.riskprofiler.dao;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.*;
 
+import java.util.List;
+
 @Component
 public class DataRepositoryFactory {
 
@@ -43,5 +45,14 @@ public class DataRepositoryFactory {
         }
 
         return repository;
+    }
+
+    public List<DataRepository<? extends RiskDataSet>> getRepositories() {
+        return List.of(
+                getRepository(FileType.PRAS),
+                getRepository(FileType.VIPER),
+                getRepository(FileType.OCG),
+                getRepository(FileType.OCGM),
+                getRepository(FileType.PATHFINDER));
     }
 }
