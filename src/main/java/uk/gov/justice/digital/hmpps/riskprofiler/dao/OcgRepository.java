@@ -15,18 +15,8 @@ public class OcgRepository implements DataRepository<Ocg> {
 
     private final ImportedFile<Ocg> data = new ImportedFile<>();
 
-    public boolean isCanBeReprocessed() {
-        return data.getFileName() == null;
-    }
+    public void process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
 
-    public boolean isCanBeArchived(String fileName) {
-       return data.getFileName() != null && !fileName.equalsIgnoreCase(data.getFileName());
-    }
-
-    public boolean process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
-        boolean skipProcessing = data.getFileTimestamp() != null && data.getFileTimestamp().compareTo(timestamp) >= 0;
-
-        if (!skipProcessing) {
             data.setFileTimestamp(timestamp);
             data.setFileName(filename);
             data.reset();
@@ -60,9 +50,15 @@ public class OcgRepository implements DataRepository<Ocg> {
                     });
             log.info("Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.getIndex().get(),
                     data.getLinesProcessed().get(), data.getLinesDup().get(), data.getLinesInvalid().get(), data.getLinesError().get());
-        }
-        return skipProcessing;
 
+    }
+
+    public LocalDateTime getFileTimestamp() {
+        return data.getFileTimestamp();
+    }
+
+    public ImportedFile<Ocg> getData() {
+        return data;
     }
 
     public Optional<Ocg> getByKey(String key) {

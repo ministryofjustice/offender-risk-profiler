@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DataRepository<F extends RiskDataSet> {
-    boolean isCanBeReprocessed();
-
-    boolean isCanBeArchived(String fileName);
-
-    boolean process(List<List<String>> csvData, String filename, LocalDateTime timestamp);
+    void process(List<List<String>> csvData, String filename, LocalDateTime timestamp);
 
     Optional<F> getByKey(String key);
+
+    LocalDateTime getFileTimestamp();
+
+    ImportedFile<F> getData();
 }

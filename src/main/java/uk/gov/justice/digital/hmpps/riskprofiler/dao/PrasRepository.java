@@ -15,18 +15,8 @@ public class PrasRepository implements DataRepository<Pras>{
 
     private final ImportedFile<Pras> data = new ImportedFile<>();
 
-    public boolean isCanBeReprocessed() {
-        return data.getFileName() == null;
-    }
+    public void process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
 
-    public boolean isCanBeArchived(String fileName) {
-        return data.getFileName() != null && !fileName.equalsIgnoreCase(data.getFileName());
-    }
-
-    public boolean process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
-        boolean skipProcessing = data.getFileTimestamp() != null && data.getFileTimestamp().isAfter(timestamp);
-
-        if (!skipProcessing) {
             data.setFileTimestamp(timestamp);
             data.setFileName(filename);
             data.reset();
@@ -59,9 +49,15 @@ public class PrasRepository implements DataRepository<Pras>{
                     });
             log.info("Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.getIndex().get(),
                     data.getLinesProcessed().get(), data.getLinesDup().get(), data.getLinesInvalid().get(), data.getLinesError().get());
-        }
-        return skipProcessing;
 
+    }
+
+    public LocalDateTime getFileTimestamp() {
+        return data.getFileTimestamp();
+    }
+
+    public ImportedFile<Pras> getData() {
+        return data;
     }
 
     public Optional<Pras> getByKey(String key) {

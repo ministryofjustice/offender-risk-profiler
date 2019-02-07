@@ -1,10 +1,9 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.*;
-import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType;
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,11 +12,11 @@ import java.util.List;
 @Slf4j
 public class DataService {
 
-    private final OcgmRepository ocgmRepository;
-    private final OcgRepository ocgRepository;
-    private final PathfinderRepository pathfinderRepository;
-    private final PrasRepository prasRepository;
-    private final ViperRepository viperRepository;
+    private final DataRepository<Ocgm> ocgmRepository;
+    private final DataRepository<Ocg> ocgRepository;
+    private final DataRepository<PathFinder> pathfinderRepository;
+    private final DataRepository<Pras> prasRepository;
+    private final DataRepository<Viper> viperRepository;
 
     public DataService(OcgmRepository ocgmRepository, OcgRepository ocgRepository, PathfinderRepository pathfinderRepository, PrasRepository prasRepository, ViperRepository viperRepository) {
         this.ocgmRepository = ocgmRepository;
@@ -27,116 +26,54 @@ public class DataService {
         this.viperRepository = viperRepository;
     }
 
-    public boolean isCanBeReprocessed(String fileName) {
-        boolean process = false;
-        switch (DataService.getFileType(fileName)) {
-
-            case PRAS:
-                process = prasRepository.isCanBeReprocessed();
-                break;
-            case OCGM:
-                process =  ocgmRepository.isCanBeReprocessed();
-                break;
-            case OCG:
-                process =  ocgRepository.isCanBeReprocessed();
-                break;
-            case PATHFINDER:
-                process =  pathfinderRepository.isCanBeReprocessed();
-                break;
-            case VIPER:
-                process =  viperRepository.isCanBeReprocessed();
-                break;
-            default:
-                break;
-        }
-
-        return process;
-    }
-
-    public boolean isCanBeArchived(String fileName) {
-        boolean process = false;
-        switch (DataService.getFileType(fileName)) {
-
-            case PRAS:
-                process = prasRepository.isCanBeArchived(fileName);
-                break;
-            case OCGM:
-                process = ocgmRepository.isCanBeArchived(fileName);
-                break;
-            case OCG:
-                process = ocgRepository.isCanBeArchived(fileName);
-                break;
-            case PATHFINDER:
-                process = pathfinderRepository.isCanBeArchived(fileName);
-                break;
-            case VIPER:
-                process =  viperRepository.isCanBeArchived(fileName);
-                break;
-            default:
-                break;
-        }
-
-        return process;
-    }
-
-
     public void populateData(List<List<String>> csvData, String filename, FileType fileType, LocalDateTime timestamp) {
 
-        boolean skipProcessing = false;
-        boolean processedFile = false;
+        boolean skipProcessing = true;
 
         switch (fileType) {
 
             case PRAS:
-                skipProcessing = prasRepository.process(csvData, filename, timestamp);
-                processedFile = true;
+                skipProcessing = isSkipProcessing(prasRepository, timestamp);
+                if (!skipProcessing) {
+                    prasRepository.process(csvData, filename, timestamp);
+                }
                 break;
             case OCGM:
-                skipProcessing = ocgmRepository.process(csvData, filename, timestamp);
-                processedFile = true;
+                skipProcessing = isSkipProcessing(ocgmRepository, timestamp);
+                if (!skipProcessing) {
+                    ocgmRepository.process(csvData, filename, timestamp);
+                }
                 break;
             case OCG:
-                skipProcessing = ocgRepository.process(csvData, filename, timestamp);
-                processedFile = true;
+                skipProcessing = isSkipProcessing(ocgRepository, timestamp);
+                if (!skipProcessing) {
+                    ocgRepository.process(csvData, filename, timestamp);
+                }
                 break;
             case PATHFINDER:
-                skipProcessing = pathfinderRepository.process(csvData, filename, timestamp);
-                processedFile = true;
+                skipProcessing = isSkipProcessing(pathfinderRepository, timestamp);
+                if (!skipProcessing) {
+                    pathfinderRepository.process(csvData, filename, timestamp);
+                }
                 break;
             case VIPER:
-                skipProcessing = viperRepository.process(csvData, filename, timestamp);
-                processedFile = true;
+                skipProcessing = isSkipProcessing(viperRepository, timestamp);
+                if (!skipProcessing) {
+                    viperRepository.process(csvData, filename, timestamp);
+                }
                 break;
         }
 
 
         if (skipProcessing) {
             log.warn("File {} skipped", filename);
-        } else if (processedFile) {
-            log.info("Processed {}", filename);
         } else {
-            log.warn("Unknown file {}", filename);
+            log.info("Processed {}", filename);
         }
 
     }
 
-    public static FileType getFileType(String filename) {
-        if (StringUtils.contains(StringUtils.upperCase(filename), "OCGM")) {
-            return FileType.OCGM;
-        }
-        if (StringUtils.contains(StringUtils.upperCase(filename), "OCG")) {
-            return FileType.OCG;
-        }
-        if (StringUtils.contains(StringUtils.upperCase(filename), "PATHFINDER")) {
-            return FileType.PATHFINDER;
-        }
-        if (StringUtils.contains(StringUtils.upperCase(filename), "PRAS")) {
-            return FileType.PRAS;
-        }
-        if (StringUtils.contains(StringUtils.upperCase(filename), "VIPER")) {
-            return FileType.VIPER;
-        }
-        return FileType.UNKNOWN;
+    private boolean isSkipProcessing(DataRepository<?> data, LocalDateTime timestamp) {
+        return data.getFileTimestamp() != null && data.getFileTimestamp().compareTo(timestamp) >= 0;
     }
-
 }
