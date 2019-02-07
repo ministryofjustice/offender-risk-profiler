@@ -21,7 +21,7 @@ public class EscapeDecisionTreeService {
     @PreAuthorize("hasRole('RISK_PROFILER')")
     public EscapeProfile getEscapeProfile(@NotNull final String nomsId) {
         log.debug("Calculating escape profile for  {}", nomsId);
-        var escapeData = nomisService.getEscapeList(nomsId);
+        var escapeData = nomisService.getEscapeListAlertsForOffender(nomsId);
 
         if(escapeData.isEmpty() || escapeData.get().isEmpty()){
             return EscapeProfile.escapeBuilder()

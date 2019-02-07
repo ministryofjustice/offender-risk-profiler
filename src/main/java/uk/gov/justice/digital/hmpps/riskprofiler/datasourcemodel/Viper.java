@@ -5,18 +5,18 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Builder
 @Data
 @EqualsAndHashCode(of = { "nomisId"})
 @ToString
-public class Ocgm implements RiskDataSet {
+public class Viper implements RiskDataSet {
     public static int NOMIS_ID_POSITION = 0;
-    public static int OCG_ID_POSITION = 1;
-    public static int STANDING_POSITION = 8;
+    public static int SCORE_POSITION = 1;
 
     private String nomisId;
-    private String ocgId;
-    private String standingWithinOcg;
+    private BigDecimal score;
 
     public String getKey() {
         return nomisId;
@@ -28,6 +28,6 @@ public class Ocgm implements RiskDataSet {
 
     @Override
     public FileType getFileType() {
-        return FileType.OCGM;
+        return FileType.VIPER;
     }
 }

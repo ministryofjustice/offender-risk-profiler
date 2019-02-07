@@ -5,8 +5,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriTemplate;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.Assault;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,12 +25,19 @@ public class NomisService {
         this.restCallHelper = restCallHelper;
     }
 
-    public Optional<List<Alert>> getEscapeList(String nomsId) {
-        log.info("Getting escape list for noms id {}", nomsId);
+    public Optional<List<Alert>> getEscapeListAlertsForOffender(String nomsId) {
+        log.info("Getting escape list alerts for noms id {}", nomsId);
         URI uri = new UriTemplate(URI_ESCAPE_LIST).expand(nomsId);
 
         List<Alert> escapeList = restCallHelper.getForList(uri, ESCAPE_LIST).getBody();
         return Optional.ofNullable(escapeList);
     }
 
+    public List<Alert> getAlertsForOffender(String nomsId, String alertType) {
+        return Collections.emptyList();
+    }
+
+    public List<Assault> getAssaults(String nomsId) {
+        return Collections.emptyList();
+    }
 }

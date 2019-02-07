@@ -3,36 +3,22 @@ package uk.gov.justice.digital.hmpps.riskprofiler.dao;
 import org.apache.camel.component.file.GenericFile;
 import org.apache.camel.component.file.GenericFileFilter;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService;
 
 @Component
 public class CurrentFileFilter implements GenericFileFilter {
 
-    private final DataRepository dataRepository;
+    private final DataService dataService;
 
 
-    public CurrentFileFilter(DataRepository dataRepository) {
-        this.dataRepository = dataRepository;
+    public CurrentFileFilter(DataService dataService) {
+        this.dataService = dataService;
     }
 
     @Override
     public boolean accept(GenericFile file) {
-
-        boolean process = false;
-        switch (DataRepository.getFileType(file.getFileName())) {
-
-            case PRAS:
-                process = !(dataRepository.getPrasData() != null && file.getFileName().equalsIgnoreCase(dataRepository.getPrasData().getFileName()));
-                break;
-            case OCGM:
-                process = !(dataRepository.getOcgmData() != null && file.getFileName().equalsIgnoreCase(dataRepository.getOcgmData().getFileName()));
-                break;
-            case PATHFINDER:
-                process = !(dataRepository.getPathfinderData() != null && file.getFileName().equalsIgnoreCase(dataRepository.getPathfinderData().getFileName()));
-                break;
-            default:
-                break;
-        }
-
-        return process;
+        return dataService.isCanBeArchived(file.getFileName());
     }
+
+
 }

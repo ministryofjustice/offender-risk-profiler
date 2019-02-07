@@ -41,9 +41,9 @@ public class EscapeDecisionTreeServiceTest {
     @Test
     public void testHeightendResponse() {
         Alert xel12 = Alert.builder().active(true).alertCode("XEL").build();
-        Alert xel = Alert.builder().active(false).alertCode("XEL").dateExpires(expired8Months.format(dateFormatter)).build();
+        Alert xel = Alert.builder().active(false).alertCode("XEL").dateExpires(expired8Months).build();
 
-        when(nomisService.getEscapeList(OFFENDER_1)).thenReturn(Optional.of(ImmutableList.of(xel12, xel)));
+        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(Optional.of(ImmutableList.of(xel12, xel)));
 
         final EscapeProfile escapeProfile = service.getEscapeProfile(OFFENDER_1);
         Assertions.assertThat(escapeProfile).extracting("provisionalCategorisation").isEqualTo("B");
@@ -51,9 +51,9 @@ public class EscapeDecisionTreeServiceTest {
 
     @Test
     public void testHeightendInactiveResponse() {
-        Alert xel = Alert.builder().active(false).alertCode("XEL").dateExpires(expired8Months.format(dateFormatter)).build();
+        Alert xel = Alert.builder().active(false).alertCode("XEL").dateExpires(expired8Months).build();
 
-        when(nomisService.getEscapeList(OFFENDER_1)).thenReturn(Optional.of(ImmutableList.of(xel)));
+        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(Optional.of(ImmutableList.of(xel)));
 
         final EscapeProfile escapeProfile = service.getEscapeProfile(OFFENDER_1);
         Assertions.assertThat(escapeProfile).extracting("provisionalCategorisation").isEqualTo("B");
@@ -63,7 +63,7 @@ public class EscapeDecisionTreeServiceTest {
     public void testStandardResponse() {
         Alert xel = Alert.builder().active(true).alertCode("XER").build();
 
-        when(nomisService.getEscapeList(OFFENDER_1)).thenReturn(Optional.of(ImmutableList.of(xel)));
+        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(Optional.of(ImmutableList.of(xel)));
 
         final EscapeProfile escapeProfile = service.getEscapeProfile(OFFENDER_1);
         Assertions.assertThat(escapeProfile).extracting("provisionalCategorisation").isEqualTo("B");
@@ -71,9 +71,9 @@ public class EscapeDecisionTreeServiceTest {
 
     @Test
     public void testStandardInactiveResponse() {
-        Alert xel = Alert.builder().active(false).alertCode("XER").dateExpires(expired4Months.format(dateFormatter)).build();
+        Alert xel = Alert.builder().active(false).alertCode("XER").dateExpires(expired4Months).build();
 
-        when(nomisService.getEscapeList(OFFENDER_1)).thenReturn(Optional.of(ImmutableList.of(xel)));
+        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(Optional.of(ImmutableList.of(xel)));
 
         final EscapeProfile escapeProfile = service.getEscapeProfile(OFFENDER_1);
         Assertions.assertThat(escapeProfile).extracting("provisionalCategorisation").isEqualTo("C");
