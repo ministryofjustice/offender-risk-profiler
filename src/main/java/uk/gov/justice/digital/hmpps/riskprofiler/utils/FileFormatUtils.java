@@ -12,6 +12,8 @@ public class FileFormatUtils {
 
     public static DateTimeFormatter DATETIMEFORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
 
+    public final static DateTimeFormatter DATEFORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     public static String createTimestampFile(String filename, Date timestamp) {
         var lastExt = filename.lastIndexOf(".");
         var now = timestamp.toInstant()

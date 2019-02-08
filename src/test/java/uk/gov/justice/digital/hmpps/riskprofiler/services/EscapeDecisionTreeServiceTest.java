@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.EscapeProfile;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -25,7 +24,6 @@ public class EscapeDecisionTreeServiceTest {
     final LocalDate expired8Months = LocalDate.of(2017, Month.NOVEMBER, 26);
     final LocalDate expired4Months = LocalDate.of(2017, Month.MARCH, 26);
     final LocalDate expired14Months = LocalDate.of(2017, Month.MAY, 26);
-    final static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     private EscapeDecisionTreeService service;

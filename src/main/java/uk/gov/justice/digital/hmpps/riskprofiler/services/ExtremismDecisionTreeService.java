@@ -34,7 +34,7 @@ public class ExtremismDecisionTreeService {
         pathFinder.ifPresent(pf -> {
             var banding = StringUtils.upperCase(pf.getPathFinderBanding());
             if (banding.contains("BAND 1") || banding.contains("BAND 2")) {
-                extremism.notifyRegionalCTLead(true);
+                extremism.increasedRiskOfExtremism(true);
 
                 if (previousOffences) {
                     extremism.provisionalCategorisation("B");
@@ -44,7 +44,7 @@ public class ExtremismDecisionTreeService {
             } else {
                 if (banding.contains("BAND 3")) {
                     extremism.notifyRegionalCTLead(true);
-                    extremism.provisionalCategorisation("?");
+                    extremism.provisionalCategorisation("C");
                 } else {
                     extremism.provisionalCategorisation("C");
                 }

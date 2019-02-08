@@ -28,7 +28,7 @@ public class CsvProcessorRoute extends RouteBuilder {
                         .setProperty("fileInfo", simple("${body}"))
                         .setProperty("fileType", simple("PATHFINDER"))
                         .setBody(simple("${body.data}"))
-                .unmarshal().csv()
+                        .unmarshal().csv()
                         .bean(dataService, "process")
                 .endChoice();
 
@@ -39,7 +39,7 @@ public class CsvProcessorRoute extends RouteBuilder {
                         .setProperty("fileInfo", simple("${body}"))
                         .setProperty("fileType", simple("PRAS"))
                         .setBody(simple("${body.data}"))
-                .unmarshal().csv()
+                        .unmarshal().csv()
                         .bean(dataService, "process")
                 .endChoice();
 
@@ -50,7 +50,7 @@ public class CsvProcessorRoute extends RouteBuilder {
                         .setProperty("fileInfo", simple("${body}"))
                         .setProperty("fileType", simple("OCGM"))
                         .setBody(simple("${body.data}"))
-                .unmarshal().csv()
+                        .unmarshal().csv()
                         .bean(dataService, "process")
                 .endChoice();
 
@@ -61,7 +61,7 @@ public class CsvProcessorRoute extends RouteBuilder {
                         .setProperty("fileInfo", simple("${body}"))
                         .setProperty("fileType", simple("OCG"))
                         .setBody(simple("${body.data}"))
-                .unmarshal().csv()
+                        .unmarshal().csv()
                         .bean(dataService, "process")
                 .endChoice();
 
