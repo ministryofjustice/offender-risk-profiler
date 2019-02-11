@@ -6,6 +6,7 @@ import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepositoryFactory;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 @Component
@@ -25,8 +26,10 @@ public class DataSetInfoContributor implements InfoContributor {
         dataRepositoryFactory.getRepositories().forEach(dataRepository -> {
             var data = dataRepository.getData();
             if (data.getFileType() != null) {
-                results.put(data.getFileType().toString(), String.format("Processed %d, Dups %d, Invalid %d, Error %d, Total %d",
-                        data.getLinesProcessed().get(), data.getLinesDup().get(), data.getLinesInvalid().get(), data.getLinesError().get(), data.getIndex().get()));
+                results.put(data.getFileType().toString(), String.format("Processed (%s): %d, Dups: %d, Invalid: %d, Error: %d, Total: %d",
+                        data.getFileTimestamp().format(DateTimeFormatter.ISO_DATE_TIME),
+                        data.getLinesProcessed().get(), data.getLinesDup().get(), data.getLinesInvalid().get(), data.getLinesError().get(),
+                        data.getIndex().get()));
             }
         });
 

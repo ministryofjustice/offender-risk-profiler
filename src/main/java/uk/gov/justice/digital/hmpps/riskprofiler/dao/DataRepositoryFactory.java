@@ -22,26 +22,27 @@ public class DataRepositoryFactory {
         this.viperRepository = viperRepository;
     }
 
-    public DataRepository<? extends RiskDataSet> getRepository(FileType type) {
+    @SuppressWarnings("unchecked")
+    public <T extends RiskDataSet> DataRepository<T> getRepository(Class<T> type) {
 
-        DataRepository<? extends RiskDataSet> repository = null;
+        DataRepository<T> repository = null;
 
-        switch (type) {
+        switch (FileType.byDataSet(type)) {
 
             case PRAS:
-                return prasRepository;
+                return (DataRepository<T>)prasRepository;
 
             case OCGM:
-                return ocgmRepository;
+                return (DataRepository<T>)ocgmRepository;
 
             case OCG:
-                return ocgRepository;
+                return (DataRepository<T>)ocgRepository;
 
             case PATHFINDER:
-                return pathfinderRepository;
+                return (DataRepository<T>)pathfinderRepository;
 
             case VIPER:
-                return viperRepository;
+                return (DataRepository<T>)viperRepository;
         }
 
         return repository;
@@ -49,10 +50,10 @@ public class DataRepositoryFactory {
 
     public List<DataRepository<? extends RiskDataSet>> getRepositories() {
         return List.of(
-                getRepository(FileType.PRAS),
-                getRepository(FileType.VIPER),
-                getRepository(FileType.OCG),
-                getRepository(FileType.OCGM),
-                getRepository(FileType.PATHFINDER));
+                getRepository(Pras.class),
+                getRepository(Viper.class),
+                getRepository(Ocg.class),
+                getRepository(Ocgm.class),
+                getRepository(PathFinder.class));
     }
 }

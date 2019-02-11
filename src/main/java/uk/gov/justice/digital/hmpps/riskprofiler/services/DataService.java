@@ -23,7 +23,7 @@ public class DataService {
 
     public void process(List<List<String>> csvData, @ExchangeProperty("fileType") FileType fileType, @ExchangeProperty("fileInfo") PendingFile fileInfo) {
 
-        var repository = factory.getRepository(fileType);
+        var repository = factory.getRepository(fileType.getType());
         if (isFileShouldBeProcessed(repository, fileInfo.getFileTimestamp())) {
             repository.process(csvData, fileInfo.getFileName(), fileInfo.getFileTimestamp());
             log.info("Processed {}", fileInfo.getFileName());

@@ -20,10 +20,10 @@ public class EscapeDecisionTreeService {
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
     public EscapeProfile getEscapeProfile(@NotNull final String nomsId) {
-        log.debug("Calculating escape profile for  {}", nomsId);
+        log.debug("Calculating escape profile for {}", nomsId);
         var escapeData = nomisService.getEscapeListAlertsForOffender(nomsId);
 
-        if(escapeData.isEmpty() || escapeData.get().isEmpty()){
+        if(escapeData.isEmpty()){
             return EscapeProfile.escapeBuilder()
                     .nomsId(nomsId)
                     .provisionalCategorisation(RiskProfile.DEFAULT_CAT)
@@ -31,7 +31,7 @@ public class EscapeDecisionTreeService {
                     .activeOnEscapeList(false)
                     .build();
         } else {
-            log.debug("Alerts returned for  {} \n {} ", nomsId, escapeData.get());
+            log.debug("Alerts returned for {} \n {} ", nomsId, escapeData);
             return EscapeProfile.escapeBuilder()
                     .nomsId(nomsId)
                     .provisionalCategorisation(RiskProfile.DEFAULT_CAT)
