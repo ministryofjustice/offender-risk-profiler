@@ -30,7 +30,7 @@ public class ImportedFile<RiskDataSet> {
     @Builder.Default
     private AtomicInteger linesInvalid = new AtomicInteger();
 
-    public void reset() {
+    void reset() {
         dataSet = new HashMap<>();
         index.set(0);
         linesProcessed.set(0);

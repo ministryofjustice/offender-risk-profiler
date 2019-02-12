@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriTemplate;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Assault;
@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
-@Component
+@Service
 @Slf4j
 public class NomisService {
     private static final ParameterizedTypeReference<List<Alert>> ALERTS = new ParameterizedTypeReference<>() {};
-    public static final String[] ESCAPE_LIST_ALERT_TYPES = {"XER", "XEL"};
+    private static final String[] ESCAPE_LIST_ALERT_TYPES = {"XER", "XEL"};
 
-    public static final String[] SOC_ALERT_TYPES = {"PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
+    private static final String[] SOC_ALERT_TYPES = {"PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
             "XFO", "XGANG", "XOCGN", "XP", "XSC"};
 
     private final RestCallHelper restCallHelper;
@@ -38,7 +38,8 @@ public class NomisService {
         log.info("Getting soc list alerts for noms id {}", nomsId);
         return getAlertsForOffender(nomsId, SOC_ALERT_TYPES);
     }
-    public List<Alert> getAlertsForOffender(String nomsId, String ... alertTypes) {
+
+    List<Alert> getAlertsForOffender(String nomsId, String ... alertTypes) {
         log.info("Getting alerts for noms id {} and types {}", nomsId, alertTypes);
 
         var types = Arrays.stream(alertTypes)

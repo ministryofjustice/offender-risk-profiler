@@ -22,12 +22,4 @@ public class Viper implements RiskDataSet {
         return nomisId;
     }
 
-    public int getKeyPosition() {
-        return NOMIS_ID_POSITION;
-    }
-
-    @Override
-    public FileType getFileType() {
-        return FileType.VIPER;
-    }
 }

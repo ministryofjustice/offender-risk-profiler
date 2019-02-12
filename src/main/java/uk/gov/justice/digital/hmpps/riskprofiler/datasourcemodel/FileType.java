@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public enum FileType {
     PRAS(Pras.class),
-    OCGM(Ocgm.class),
+    OCGM(OcgmList.class),
     OCG(Ocg.class),
     PATHFINDER(PathFinder.class),
     VIPER(Viper.class);

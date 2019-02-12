@@ -2,15 +2,17 @@ package uk.gov.justice.digital.hmpps.riskprofiler.model;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString
-public class SocProfile extends RiskProfile {
+public class SocProfile extends RiskProfile implements Comparable<SocProfile> {
     @ApiModelProperty(value = "Indicates the offender must be transferred to security", example = "true", position = 4)
     private boolean transferToSecurity;
 
@@ -23,4 +25,14 @@ public class SocProfile extends RiskProfile {
         super(nomsId, provisionalCategorisation);
         this.transferToSecurity = transferToSecurity;
     }
+
+    public int compareTo(@NotNull SocProfile socProfile) {
+        return new CompareToBuilder()
+                        .append(this.getRiskType(), socProfile.getRiskType())
+                        .append(this.getNomsId(), socProfile.getNomsId())
+                        .append(socProfile.isTransferToSecurity(), this.isTransferToSecurity())
+                        .append(this.getProvisionalCategorisation(), socProfile.getProvisionalCategorisation())
+                        .toComparison();
+    }
+
 }
