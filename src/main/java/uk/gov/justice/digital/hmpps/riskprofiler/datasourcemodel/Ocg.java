@@ -20,12 +20,4 @@ public class Ocg implements RiskDataSet {
         return ocgId;
     }
 
-    public int getKeyPosition() {
-        return OCG_ID_POSITION;
-    }
-
-    @Override
-    public FileType getFileType() {
-        return FileType.OCG;
-    }
 }

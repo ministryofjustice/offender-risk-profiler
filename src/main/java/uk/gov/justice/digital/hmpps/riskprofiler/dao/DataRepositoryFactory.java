@@ -8,7 +8,7 @@ import java.util.List;
 @Component
 public class DataRepositoryFactory {
 
-    private final DataRepository<Ocgm> ocgmRepository;
+    private final DataRepository<OcgmList> ocgmRepository;
     private final DataRepository<Ocg> ocgRepository;
     private final DataRepository<PathFinder> pathfinderRepository;
     private final DataRepository<Pras> prasRepository;
@@ -53,7 +53,7 @@ public class DataRepositoryFactory {
                 getRepository(Pras.class),
                 getRepository(Viper.class),
                 getRepository(Ocg.class),
-                getRepository(Ocgm.class),
+                getRepository(OcgmList.class),
                 getRepository(PathFinder.class));
     }
 }

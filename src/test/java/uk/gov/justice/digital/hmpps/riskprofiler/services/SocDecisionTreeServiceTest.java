@@ -9,6 +9,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.*;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocg;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocgm;
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.OcgmList;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Pras;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static uk.gov.justice.digital.hmpps.riskprofiler.services.SocDecisionTreeService.PRINCIPAL_SUBJECT;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SocDecisionTreeServiceTest {
@@ -59,7 +61,7 @@ public class SocDecisionTreeServiceTest {
         var xd = Alert.builder().active(false).alertCode("XD").dateExpires(LocalDate.now().minusYears(2)).build();
 
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
-        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Ocgm.builder().nomisId(OFFENDER_1).ocgId("123").build()));
+        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(OcgmList.builder().nomisId(OFFENDER_1).ocgm(Ocgm.builder().nomisId(OFFENDER_1).ocgId("123").build()).build()));
         when(ocgRepo.getByKey(eq("123"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("5c").build()));
         when(nomisService.getSocListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xfo, xd));
 
@@ -71,7 +73,7 @@ public class SocDecisionTreeServiceTest {
     @Test
     public void testNotOnPrasFileAndBandInList() {
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
-        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Ocgm.builder().nomisId(OFFENDER_1).ocgId("1234").build()));
+        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(OcgmList.builder().nomisId(OFFENDER_1).ocgm(Ocgm.builder().nomisId(OFFENDER_1).ocgId("1234").build()).build()));
         when(ocgRepo.getByKey(eq("1234"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("2a").build()));
 
         var socProfile = service.getSocData(OFFENDER_1);
@@ -83,9 +85,15 @@ public class SocDecisionTreeServiceTest {
     @Test
     public void testNotOnPrasFileAndBandInListAndPrincipleStanding() {
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
-        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Ocgm.builder().nomisId(OFFENDER_1)
-                .standingWithinOcg("Principal Subject")
-                .ocgId("12345").build()));
+        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(
+                OcgmList.builder().nomisId(OFFENDER_1)
+                        .ocgm(
+                            Ocgm.builder()
+                                    .nomisId(OFFENDER_1)
+                                    .standingWithinOcg(PRINCIPAL_SUBJECT)
+                                    .ocgId("12345")
+                                    .build()
+                    ).build()));
         when(ocgRepo.getByKey(eq("12345"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("2a").build()));
 
         var socProfile = service.getSocData(OFFENDER_1);
@@ -96,9 +104,10 @@ public class SocDecisionTreeServiceTest {
     @Test
     public void testNotOnPrasFileAndNotInBandInListAndPrincipleStanding() {
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
-        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Ocgm.builder().nomisId(OFFENDER_1)
-                .standingWithinOcg("Principal Subject")
-                .ocgId("123456").build()));
+        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(OcgmList.builder().nomisId(OFFENDER_1)
+                .ocgm(Ocgm.builder().nomisId(OFFENDER_1)
+                .standingWithinOcg(PRINCIPAL_SUBJECT)
+                .ocgId("123456").build()).build()));
         when(ocgRepo.getByKey(eq("123456"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("4a").build()));
 
         var socProfile = service.getSocData(OFFENDER_1);
@@ -113,7 +122,8 @@ public class SocDecisionTreeServiceTest {
         var xd = Alert.builder().active(false).alertCode("XD").dateExpires(now.minusYears(2)).dateExpires(now.minusMonths(16)).expired(true).build();
 
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
-        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Ocgm.builder().nomisId(OFFENDER_1).ocgId("123").build()));
+        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(OcgmList.builder().nomisId(OFFENDER_1)
+                .ocgm(Ocgm.builder().nomisId(OFFENDER_1).ocgId("123").build()).build()));
         when(ocgRepo.getByKey(eq("123"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("5c").build()));
         when(nomisService.getSocListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xfo, xd));
 
@@ -159,12 +169,92 @@ public class SocDecisionTreeServiceTest {
         var xd = Alert.builder().active(false).alertCode("XD").dateExpires(now.minusYears(2)).dateExpires(now.minusMonths(16)).expired(true).build();
 
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
-        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Ocgm.builder().nomisId(OFFENDER_1).ocgId("123").build()));
+        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(OcgmList.builder().nomisId(OFFENDER_1)
+                .ocgm(Ocgm.builder().nomisId(OFFENDER_1).ocgId("123").build()).build()));
         when(ocgRepo.getByKey(eq("123"))).thenReturn(Optional.empty());
         when(nomisService.getSocListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xfo, xd));
 
         var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isFalse();
+    }
+
+    @Test
+    public void testNotOnPrasFileAndOneWithInBandInListAndAnotherEntryWithoutAndPrincipleStanding() {
+        when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
+        Ocgm ocgm1 = Ocgm.builder().nomisId(OFFENDER_1)
+                .standingWithinOcg("SomethingElse")
+                .ocgId("123456")
+                .build();
+        Ocgm ocgm2 = Ocgm.builder().nomisId(OFFENDER_1)
+                .standingWithinOcg("SomethingElse")
+                .ocgId("1234567")
+                .build();
+        OcgmList ocgmList = OcgmList.builder().nomisId(OFFENDER_1)
+                .ocgms(List.of(ocgm1, ocgm2)).build();
+
+        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(ocgmList));
+        when(ocgRepo.getByKey(eq("123456"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("4a").build()));
+        when(ocgRepo.getByKey(eq("1234567"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("1a").build()));
+
+        var socProfile = service.getSocData(OFFENDER_1);
+        Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
+        Assertions.assertThat(socProfile.isTransferToSecurity()).isFalse();
+    }
+
+    @Test
+    public void testNotOnPrasFileAndMultipleOffendersForSameNomsIDOneWithBand1a() {
+        when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
+        Ocgm ocgm1 = Ocgm.builder().nomisId(OFFENDER_1)
+                .standingWithinOcg("SomethingElse")
+                .ocgId("123456")
+                .build();
+        Ocgm ocgm2 = Ocgm.builder().nomisId(OFFENDER_1)
+                .standingWithinOcg("SomethingElse")
+                .ocgId("1234567")
+                .build();
+        Ocgm ocgm3 = Ocgm.builder().nomisId(OFFENDER_1)
+                .standingWithinOcg(PRINCIPAL_SUBJECT)
+                .ocgId("1234568")
+                .build();
+        OcgmList ocgmList = OcgmList.builder().nomisId(OFFENDER_1)
+                .ocgms(List.of(ocgm1, ocgm2, ocgm3)).build();
+
+        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(ocgmList));
+        when(ocgRepo.getByKey(eq("123456"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("4a").build()));
+        when(ocgRepo.getByKey(eq("1234567"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("5a").build()));
+        when(ocgRepo.getByKey(eq("1234568"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("1a").build()));
+
+        var socProfile = service.getSocData(OFFENDER_1);
+        Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
+        Assertions.assertThat(socProfile.isTransferToSecurity()).isTrue();
+    }
+
+    @Test
+    public void testNotOnPrasFileAndMultipleOffendersForSameNomsIDOneWithBand5aButPrincipal() {
+        when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
+        Ocgm ocgm1 = Ocgm.builder().nomisId(OFFENDER_1)
+                .standingWithinOcg("SomethingElse")
+                .ocgId("123456")
+                .build();
+        Ocgm ocgm2 = Ocgm.builder().nomisId(OFFENDER_1)
+                .standingWithinOcg(PRINCIPAL_SUBJECT)
+                .ocgId("1234567")
+                .build();
+        Ocgm ocgm3 = Ocgm.builder().nomisId(OFFENDER_1)
+                .standingWithinOcg("SomethingElse")
+                .ocgId("1234568")
+                .build();
+        OcgmList ocgmList = OcgmList.builder().nomisId(OFFENDER_1)
+                .ocgms(List.of(ocgm1, ocgm2, ocgm3)).build();
+
+        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(ocgmList));
+        when(ocgRepo.getByKey(eq("123456"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("4a").build()));
+        when(ocgRepo.getByKey(eq("1234567"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("5a").build()));
+        when(ocgRepo.getByKey(eq("1234568"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("1a").build()));
+
+        var socProfile = service.getSocData(OFFENDER_1);
+        Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
+        Assertions.assertThat(socProfile.isTransferToSecurity()).isTrue();
     }
 }

@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.dao;
 
 import org.junit.Test;
-import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocgm;
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.OcgmList;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -24,16 +24,16 @@ public class OcgmRepositoryTest {
                 "Rel");
 
         List<List<String>> ocgmList = Arrays.asList(row1, row2);
-        DataRepository<Ocgm> repository = new OcgmRepository();
+        DataRepository<OcgmList> repository = new OcgmRepository();
         repository.process(ocgmList, "Ocgm-20190204163820000.csv", LocalDateTime.now());
-        Optional<Ocgm> isThere = repository.getByKey("NomisId");
+        Optional<OcgmList> isThere = repository.getByKey("NomisId");
         assertTrue(isThere.isEmpty());
 
         isThere = repository.getByKey("A1234AA");
         assertTrue(isThere.isPresent());
-        Ocgm ocgm = isThere.get();
+        OcgmList ocgm = isThere.get();
         assertEquals(ocgm.getKey(), "A1234AA");
-        assertThat(ocgm.getStandingWithinOcg()).isEqualTo("RD");
+        assertThat(ocgm.getData().get(0).getStandingWithinOcg()).isEqualTo("RD");
 
         assertTrue(repository.getByKey("NotThere").isEmpty());
 

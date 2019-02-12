@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocgm;
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.OcgmList;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,9 +14,9 @@ import static uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 
 @Repository
 @Slf4j
-public class OcgmRepository implements DataRepository<Ocgm> {
+public class OcgmRepository implements DataRepository<OcgmList> {
 
-    private final ImportedFile<Ocgm> data = new ImportedFile<>();
+    private final ImportedFile<OcgmList> data = new ImportedFile<>();
 
     @Override
     public void process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
@@ -34,24 +35,24 @@ public class OcgmRepository implements DataRepository<Ocgm> {
                                 log.warn("Invalid Key in line {} for Key {}", data.getIndex().get(), key);
                                 data.getLinesInvalid().incrementAndGet();
                             } else {
-                                if (data.getDataSet().get(key) != null) {
-                                    log.warn("Duplicate key found in line {} for key {}", data.getIndex().get(), key);
-                                    data.getLinesDup().incrementAndGet();
+                                var ocgId = p.get(Ocgm.OCG_ID_POSITION);
+                                if (StringUtils.isBlank(ocgId)) {
+                                    log.warn("No OCG Id in line {} for Key {}", data.getIndex().get(), key);
+                                    data.getLinesInvalid().incrementAndGet();
                                 } else {
-                                    var ocgId = p.get(Ocgm.OCG_ID_POSITION);
-                                    if (StringUtils.isBlank(ocgId)) {
-                                        log.warn("No OCG Id in line {} for Key {}", data.getIndex().get(), key);
-                                        data.getLinesInvalid().incrementAndGet();
-                                    } else {
-                                        var ocgmLine = Ocgm.builder()
-                                                .nomisId(key)
-                                                .ocgId(StringUtils.trimToNull(ocgId))
-                                                .standingWithinOcg(StringUtils.trimToNull(p.get(Ocgm.STANDING_POSITION)))
-                                                .build();
+                                    var ocgmLine = Ocgm.builder()
+                                            .nomisId(key)
+                                            .ocgId(StringUtils.trimToNull(ocgId))
+                                            .standingWithinOcg(StringUtils.trimToNull(p.get(Ocgm.STANDING_POSITION)))
+                                            .build();
 
-                                        data.getDataSet().put(key, ocgmLine);
-                                        data.getLinesProcessed().incrementAndGet();
+                                    var dataSet = data.getDataSet().get(key);
+                                    if (dataSet != null) {
+                                        dataSet.getData().add(ocgmLine);
+                                    } else {
+                                        data.getDataSet().put(key, OcgmList.builder().nomisId(key).ocgm(ocgmLine).build());
                                     }
+                                    data.getLinesProcessed().incrementAndGet();
                                 }
                             }
                         } else {
@@ -69,7 +70,7 @@ public class OcgmRepository implements DataRepository<Ocgm> {
 
     }
 
-    public ImportedFile<Ocgm> getData() {
+    public ImportedFile<OcgmList> getData() {
         return data;
     }
 
@@ -78,7 +79,7 @@ public class OcgmRepository implements DataRepository<Ocgm> {
     }
 
     @Override
-    public Optional<Ocgm> getByKey(String key) {
+    public Optional<OcgmList> getByKey(String key) {
         return Optional.ofNullable(data.getDataSet().get(key));
     }
 
