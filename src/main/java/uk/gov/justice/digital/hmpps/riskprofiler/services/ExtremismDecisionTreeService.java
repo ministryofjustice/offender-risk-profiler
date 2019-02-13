@@ -23,10 +23,10 @@ public class ExtremismDecisionTreeService {
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
     public ExtremismProfile getExtremismProfile(@NotNull final String nomsId, Boolean previousOffences) {
-        return decisionProcess(nomsId, previousOffences, repository.getByKey(nomsId));
+        return decisionProcess(nomsId, Boolean.TRUE.equals(previousOffences), repository.getByKey(nomsId));
     }
 
-    private ExtremismProfile decisionProcess(String nomsId, Boolean previousOffences, Optional<PathFinder> pathFinder) {
+    private ExtremismProfile decisionProcess(String nomsId, boolean previousOffences, Optional<PathFinder> pathFinder) {
         var extremism = ExtremismProfile.extremismBuilder()
                 .nomsId(nomsId)
                 .provisionalCategorisation(RiskProfile.DEFAULT_CAT);
