@@ -5,10 +5,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriTemplate;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
-import uk.gov.justice.digital.hmpps.riskprofiler.model.Assault;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
 
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +18,7 @@ import static java.lang.String.format;
 @Slf4j
 public class NomisService {
     private static final ParameterizedTypeReference<List<Alert>> ALERTS = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<IncidentCase>> INCIDENTS = new ParameterizedTypeReference<>() {};
     private static final String[] ESCAPE_LIST_ALERT_TYPES = {"XER", "XEL"};
 
     private static final String[] SOC_ALERT_TYPES = {"PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
@@ -46,12 +47,20 @@ public class NomisService {
                 .map(alertType -> format("alertCode:eq:'%s'", alertType))
                 .collect(Collectors.joining(":or:"));
 
-        var uriAlertsForOffenderByType = "/bookings/offenderNo/{nomsId}/alerts?query={types}";
+        var uriAlertsForOffenderByType = "/offenders/{nomsId}/alerts?query={types}";
         var uri = new UriTemplate(uriAlertsForOffenderByType).expand(nomsId, types);
         return restCallHelper.getForList(uri, ALERTS).getBody();
     }
 
-    public List<Assault> getAssaults(String nomsId) {
-        return Collections.emptyList();
+    public List<IncidentCase> getIncidents(@NotNull String nomsId, @NotNull String incidentType, String ... participationRoles) {
+        log.info("Getting incidents for noms id {} and type {}, with roles of {}", nomsId, incidentType, participationRoles);
+
+        var participationRolesStr = Arrays.stream(participationRoles)
+                .map(participationRole -> format("participationRoles=%s", participationRole))
+                .collect(Collectors.joining("&"));
+
+        var uriIncidentsForOffender = format("/offenders/%s/incidents?incidentType=%s&"+participationRolesStr, nomsId, incidentType);
+        var uri = new UriTemplate(uriIncidentsForOffender).expand();
+        return restCallHelper.getForList(uri, INCIDENTS).getBody();
     }
 }

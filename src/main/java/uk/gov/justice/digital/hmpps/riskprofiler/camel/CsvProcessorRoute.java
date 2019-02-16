@@ -21,7 +21,7 @@ public class CsvProcessorRoute extends RouteBuilder {
 
         getContext().setStreamCaching(true);
 
-        from("scheduler://pathfinder-schedule?scheduler=spring&scheduler.cron={{pathfinder.cron}}")
+        from("timer://pathfinder-schedule?fixedRate=true&period={{pathfinder.period}}")
                 .bean(fileService, "getLatestFile('{{s3.bucket.pathfinder}}')")
                 .choice()
                     .when().simple("${body} != null")
@@ -32,7 +32,7 @@ public class CsvProcessorRoute extends RouteBuilder {
                         .bean(dataService, "process")
                 .endChoice();
 
-        from("scheduler://pras-schedule?scheduler=spring&scheduler.cron={{pras.cron}}")
+        from("timer://pras-schedule?fixedRate=true&period={{pras.period}}")
                 .bean(fileService, "getLatestFile('{{s3.bucket.pras}}')")
                 .choice()
                     .when().simple("${body} != null")
@@ -43,7 +43,7 @@ public class CsvProcessorRoute extends RouteBuilder {
                         .bean(dataService, "process")
                 .endChoice();
 
-        from("scheduler://ocgm-schedule?scheduler=spring&scheduler.cron={{ocgm.cron}}")
+        from("timer://ocgm-schedule?fixedRate=true&period={{ocgm.period}}")
                 .bean(fileService, "getLatestFile('{{s3.bucket.ocgm}}')")
                 .choice()
                     .when().simple("${body} != null")
@@ -54,7 +54,7 @@ public class CsvProcessorRoute extends RouteBuilder {
                         .bean(dataService, "process")
                 .endChoice();
 
-        from("scheduler://ocg-schedule?scheduler=spring&scheduler.cron={{ocg.cron}}")
+        from("timer://ocg-schedule?fixedRate=true&period={{ocg.period}}")
                 .bean(fileService, "getLatestFile('{{s3.bucket.ocg}}')")
                 .choice()
                     .when().simple("${body} != null")
@@ -65,7 +65,7 @@ public class CsvProcessorRoute extends RouteBuilder {
                         .bean(dataService, "process")
                 .endChoice();
 
-        from("scheduler://viper-schedule?scheduler=spring&scheduler.cron={{viper.cron}}")
+        from("timer://viper-schedule?fixedRate=true&period={{viper.period}}")
                 .bean(fileService, "getLatestFile('{{s3.bucket.viper}}')")
                 .choice()
                     .when().simple("${body} != null")
