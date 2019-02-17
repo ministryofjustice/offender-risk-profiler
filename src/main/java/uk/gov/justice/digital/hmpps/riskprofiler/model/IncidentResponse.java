@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of = {"questionnaireQueId", "questionnaireAnsId"})
 @Data
 @ToString
+@Builder
 public class IncidentResponse {
 
     private String question;

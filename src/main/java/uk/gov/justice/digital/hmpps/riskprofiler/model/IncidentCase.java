@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(of = {"incidentCaseId"})
 @Data
 @ToString
+@Builder
 public class IncidentCase {
 
     private Long incidentCaseId;

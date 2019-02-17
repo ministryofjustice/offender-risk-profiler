@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,7 @@ public class ViolenceDecisionTreeService {
     private final NomisService nomisService;
 
     private final static String INCIDENT_TYPE = "ASSAULT";
-    private final static String [] participationRoles = { "ACTINV", "ASSIAL", "FIGHT", "IMPED", "PERP", "SUSASS", "SUSINV" };
+    final static String [] PARTICIPATION_ROLES = { "ACTINV", "ASSIAL", "FIGHT", "IMPED", "PERP", "SUSASS", "SUSINV" };
 
     private final static List<SeriousQuestionAndResponse> SERIOUS_ASSAULT_QUESTIONS = List.of(
             SeriousQuestionAndResponse.builder().question("WAS THIS A SEXUAL ASSAULT").needAnswer("YES").build(),
@@ -63,7 +61,7 @@ public class ViolenceDecisionTreeService {
                 violenceProfile.notifySafetyCustodyLead(true);
 
                 // Check NOMIS Have the individuals had 5 or more assaults in custody? (remove DUPS)
-                var assaults = nomisService.getIncidents(nomsId, INCIDENT_TYPE, participationRoles).stream()
+                var assaults = nomisService.getIncidents(nomsId, INCIDENT_TYPE, PARTICIPATION_ROLES).stream()
                         .filter(i -> !"DUP".equals(i.getIncidentStatus())).collect(Collectors.toList());
 
                 if (assaults.size() >= minNumAssaults) {
@@ -92,9 +90,9 @@ public class ViolenceDecisionTreeService {
             } else {
                 violenceProfile.provisionalCategorisation(DEFAULT_CAT);
             }
-        }, () -> {
-            violenceProfile.provisionalCategorisation("C");
-        });
+        }, () ->
+            violenceProfile.provisionalCategorisation("C")
+        );
 
         return violenceProfile.build();
 
@@ -106,8 +104,6 @@ public class ViolenceDecisionTreeService {
     }
 
     @Builder
-    @AllArgsConstructor
-    @Getter
     private static class SeriousQuestionAndResponse {
         private String question;
         private String needAnswer;

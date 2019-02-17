@@ -18,7 +18,7 @@ import static java.lang.String.format;
 @Slf4j
 public class NomisService {
     private static final ParameterizedTypeReference<List<Alert>> ALERTS = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<IncidentCase>> INCIDENTS = new ParameterizedTypeReference<>() {};
+    static final ParameterizedTypeReference<List<IncidentCase>> INCIDENTS = new ParameterizedTypeReference<>() {};
     private static final String[] ESCAPE_LIST_ALERT_TYPES = {"XER", "XEL"};
 
     private static final String[] SOC_ALERT_TYPES = {"PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
@@ -56,7 +56,7 @@ public class NomisService {
         log.info("Getting incidents for noms id {} and type {}, with roles of {}", nomsId, incidentType, participationRoles);
 
         var participationRolesStr = Arrays.stream(participationRoles)
-                .map(participationRole -> format("participationRoles=%s", participationRole))
+                .map(participationRole -> format("PARTICIPATION_ROLES=%s", participationRole))
                 .collect(Collectors.joining("&"));
 
         var uriIncidentsForOffender = format("/offenders/%s/incidents?incidentType=%s&"+participationRolesStr, nomsId, incidentType);
