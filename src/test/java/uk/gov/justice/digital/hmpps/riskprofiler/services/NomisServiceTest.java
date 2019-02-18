@@ -9,6 +9,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
 
 import java.net.URI;
 import java.util.List;
@@ -18,6 +19,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static uk.gov.justice.digital.hmpps.riskprofiler.services.NomisService.INCIDENTS;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NomisServiceTest {
@@ -43,14 +45,14 @@ public class NomisServiceTest {
 
         var response = new ResponseEntity<>(body, HttpStatus.OK);
 
-        when(restCallHelper.getForList(eq(new URI("/bookings/offenderNo/A1234AA/alerts?query=alertCode:eq:'SOC'")), isA(ParameterizedTypeReference.class)))
+        when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'")), isA(ParameterizedTypeReference.class)))
                 .thenReturn(response);
 
         var alertsForOffender = service.getAlertsForOffender("A1234AA", "SOC");
 
         assertThat(alertsForOffender).hasSize(1);
 
-        verify(restCallHelper).getForList(eq(new URI("/bookings/offenderNo/A1234AA/alerts?query=alertCode:eq:'SOC'")), isA(ParameterizedTypeReference.class));
+        verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'")), isA(ParameterizedTypeReference.class));
         verifyNoMoreInteractions(restCallHelper);
     }
 
@@ -65,14 +67,37 @@ public class NomisServiceTest {
 
         var response = new ResponseEntity<>(body, HttpStatus.OK);
 
-        when(restCallHelper.getForList(eq(new URI("/bookings/offenderNo/A1234AA/alerts?query=alertCode:eq:'XER':or:alertCode:eq:'XEL'")), isA(ParameterizedTypeReference.class)))
+        when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'XER':or:alertCode:eq:'XEL'")), isA(ParameterizedTypeReference.class)))
                 .thenReturn(response);
 
         var alertsForOffender = service.getEscapeListAlertsForOffender("A1234AA");
 
         assertThat(alertsForOffender).hasSize(2);
 
-        verify(restCallHelper).getForList(eq(new URI("/bookings/offenderNo/A1234AA/alerts?query=alertCode:eq:'XER':or:alertCode:eq:'XEL'")), isA(ParameterizedTypeReference.class));
+        verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'XER':or:alertCode:eq:'XEL'")), isA(ParameterizedTypeReference.class));
+        verifyNoMoreInteractions(restCallHelper);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testIncidentCall() throws Exception {
+
+        var body = List.of(
+                IncidentCase.builder().build(),
+                IncidentCase.builder().build()
+        );
+
+        var response = new ResponseEntity<>(body, HttpStatus.OK);
+
+        when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/incidents?incidentType=ASSAULT&PARTICIPATION_ROLES=ACTINV&PARTICIPATION_ROLES=ASSIAL")),
+                eq(INCIDENTS)))
+                .thenReturn(response);
+
+        var incidentsForOffender = service.getIncidents("A1234AA", "ASSAULT", "ACTINV", "ASSIAL");
+
+        assertThat(incidentsForOffender).hasSize(2);
+
+        verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/incidents?incidentType=ASSAULT&PARTICIPATION_ROLES=ACTINV&PARTICIPATION_ROLES=ASSIAL")), eq(INCIDENTS));
         verifyNoMoreInteractions(restCallHelper);
     }
 }

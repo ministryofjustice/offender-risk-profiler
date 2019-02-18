@@ -30,9 +30,9 @@ management:
 
 elite2api:
   client:
-    clientId: risk-profiler
-    clientSecret: clientsecret
-    accessTokenUri: ${nomis.auth.url}/oauth/token
+    clientId: ${risk.profiler.client.id}
+    clientSecret: ${risk.profiler.client.secret}
+    accessTokenUri: ${nomis.auth.url}
     tokenName: elite2_token
     authenticationScheme: header
     clientAuthenticationScheme: header
