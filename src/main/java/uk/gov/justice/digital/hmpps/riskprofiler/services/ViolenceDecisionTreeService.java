@@ -28,8 +28,8 @@ public class ViolenceDecisionTreeService {
     private final DataRepository<Viper> viperDataRepository;
     private final NomisService nomisService;
 
-    private final static String INCIDENT_TYPE = "ASSAULT";
-    final static String [] PARTICIPATION_ROLES = { "ACTINV", "ASSIAL", "FIGHT", "IMPED", "PERP", "SUSASS", "SUSINV" };
+    private final List<String> incidentTypes;
+    private final List<String> participationRoles;
 
     private final static List<SeriousQuestionAndResponse> SERIOUS_ASSAULT_QUESTIONS = List.of(
             SeriousQuestionAndResponse.builder().question("WAS THIS A SEXUAL ASSAULT").needAnswer("YES").build(),
@@ -41,12 +41,16 @@ public class ViolenceDecisionTreeService {
     public ViolenceDecisionTreeService(ViperRepository viperDataRepository, NomisService nomisService,
                                         @Value("${app.assaults.min:5}") int minNumAssaults,
                                         @Value("${app.assaults.check.months:12}") int months,
-                                        @Value("${app.viper-threshold:5.00}") BigDecimal viperScoreThreshold) {
+                                        @Value("${app.viper-threshold:5.00}") BigDecimal viperScoreThreshold,
+                                        @Value("${app.assults.incident.types:ASSAULT}") List<String> incidentTypes,
+                                        @Value("${app.assults.participation.roles}") List<String> participationRoles) {
         this.viperDataRepository = viperDataRepository;
         this.nomisService = nomisService;
         this.minNumAssaults = minNumAssaults;
         this.months = months;
         this.viperScoreThreshold = viperScoreThreshold;
+        this.participationRoles = participationRoles;
+        this.incidentTypes = incidentTypes;
     }
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
@@ -61,7 +65,7 @@ public class ViolenceDecisionTreeService {
                 violenceProfile.notifySafetyCustodyLead(true);
 
                 // Check NOMIS Have the individuals had 5 or more assaults in custody? (remove DUPS)
-                var assaults = nomisService.getIncidents(nomsId, INCIDENT_TYPE, PARTICIPATION_ROLES).stream()
+                var assaults = nomisService.getIncidents(nomsId, incidentTypes, participationRoles).stream()
                         .filter(i -> !"DUP".equals(i.getIncidentStatus())).collect(Collectors.toList());
 
                 if (assaults.size() >= minNumAssaults) {

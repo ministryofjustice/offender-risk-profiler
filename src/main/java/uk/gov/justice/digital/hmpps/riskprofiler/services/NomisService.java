@@ -18,7 +18,7 @@ import static java.lang.String.format;
 @Slf4j
 public class NomisService {
     private static final ParameterizedTypeReference<List<Alert>> ALERTS = new ParameterizedTypeReference<>() {};
-    static final ParameterizedTypeReference<List<IncidentCase>> INCIDENTS = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<IncidentCase>> INCIDENTS = new ParameterizedTypeReference<>() {};
     private static final String[] ESCAPE_LIST_ALERT_TYPES = {"XER", "XEL"};
 
     private static final String[] SOC_ALERT_TYPES = {"PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
@@ -52,14 +52,18 @@ public class NomisService {
         return restCallHelper.getForList(uri, ALERTS).getBody();
     }
 
-    public List<IncidentCase> getIncidents(@NotNull String nomsId, @NotNull String incidentType, String ... participationRoles) {
-        log.info("Getting incidents for noms id {} and type {}, with roles of {}", nomsId, incidentType, participationRoles);
+    public List<IncidentCase> getIncidents(@NotNull String nomsId, @NotNull List<String> incidentTypes, List<String> participationRoles) {
+        log.info("Getting incidents for noms id {} and type {}, with roles of {}", nomsId, incidentTypes, participationRoles);
 
-        var participationRolesStr = Arrays.stream(participationRoles)
-                .map(participationRole -> format("PARTICIPATION_ROLES=%s", participationRole))
+        var incidentTypesStr = incidentTypes.stream()
+                .map(incidentType -> format("incidentType=%s", incidentType))
                 .collect(Collectors.joining("&"));
 
-        var uriIncidentsForOffender = format("/offenders/%s/incidents?incidentType=%s&"+participationRolesStr, nomsId, incidentType);
+        var participationRolesStr = participationRoles.stream()
+                .map(participationRole -> format("participationRoles=%s", participationRole))
+                .collect(Collectors.joining("&"));
+
+        var uriIncidentsForOffender = format("/offenders/%s/incidents?%s&%s", nomsId, incidentTypesStr, participationRolesStr);
         var uri = new UriTemplate(uriIncidentsForOffender).expand();
         return restCallHelper.getForList(uri, INCIDENTS).getBody();
     }
