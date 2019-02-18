@@ -19,7 +19,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static uk.gov.justice.digital.hmpps.riskprofiler.services.NomisService.INCIDENTS;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NomisServiceTest {
@@ -89,15 +88,15 @@ public class NomisServiceTest {
 
         var response = new ResponseEntity<>(body, HttpStatus.OK);
 
-        when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/incidents?incidentType=ASSAULT&PARTICIPATION_ROLES=ACTINV&PARTICIPATION_ROLES=ASSIAL")),
-                eq(INCIDENTS)))
+        when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/incidents?incidentType=ASSAULTS&participationRoles=ACTINV&participationRoles=ASSIAL")),
+                isA(ParameterizedTypeReference.class)))
                 .thenReturn(response);
 
-        var incidentsForOffender = service.getIncidents("A1234AA", "ASSAULT", "ACTINV", "ASSIAL");
+        var incidentsForOffender = service.getIncidents("A1234AA", List.of("ASSAULTS"), List.of("ACTINV", "ASSIAL"));
 
         assertThat(incidentsForOffender).hasSize(2);
 
-        verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/incidents?incidentType=ASSAULT&PARTICIPATION_ROLES=ACTINV&PARTICIPATION_ROLES=ASSIAL")), eq(INCIDENTS));
+        verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/incidents?incidentType=ASSAULTS&participationRoles=ACTINV&participationRoles=ASSIAL")), isA(ParameterizedTypeReference.class));
         verifyNoMoreInteractions(restCallHelper);
     }
 }
