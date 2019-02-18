@@ -47,7 +47,7 @@ public class ViolenceDecisionTreeServiceTest {
 
 
     @Test
-    public void testOnViperFileWithSeriousAssults() {
+    public void testOnViperFileWithSeriousAssaults() {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Viper.builder().nomisId(OFFENDER_1).score(new BigDecimal("2.51")).build()));
 
         var now = LocalDateTime.now();
@@ -93,7 +93,7 @@ public class ViolenceDecisionTreeServiceTest {
 
 
     @Test
-    public void testOnViperFileWithOldSeriousAssults() {
+    public void testOnViperFileWithOldSeriousAssaults() {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Viper.builder().nomisId(OFFENDER_1).score(new BigDecimal("2.51")).build()));
 
         var now = LocalDateTime.now();
@@ -123,7 +123,7 @@ public class ViolenceDecisionTreeServiceTest {
     }
 
     @Test
-    public void testOnViperFileWithBelowTriggerForAssults() {
+    public void testOnViperFileWithBelowTriggerForAssaults() {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Viper.builder().nomisId(OFFENDER_1).score(new BigDecimal("2.51")).build()));
 
         var now = LocalDateTime.now();

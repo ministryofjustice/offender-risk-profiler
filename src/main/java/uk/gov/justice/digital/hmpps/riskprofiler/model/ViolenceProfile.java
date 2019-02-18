@@ -17,13 +17,13 @@ public class ViolenceProfile extends RiskProfile {
     @ApiModelProperty(value = "Notify That Safety Custody Lead should be informed", example = "true", position = 4)
     private boolean notifySafetyCustodyLead;
 
-    @ApiModelProperty(value = "Indicates that number of assults and number serious should be displayed", example = "false", position = 4)
+    @ApiModelProperty(value = "Indicates that number of assaults and number serious should be displayed", example = "false", position = 4)
     private boolean displayAssaults;
 
-    @ApiModelProperty(value = "The number of assults for this offender", example = "4", position = 5)
+    @ApiModelProperty(value = "The number of assaults for this offender", example = "4", position = 5)
     private Long numberOfAssaults;
 
-    @ApiModelProperty(value = "The number of serious assults in the last 12 months", example = "2", position = 6)
+    @ApiModelProperty(value = "The number of serious assaults in the last 12 months", example = "2", position = 6)
     private Long numberOfSeriousAssaults;
 
     public RiskType getRiskType() {
