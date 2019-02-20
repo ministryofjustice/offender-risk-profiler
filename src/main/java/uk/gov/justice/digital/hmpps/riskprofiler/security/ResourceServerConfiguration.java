@@ -155,4 +155,14 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .withCredentials(new AWSStaticCredentialsProvider(creds))
                 .build();
     }
+
+    @Bean
+    @ConditionalOnProperty(name = "file.process.type", havingValue = "s3")
+    public AmazonS3 viperS3Client(@Value("${viper.aws.access.key.id}") String accessKey, @Value("${viper.aws.secret.access.key}") String secretKey, @Value("${viper.aws.region}")String region) {
+        var creds = new BasicAWSCredentials(accessKey, secretKey);
+        return AmazonS3ClientBuilder.standard()
+                .withRegion(region)
+                .withCredentials(new AWSStaticCredentialsProvider(creds))
+                .build();
+    }
 }
