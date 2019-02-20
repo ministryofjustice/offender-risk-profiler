@@ -7,7 +7,7 @@ deploy_container_config: &deploy_container_config
   docker:
   - image: ${ECR_ENDPOINT}/cloud-platform/tools:circleci
     environment:
-      GITHUB_TEAM_NAME_SLUG: offender-risk-profiler
+      GITHUB_TEAM_NAME_SLUG: categorisation-tool
 
 install_aws_cli: &install_aws_cli
   run:
@@ -62,12 +62,12 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker pull mojdigitalstudio/offender-risk-profiler:$API_VERSION
 
-            docker tag mojdigitalstudio/offender-risk-profiler:$API_VERSION "${ECR_ENDPOINT}/omic/offender-risk-profiler:${CIRCLE_SHA1}"
-            docker tag "${ECR_ENDPOINT}/omic/offender-risk-profiler:${CIRCLE_SHA1}" "${ECR_ENDPOINT}/omic/offender-risk-profiler:latest"
+            docker tag mojdigitalstudio/offender-risk-profiler:$API_VERSION "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${CIRCLE_SHA1}"
+            docker tag "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${CIRCLE_SHA1}" "${ECR_ENDPOINT}/digcat/offender-risk-profiler:latest"
             login="$(aws ecr get-login --region eu-west-1 --no-include-email)"
             ${login}
-            docker push "${ECR_ENDPOINT}/omic/offender-risk-profiler:${CIRCLE_SHA1}"
-            docker push "${ECR_ENDPOINT}/omic/offender-risk-profiler:latest"
+            docker push "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${CIRCLE_SHA1}"
+            docker push "${ECR_ENDPOINT}/digcat/offender-risk-profiler:latest"
 
 
   build_docker:
@@ -126,7 +126,7 @@ jobs:
     - deploy:
         name: Deploy to dev
         command: |
-          kubectl set image -f deploy/deployment.yaml offender-risk-profiler=${ECR_ENDPOINT}/omic/offender-risk-profiler:${CIRCLE_SHA1} --local -o yaml \
+          kubectl set image -f deploy/deployment.yaml offender-risk-profiler=${ECR_ENDPOINT}/digcat/offender-risk-profiler:${CIRCLE_SHA1} --local -o yaml \
           | kubectl apply -f -
           kubectl apply \
             -f ./deploy/ingress.yaml \
