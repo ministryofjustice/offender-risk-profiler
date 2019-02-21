@@ -26,13 +26,13 @@ public class S3FileService implements FileService {
 
     private Map<String, AmazonS3> bucketAccountMap;
 
-    public S3FileService(@Qualifier("s3client") AmazonS3 s3client, @Qualifier("viperS3Client") AmazonS3 viperS3client,
+    public S3FileService(@Qualifier("s3Client") AmazonS3 s3Client, @Qualifier("viperS3Client") AmazonS3 viperS3client,
                          @Value("${bucket.account.map}") List<String> clientList) {
 
         bucketAccountMap = getBucketClientMap(clientList).entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        e -> e.getValue().equals("s3client") ? s3client : viperS3client));
+                        e -> e.getValue().equals("s3Client") ? s3Client : viperS3client));
 
     }
 
