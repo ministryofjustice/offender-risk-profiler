@@ -5,7 +5,7 @@ metadata:
   labels:
     app: offender-risk-profiler
 spec:
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 2
   minReadySeconds: 10
   strategy:
@@ -32,6 +32,25 @@ spec:
               memory: "700Mi"
             requests:
               memory: "500Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+              httpHeaders:
+                - name: X-probe
+                  value: kubelet
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+              httpHeaders:
+                - name: X-probe
+                  value: kubelet
+            periodSeconds: 20
+            timeoutSeconds: 5
           env:
             - name: JAVA_OPTS
               value: "-Xmx512m"

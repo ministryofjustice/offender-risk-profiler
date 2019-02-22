@@ -28,6 +28,9 @@ public class RestTemplateConfiguration {
     @Value("${elite2.api.uri.root}")
     private String apiRootUri;
 
+    @Value("${elite2api.endpoint.url}")
+    private String elite2apiRootUri;
+
     @Autowired
     public RestTemplateConfiguration(
             OAuth2ClientContext oauth2ClientContext,
@@ -40,6 +43,14 @@ public class RestTemplateConfiguration {
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
                 .rootUri(apiRootUri)
+                .additionalInterceptors(getRequestInterceptors())
+                .build();
+    }
+
+    @Bean(name = "elite2ApiHealthRestTemplate")
+    public RestTemplate elite2ApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder
+                .rootUri(elite2apiRootUri)
                 .additionalInterceptors(getRequestInterceptors())
                 .build();
     }

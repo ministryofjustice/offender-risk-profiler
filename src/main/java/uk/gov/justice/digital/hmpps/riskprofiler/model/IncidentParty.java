@@ -1,14 +1,14 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
 @Data
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class IncidentParty {
 
     private Long bookingId;
