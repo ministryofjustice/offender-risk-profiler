@@ -27,8 +27,11 @@ spec:
           # command: ['sh', '-c', "bundle exec puma -p 8080 -C ./config/puma_prod.rb --pidfile /tmp/server.pid"]
           ports:
             - containerPort: 8080
-          limits:
-            - memory: 800Mi
+          resources:
+            limits:
+              memory: "700Mi"
+            requests:
+              memory: "500Mi"
           env:
             - name: JAVA_OPTS
               value: "-Xmx512m"
