@@ -35,20 +35,14 @@ spec:
           livenessProbe:
             httpGet:
               path: /health
-              port: http
-              httpHeaders:
-                - name: X-probe
-                  value: kubelet
-            initialDelaySeconds: 300
+              port: 8080
+            initialDelaySeconds: 100
             periodSeconds: 20
             timeoutSeconds: 10
           readinessProbe:
             httpGet:
               path: /health
-              port: http
-              httpHeaders:
-                - name: X-probe
-                  value: kubelet
+              port: 8080
             periodSeconds: 20
             timeoutSeconds: 5
           env:
