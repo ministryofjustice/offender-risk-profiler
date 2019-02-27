@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: offender-risk-profiler
-          image: offender-risk-profiler
+          image: ${ECR_ENDPOINT}/digcat/offender-risk-profiler:${CIRCLE_SHA1}
           imagePullPolicy: IfNotPresent
           # command: ['sh', '-c', "bundle exec puma -p 8080 -C ./config/puma_prod.rb --pidfile /tmp/server.pid"]
           ports:
