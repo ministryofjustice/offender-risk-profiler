@@ -3,11 +3,13 @@ package uk.gov.justice.digital.hmpps.riskprofiler.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriTemplate;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
 
 import javax.validation.constraints.NotNull;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,9 +47,9 @@ public class NomisService {
 
         var types = Arrays.stream(alertTypes)
                 .map(alertType -> format("alertCode:eq:'%s'", alertType))
-                .collect(Collectors.joining(":or:"));
+                .collect(Collectors.joining(",or:"));
 
-        var uriAlertsForOffenderByType = "/offenders/{nomsId}/alerts?query={types}";
+        var uriAlertsForOffenderByType = "/bookings/offenderNo/{nomsId}/alerts?query={types}";
         var uri = new UriTemplate(uriAlertsForOffenderByType).expand(nomsId, types);
         return restCallHelper.getForList(uri, ALERTS).getBody();
     }

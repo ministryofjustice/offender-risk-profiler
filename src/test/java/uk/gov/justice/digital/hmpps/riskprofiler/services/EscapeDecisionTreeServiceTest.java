@@ -2,26 +2,24 @@ package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-@Ignore
 public class EscapeDecisionTreeServiceTest {
 
     private static final String OFFENDER_1 = "AB1234A";
-    final LocalDate expired8Months = LocalDate.of(2017, Month.NOVEMBER, 26);
-    final LocalDate expired4Months = LocalDate.of(2017, Month.MARCH, 26);
+    private static final Alert activeListAlert= Alert.builder().active(true).alertCode("XEL").build();
+    private static final Alert activeRiskAlert= Alert.builder().active(true).alertCode("XER").build();
+    private static final Alert inactiveRiskAlert= Alert.builder().active(false).alertCode("XER").build();
+    private static final Alert inactiveListAlert= Alert.builder().active(false).alertCode("XEL").build();
 
     private EscapeDecisionTreeService service;
 
@@ -34,44 +32,62 @@ public class EscapeDecisionTreeServiceTest {
     }
 
     @Test
-    public void testHeightendResponse() {
-        var xel12 = Alert.builder().active(true).alertCode("XEL").build();
-        var xel = Alert.builder().active(false).alertCode("XEL").dateExpires(expired8Months).build();
+    public void testMixedResponse() {
 
-        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xel12, xel));
+        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(activeListAlert, activeRiskAlert, inactiveListAlert, inactiveRiskAlert));
 
         var escapeProfile = service.getEscapeProfile(OFFENDER_1);
-        Assertions.assertThat(escapeProfile).extracting("provisionalCategorisation").isEqualTo("B");
+        Assertions.assertThat(escapeProfile.getEscapeListAlerts()).hasSize(1);
+        Assertions.assertThat(escapeProfile.getEscapeRiskAlerts()).hasSize(1);
+        Assertions.assertThat(escapeProfile.isActiveEscapeList()).isTrue();
+        Assertions.assertThat(escapeProfile.isActiveEscapeRisk()).isTrue();
     }
 
     @Test
-    public void testHeightendInactiveResponse() {
-        var xel = Alert.builder().active(false).alertCode("XEL").dateExpires(expired8Months).build();
+    public void testListResponse() {
 
-        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xel));
+        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(activeListAlert, activeListAlert));
 
         var escapeProfile = service.getEscapeProfile(OFFENDER_1);
-        Assertions.assertThat(escapeProfile).extracting("provisionalCategorisation").isEqualTo("B");
+        Assertions.assertThat(escapeProfile.getEscapeListAlerts()).hasSize(2);
+        Assertions.assertThat(escapeProfile.getEscapeRiskAlerts()).hasSize(0);
+        Assertions.assertThat(escapeProfile.isActiveEscapeList()).isTrue();
+        Assertions.assertThat(escapeProfile.isActiveEscapeRisk()).isFalse();
     }
 
     @Test
-    public void testStandardResponse() {
-        var xel = Alert.builder().active(true).alertCode("XER").build();
+    public void testRiskResponse() {
 
-        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xel));
+        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(activeRiskAlert, activeRiskAlert));
 
         var escapeProfile = service.getEscapeProfile(OFFENDER_1);
-        Assertions.assertThat(escapeProfile).extracting("provisionalCategorisation").isEqualTo("B");
+        Assertions.assertThat(escapeProfile.getEscapeListAlerts()).hasSize(0);
+        Assertions.assertThat(escapeProfile.getEscapeRiskAlerts()).hasSize(2);
+        Assertions.assertThat(escapeProfile.isActiveEscapeList()).isFalse();
+        Assertions.assertThat(escapeProfile.isActiveEscapeRisk()).isTrue();
     }
 
     @Test
-    public void testStandardInactiveResponse() {
-        var xel = Alert.builder().active(false).alertCode("XER").dateExpires(expired4Months).build();
-
-        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xel));
+    public void testNoAlertsResponse() {
+        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of());
 
         var escapeProfile = service.getEscapeProfile(OFFENDER_1);
-        Assertions.assertThat(escapeProfile).extracting("provisionalCategorisation").isEqualTo("C");
+        Assertions.assertThat(escapeProfile.isActiveEscapeList()).isFalse();
+        Assertions.assertThat(escapeProfile.isActiveEscapeRisk()).isFalse();
+        Assertions.assertThat(escapeProfile.getEscapeListAlerts()).hasSize(0);
+        Assertions.assertThat(escapeProfile.getEscapeRiskAlerts()).hasSize(0);
     }
+
+    @Test
+    public void testInactiveOnlyAlertsResponse() {
+        when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(inactiveListAlert, inactiveRiskAlert));
+
+        var escapeProfile = service.getEscapeProfile(OFFENDER_1);
+        Assertions.assertThat(escapeProfile.isActiveEscapeList()).isFalse();
+        Assertions.assertThat(escapeProfile.isActiveEscapeRisk()).isFalse();
+        Assertions.assertThat(escapeProfile.getEscapeListAlerts()).hasSize(0);
+        Assertions.assertThat(escapeProfile.getEscapeRiskAlerts()).hasSize(0);
+    }
+
 
 }
