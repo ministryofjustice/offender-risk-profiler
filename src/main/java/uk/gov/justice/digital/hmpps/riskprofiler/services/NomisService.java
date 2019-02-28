@@ -46,8 +46,8 @@ public class NomisService {
         log.info("Getting alerts for noms id {} and types {}", nomsId, alertTypes);
 
         var types = Arrays.stream(alertTypes)
-                .map(alertType -> format("or:alertCode:eq:'%s'", alertType))
-                .collect(Collectors.joining(","));
+                .map(alertType -> format("alertCode:eq:'%s'", alertType))
+                .collect(Collectors.joining(",or:"));
 
         var uriAlertsForOffenderByType = "/bookings/offenderNo/{nomsId}/alerts?query={types}";
         var uri = new UriTemplate(uriAlertsForOffenderByType).expand(nomsId, types);

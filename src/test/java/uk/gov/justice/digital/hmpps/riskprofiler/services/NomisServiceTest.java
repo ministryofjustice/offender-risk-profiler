@@ -44,14 +44,14 @@ public class NomisServiceTest {
 
         var response = new ResponseEntity<>(body, HttpStatus.OK);
 
-        when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'")), isA(ParameterizedTypeReference.class)))
+        when(restCallHelper.getForList(eq(new URI("/bookings/offenderNo/A1234AA/alerts?query=alertCode:eq:'SOC'")), isA(ParameterizedTypeReference.class)))
                 .thenReturn(response);
 
         var alertsForOffender = service.getAlertsForOffender("A1234AA", "SOC");
 
         assertThat(alertsForOffender).hasSize(1);
 
-        verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'")), isA(ParameterizedTypeReference.class));
+        verify(restCallHelper).getForList(eq(new URI("/bookings/offenderNo/A1234AA/alerts?query=alertCode:eq:'SOC'")), isA(ParameterizedTypeReference.class));
         verifyNoMoreInteractions(restCallHelper);
     }
 
@@ -66,14 +66,14 @@ public class NomisServiceTest {
 
         var response = new ResponseEntity<>(body, HttpStatus.OK);
 
-        when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'XER':or:alertCode:eq:'XEL'")), isA(ParameterizedTypeReference.class)))
+        when(restCallHelper.getForList(eq(new URI("/bookings/offenderNo/A1234AA/alerts?query=alertCode:eq:'XER',or:alertCode:eq:'XEL'")), isA(ParameterizedTypeReference.class)))
                 .thenReturn(response);
 
         var alertsForOffender = service.getEscapeListAlertsForOffender("A1234AA");
 
         assertThat(alertsForOffender).hasSize(2);
 
-        verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'XER':or:alertCode:eq:'XEL'")), isA(ParameterizedTypeReference.class));
+        verify(restCallHelper).getForList(eq(new URI("/bookings/offenderNo/A1234AA/alerts?query=alertCode:eq:'XER',or:alertCode:eq:'XEL'")), isA(ParameterizedTypeReference.class));
         verifyNoMoreInteractions(restCallHelper);
     }
 
