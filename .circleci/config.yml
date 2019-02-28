@@ -128,9 +128,7 @@ jobs:
         command: |
           kubectl set image -f ./deploy/deployment.yaml offender-risk-profiler=${ECR_ENDPOINT}/digcat/offender-risk-profiler:${CIRCLE_SHA1} --local -o yaml \
           | kubectl apply -f -
-          kubectl apply \
-            -f ./deploy/service.yaml \
-            -f ./deploy/deployment.yaml
+          kubectl apply -f ./deploy/service.yaml
 
 workflows:
   version: 2
