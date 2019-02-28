@@ -23,7 +23,7 @@ spec:
       containers:
         - name: offender-risk-profiler
           image: 926803513772.dkr.ecr.eu-west-1.amazonaws.com/digcat/offender-risk-profiler:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           # command: ['sh', '-c', "bundle exec puma -p 8080 -C ./config/puma_prod.rb --pidfile /tmp/server.pid"]
           ports:
             - containerPort: 8080
