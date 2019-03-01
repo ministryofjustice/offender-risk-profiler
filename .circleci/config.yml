@@ -30,6 +30,20 @@ jobs:
             - gradle-{{ checksum "build.gradle" }}
             - gradle-
       - run: ./gradlew build
+      - run:
+          name: Record the Application Version
+          command: |
+            jar xvf build/libs/offender-risk-profiler-*.jar BOOT-INF/classes/META-INF/build-info.properties
+            APP_VERSION=$(grep 'build.version=' BOOT-INF/classes/META-INF/build-info.properties | awk -F= '{print $2}')
+            rm BOOT-INF/classes/META-INF/build-info.properties
+
+            # make up a good version name
+            TAG=${APP_VERSION}.${CIRCLE_BRANCH}
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+              TAG=${APP_VERSION}
+            fi
+            echo $TAG > ./app_version.txt
+
       - save_cache:
           paths:
             - ~/.gradle
@@ -43,6 +57,7 @@ jobs:
           paths:
             - build/libs
             - build.gradle
+            - app_version.txt
 
   build_docker:
     <<: *defaults
@@ -55,23 +70,12 @@ jobs:
       - run:
           name: Build container and publish to docker hub
           command: |
-            jar xvf build/libs/offender-risk-profiler-*.jar BOOT-INF/classes/META-INF/build-info.properties
-            API_VERSION=$(grep 'build.version=' BOOT-INF/classes/META-INF/build-info.properties | awk -F= '{print $2}')
-            rm BOOT-INF/classes/META-INF/build-info.properties
-
-            # make up a good version name
-            TAG=${API_VERSION}.${CIRCLE_BRANCH}
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              TAG=${API_VERSION}
-            fi
-
-            echo $TAG > ./app_version.txt
-
+            APP_VERSION=$(cat ./app_version.txt)
             docker build --rm=false . \
-               --tag "mojdigitalstudio/offender-risk-profiler:$TAG" \
+               --tag "mojdigitalstudio/offender-risk-profiler:$APP_VERSION" \
                --label "maintainer=michael.willis@digital.justice.gov.uk" \
-               --label "app.version=$TAG" \
-               --label "build.version=$TAG" \
+               --label "app.version=$APP_VERSION" \
+               --label "build.version=$APP_VERSION" \
                --label "build.number=$CIRCLE_BUILD_NUM" \
                --label "build.url=$CIRCLE_BUILD_URL" \
                --label "build.gitref=$CIRCLE_SHA1"
@@ -79,8 +83,8 @@ jobs:
             if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
               # publish to docker hub as the tag
              docker login -u $DOCKER_USER -p $DOCKER_PASS
-             docker tag mojdigitalstudio/offender-risk-profiler:$TAG mojdigitalstudio/offender-risk-profiler:latest
-             docker push mojdigitalstudio/offender-risk-profiler:$TAG
+             docker tag mojdigitalstudio/offender-risk-profiler:$APP_VERSION mojdigitalstudio/offender-risk-profiler:latest
+             docker push mojdigitalstudio/offender-risk-profiler:$APP_VERSION
              docker push mojdigitalstudio/offender-risk-profiler:latest
             fi
 
@@ -95,16 +99,15 @@ jobs:
       - run:
           name: publish image to ecs
           command: |
-            API_VERSION=$(cat ./app_version.txt)
-
+            APP_VERSION=$(cat ./app_version.txt)
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker pull mojdigitalstudio/offender-risk-profiler:$API_VERSION
+            docker pull mojdigitalstudio/offender-risk-profiler:$APP_VERSION
 
-            docker tag mojdigitalstudio/offender-risk-profiler:$API_VERSION "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${API_VERSION}"
-            docker tag "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${API_VERSION}" "${ECR_ENDPOINT}/digcat/offender-risk-profiler:latest"
+            docker tag mojdigitalstudio/offender-risk-profiler:$APP_VERSION "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${APP_VERSION}"
+            docker tag "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${APP_VERSION}" "${ECR_ENDPOINT}/digcat/offender-risk-profiler:latest"
             login="$(aws ecr get-login --region eu-west-1 --no-include-email)"
             ${login}
-            docker push "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${API_VERSION}"
+            docker push "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${APP_VERSION}"
             docker push "${ECR_ENDPOINT}/digcat/offender-risk-profiler:latest"
 
   deploy_dev:
@@ -118,21 +121,21 @@ jobs:
     - run:
         name: Kubectl deployment dev setup
         command: |
-          API_VERSION=$(cat ./app_version.txt)
+          APP_VERSION=$(cat ./app_version.txt)
           $(aws ecr get-login --region eu-west-1 --no-include-email)
           setup-kube-auth
           kubectl config use-context dev
     - deploy:
         name: Deploy to dev
         command: |
-          kubectl set image -f ./deploy/deployment.yaml offender-risk-profiler=${ECR_ENDPOINT}/digcat/offender-risk-profiler:${API_VERSION} --local -o yaml \
+          kubectl set image -f ./deploy/deployment.yaml offender-risk-profiler=${ECR_ENDPOINT}/digcat/offender-risk-profiler:${APP_VERSION} --local -o yaml \
           | kubectl apply -f -
           kubectl apply -f ./deploy/service.yaml
 
 workflows:
   version: 2
   build-test-and-deploy:
-    jobs:
+    jobs:app_version
       - build:
           filters:
             tags:
