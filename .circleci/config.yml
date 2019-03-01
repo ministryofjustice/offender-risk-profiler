@@ -121,7 +121,7 @@ jobs:
     - run:
         name: Kubectl deployment dev setup
         command: |
-          APP_VERSION=$(cat ./app/app_version.txt)
+          APP_VERSION=$(cat ~/app/app_version.txt)
           $(aws ecr get-login --region eu-west-1 --no-include-email)
           setup-kube-auth
           kubectl config use-context dev
