@@ -65,6 +65,8 @@ jobs:
               TAG=${API_VERSION}
             fi
 
+            echo $TAG > ./app_version.txt
+
             docker build --rm=false . \
                --tag "mojdigitalstudio/offender-risk-profiler:$TAG" \
                --label "maintainer=michael.willis@digital.justice.gov.uk" \
@@ -93,9 +95,7 @@ jobs:
       - run:
           name: publish image to ecs
           command: |
-            jar xvf build/libs/offender-risk-profiler-*.jar BOOT-INF/classes/META-INF/build-info.properties
-            API_VERSION=$(grep 'build.version=' BOOT-INF/classes/META-INF/build-info.properties | awk -F= '{print $2}')
-            rm BOOT-INF/classes/META-INF/build-info.properties
+            API_VERSION=$(cat ./app_version.txt)
 
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker pull mojdigitalstudio/offender-risk-profiler:$API_VERSION
@@ -118,10 +118,7 @@ jobs:
     - run:
         name: Kubectl deployment dev setup
         command: |
-          jar xvf build/libs/offender-risk-profiler-*.jar BOOT-INF/classes/META-INF/build-info.properties
-          API_VERSION=$(grep 'build.version=' BOOT-INF/classes/META-INF/build-info.properties | awk -F= '{print $2}')
-          rm BOOT-INF/classes/META-INF/build-info.properties
-
+          API_VERSION=$(cat ./app_version.txt)
           $(aws ecr get-login --region eu-west-1 --no-include-email)
           setup-kube-auth
           kubectl config use-context dev
