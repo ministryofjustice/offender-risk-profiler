@@ -44,6 +44,44 @@ jobs:
             - build/libs
             - build.gradle
 
+  build_docker:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/app
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build container and publish to docker hub
+          command: |
+            jar xvf build/libs/offender-risk-profiler-*.jar BOOT-INF/classes/META-INF/build-info.properties
+            API_VERSION=$(grep 'build.version=' BOOT-INF/classes/META-INF/build-info.properties | awk -F= '{print $2}')
+            rm BOOT-INF/classes/META-INF/build-info.properties
+
+            # make up a good version name
+            TAG=${API_VERSION}.${CIRCLE_BRANCH}
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+              TAG=${API_VERSION}
+            fi
+
+            docker build --rm=false . \
+               --tag "mojdigitalstudio/offender-risk-profiler:$TAG" \
+               --label "maintainer=michael.willis@digital.justice.gov.uk" \
+               --label "app.version=$TAG" \
+               --label "build.version=$TAG" \
+               --label "build.number=$CIRCLE_BUILD_NUM" \
+               --label "build.url=$CIRCLE_BUILD_URL" \
+               --label "build.gitref=$CIRCLE_SHA1"
+
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+              # publish to docker hub as the tag
+             docker login -u $DOCKER_USER -p $DOCKER_PASS
+             docker tag mojdigitalstudio/offender-risk-profiler:$TAG mojdigitalstudio/offender-risk-profiler:latest
+             docker push mojdigitalstudio/offender-risk-profiler:$TAG
+             docker push mojdigitalstudio/offender-risk-profiler:latest
+            fi
+
   copy_image_to_ecs:
     <<: *defaults
     steps:
@@ -62,52 +100,12 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker pull mojdigitalstudio/offender-risk-profiler:$API_VERSION
 
-            docker tag mojdigitalstudio/offender-risk-profiler:$API_VERSION "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${CIRCLE_SHA1}"
-            docker tag "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${CIRCLE_SHA1}" "${ECR_ENDPOINT}/digcat/offender-risk-profiler:latest"
+            docker tag mojdigitalstudio/offender-risk-profiler:$API_VERSION "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${API_VERSION}"
+            docker tag "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${API_VERSION}" "${ECR_ENDPOINT}/digcat/offender-risk-profiler:latest"
             login="$(aws ecr get-login --region eu-west-1 --no-include-email)"
             ${login}
-            docker push "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${CIRCLE_SHA1}"
+            docker push "${ECR_ENDPOINT}/digcat/offender-risk-profiler:${API_VERSION}"
             docker push "${ECR_ENDPOINT}/digcat/offender-risk-profiler:latest"
-
-
-  build_docker:
-    <<: *defaults
-    steps:
-    - checkout
-    - attach_workspace:
-        at: ~/app
-    - setup_remote_docker:
-        docker_layer_caching: true
-    - run:
-        name: Build container and publish to docker hub
-        command: |
-          jar xvf build/libs/offender-risk-profiler-*.jar BOOT-INF/classes/META-INF/build-info.properties
-          API_VERSION=$(grep 'build.version=' BOOT-INF/classes/META-INF/build-info.properties | awk -F= '{print $2}')
-          rm BOOT-INF/classes/META-INF/build-info.properties
-
-          # make up a good version name
-          TAG=${API_VERSION}.${CIRCLE_BRANCH}
-          if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-            TAG=${API_VERSION}
-          fi
-
-          docker build --rm=false . \
-             --tag "mojdigitalstudio/offender-risk-profiler:$TAG" \
-             --label "maintainer=michael.willis@digital.justice.gov.uk" \
-             --label "app.version=$TAG" \
-             --label "build.version=$TAG" \
-             --label "build.number=$CIRCLE_BUILD_NUM" \
-             --label "build.url=$CIRCLE_BUILD_URL" \
-             --label "build.gitref=$CIRCLE_SHA1"
-
-          if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-            # publish to docker hub as the tag
-           docker login -u $DOCKER_USER -p $DOCKER_PASS
-           docker tag mojdigitalstudio/offender-risk-profiler:$TAG mojdigitalstudio/offender-risk-profiler:latest
-           docker push mojdigitalstudio/offender-risk-profiler:$TAG
-           docker push mojdigitalstudio/offender-risk-profiler:latest
-          fi
-
 
   deploy_dev:
     <<: *deploy_container_config
@@ -120,13 +118,17 @@ jobs:
     - run:
         name: Kubectl deployment dev setup
         command: |
+          jar xvf build/libs/offender-risk-profiler-*.jar BOOT-INF/classes/META-INF/build-info.properties
+          API_VERSION=$(grep 'build.version=' BOOT-INF/classes/META-INF/build-info.properties | awk -F= '{print $2}')
+          rm BOOT-INF/classes/META-INF/build-info.properties
+
           $(aws ecr get-login --region eu-west-1 --no-include-email)
           setup-kube-auth
           kubectl config use-context dev
     - deploy:
         name: Deploy to dev
         command: |
-          kubectl set image -f ./deploy/deployment.yaml offender-risk-profiler=${ECR_ENDPOINT}/digcat/offender-risk-profiler:${CIRCLE_SHA1} --local -o yaml \
+          kubectl set image -f ./deploy/deployment.yaml offender-risk-profiler=${ECR_ENDPOINT}/digcat/offender-risk-profiler:${API_VERSION} --local -o yaml \
           | kubectl apply -f -
           kubectl apply -f ./deploy/service.yaml
 
