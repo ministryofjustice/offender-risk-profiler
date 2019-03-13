@@ -49,7 +49,7 @@ public class NomisService {
                 .map(alertType -> format("alertCode:eq:'%s'", alertType))
                 .collect(Collectors.joining(",or:"));
 
-        var uriAlertsForOffenderByType = "/bookings/offenderNo/{nomsId}/alerts?query={types}";
+        var uriAlertsForOffenderByType = "/offenders/{nomsId}/alerts?query={types}&latestOnly=false";
         var uri = new UriTemplate(uriAlertsForOffenderByType).expand(nomsId, types);
         return restCallHelper.getForList(uri, ALERTS).getBody();
     }
