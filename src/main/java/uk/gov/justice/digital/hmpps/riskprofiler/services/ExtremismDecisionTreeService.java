@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ExtremismDecisionTreeService {
 
     private final DataRepository<PathFinder> repository;
@@ -23,6 +25,7 @@ public class ExtremismDecisionTreeService {
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
     public ExtremismProfile getExtremismProfile(@NotNull final String nomsId, Boolean previousOffences) {
+        log.debug("Calculating extremism profile for {}", nomsId);
         return decisionProcess(nomsId, Boolean.TRUE.equals(previousOffences), repository.getByKey(nomsId));
     }
 
@@ -33,16 +36,20 @@ public class ExtremismDecisionTreeService {
 
         pathFinder.ifPresent(pf -> {
             var banding = StringUtils.upperCase(pf.getPathFinderBanding());
+            log.debug("{} in pathfinder on {}, increased Risk of Extremism", nomsId, banding);
             if (banding.contains("BAND 1") || banding.contains("BAND 2")) {
                 extremism.increasedRiskOfExtremism(true);
+                log.debug("{} Increased Risk of Extremism", nomsId);
 
                 if (previousOffences) {
+                    log.debug("{} has previous offences", nomsId);
                     extremism.provisionalCategorisation("B");
                 } else {
                     extremism.provisionalCategorisation("C");
                 }
             } else {
                 if (banding.contains("BAND 3")) {
+                    log.debug("{} - Notify Regional CT Lead", nomsId);
                     extremism.notifyRegionalCTLead(true);
                     extremism.provisionalCategorisation("C");
                 } else {

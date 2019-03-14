@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Pras;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType.PRAS;
 
@@ -67,7 +66,4 @@ public class PrasRepository implements DataRepository<Pras> {
         return data;
     }
 
-    public Optional<Pras> getByKey(String key) {
-        return Optional.ofNullable(data.getDataSet().get(key));
-    }
 }

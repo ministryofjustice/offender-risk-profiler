@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.OcgmList;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType.OCGM;
 
@@ -76,11 +75,6 @@ public class OcgmRepository implements DataRepository<OcgmList> {
 
     public LocalDateTime getFileTimestamp() {
         return data.getFileTimestamp();
-    }
-
-    @Override
-    public Optional<OcgmList> getByKey(String key) {
-        return Optional.ofNullable(data.getDataSet().get(key));
     }
 
 }

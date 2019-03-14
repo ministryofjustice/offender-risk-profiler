@@ -13,7 +13,12 @@ public interface DataRepository<F extends RiskDataSet> {
 
     void process(List<List<String>> csvData, String filename, LocalDateTime timestamp);
 
-    Optional<F> getByKey(String key);
+    default Optional<F> getByKey(String key) {
+        if (getData().getDataSet() != null) {
+            return Optional.ofNullable(getData().getDataSet().get(key));
+        }
+        return Optional.empty();
+    }
 
     LocalDateTime getFileTimestamp();
 

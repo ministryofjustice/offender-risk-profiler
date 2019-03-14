@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocg;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType.OCG;
 
@@ -62,10 +61,6 @@ public class OcgRepository implements DataRepository<Ocg> {
 
     public ImportedFile<Ocg> getData() {
         return data;
-    }
-
-    public Optional<Ocg> getByKey(String key) {
-        return Optional.ofNullable(data.getDataSet().get(key));
     }
 
 }

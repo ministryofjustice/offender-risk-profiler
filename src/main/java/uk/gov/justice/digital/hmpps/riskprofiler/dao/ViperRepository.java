@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Viper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType.VIPER;
 
@@ -75,11 +74,6 @@ public class ViperRepository implements DataRepository<Viper> {
 
     public ImportedFile<Viper> getData() {
         return data;
-    }
-
-    @Override
-    public Optional<Viper> getByKey(String key) {
-        return Optional.ofNullable(data.getDataSet().get(key));
     }
 
 }

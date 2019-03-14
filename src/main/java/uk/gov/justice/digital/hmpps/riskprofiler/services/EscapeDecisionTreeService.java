@@ -8,8 +8,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.EscapeProfile;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,18 +25,18 @@ public class EscapeDecisionTreeService {
         log.debug("Calculating escape profile for {}", nomsId);
         var escapeData = nomisService.getEscapeListAlertsForOffender(nomsId);
 
-            Map<Boolean, List<Alert>> splitLists =
-                    escapeData.stream().filter(a -> a.isActive()).collect(Collectors.partitioningBy(a -> a.getAlertCode().equals("XEL")));
+        final var splitLists =
+                escapeData.stream().filter(Alert::isActive).collect(Collectors.partitioningBy(a -> a.getAlertCode().equals("XEL")));
 
-            var escapeListAlerts = splitLists.get(true);
-            var escapeRiskAlerts = splitLists.get(false);
-            return EscapeProfile.escapeBuilder()
-                    .nomsId(nomsId)
-                    .provisionalCategorisation(RiskProfile.DEFAULT_CAT)
-                    .activeEscapeList(!escapeListAlerts.isEmpty())
-                    .activeEscapeRisk(!escapeRiskAlerts.isEmpty())
-                    .escapeListAlerts(escapeListAlerts)
-                    .escapeRiskAlerts(escapeRiskAlerts)
-                    .build();
+        var escapeListAlerts = splitLists.get(true);
+        var escapeRiskAlerts = splitLists.get(false);
+        return EscapeProfile.escapeBuilder()
+                .nomsId(nomsId)
+                .provisionalCategorisation(RiskProfile.DEFAULT_CAT)
+                .activeEscapeList(!escapeListAlerts.isEmpty())
+                .activeEscapeRisk(!escapeRiskAlerts.isEmpty())
+                .escapeListAlerts(escapeListAlerts)
+                .escapeRiskAlerts(escapeRiskAlerts)
+                .build();
     }
 }
