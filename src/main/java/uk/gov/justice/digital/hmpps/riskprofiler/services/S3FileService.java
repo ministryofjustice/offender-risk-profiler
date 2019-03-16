@@ -38,7 +38,13 @@ public class S3FileService implements FileService {
 
     private Map<String, String> getBucketClientMap(@Value("${bucket.account.map}") List<String> clientList) {
         return clientList.stream()
-                .collect(Collectors.toMap(v -> StringUtils.split(v, "|")[0], v -> StringUtils.split(v, "|")[1]));
+                .collect(Collectors.toMap(
+                        v -> StringUtils.split(v, "|")[0],
+                        v -> StringUtils.split(v, "|")[1],
+                        (v1, v2) -> {
+                            log.warn("duplicate key found {}", v1);
+                            return v1;
+                        }));
     }
 
 

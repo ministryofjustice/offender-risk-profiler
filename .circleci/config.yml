@@ -128,9 +128,9 @@ jobs:
         name: Deploy to dev
         command: |
           APP_VERSION=$(cat ~/app/app_version.txt)
-          kubectl set image -f ./deploy/deployment.yaml offender-risk-profiler=${ECR_ENDPOINT}/digcat/offender-risk-profiler:${APP_VERSION} --local -o yaml \
+          kubectl set image -f ./deploy/dev/deployment.yaml offender-risk-profiler=${ECR_ENDPOINT}/digcat/offender-risk-profiler:${APP_VERSION} --local -o yaml \
           | kubectl apply -f -
-          kubectl apply -f ./deploy/service.yaml
+          kubectl apply -f ./deploy/dev/service.yaml
 
 workflows:
   version: 2
