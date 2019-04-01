@@ -61,7 +61,7 @@ spec:
             - name: INGRESS_URL
               value: "https://offender-risk-profiler.apps.cloud-platform-live-0.k8s.integration.dsd.io"
             - name: AWS_REGION
-              value: "eu-west-1"
+              value: "eu-west-2"
             - name: RISK_PROFILER_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
