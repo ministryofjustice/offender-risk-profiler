@@ -30,6 +30,7 @@ public class EscapeDecisionTreeService {
 
         var escapeListAlerts = splitLists.get(true);
         var escapeRiskAlerts = splitLists.get(false);
+        log.debug("Escape profile for {}: {} list alerts, {} risk alerts", nomsId, escapeListAlerts.size(), escapeRiskAlerts.size());
         return EscapeProfile.escapeBuilder()
                 .nomsId(nomsId)
                 .provisionalCategorisation(RiskProfile.DEFAULT_CAT)
