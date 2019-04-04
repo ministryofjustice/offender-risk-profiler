@@ -36,20 +36,20 @@ public class ExtremismDecisionTreeService {
 
         pathFinder.ifPresent(pf -> {
             var banding = StringUtils.upperCase(pf.getPathFinderBanding());
-            log.debug("{} in pathfinder on {}, increased Risk of Extremism", nomsId, banding);
+            log.debug("extremism: {} in pathfinder on {}, increased Risk of Extremism", nomsId, banding);
             if (banding.contains("BAND 1") || banding.contains("BAND 2")) {
                 extremism.increasedRiskOfExtremism(true);
-                log.debug("{} Increased Risk of Extremism", nomsId);
+                log.debug("extremism: {} Increased Risk of Extremism", nomsId);
 
                 if (previousOffences) {
-                    log.debug("{} has previous offences", nomsId);
+                    log.debug("extremism: {} has previous offences", nomsId);
                     extremism.provisionalCategorisation("B");
                 } else {
                     extremism.provisionalCategorisation("C");
                 }
             } else {
                 if (banding.contains("BAND 3")) {
-                    log.debug("{} - Notify Regional CT Lead", nomsId);
+                    log.debug("extremism: {} - Notify Regional CT Lead", nomsId);
                     extremism.notifyRegionalCTLead(true);
                     extremism.provisionalCategorisation("C");
                 } else {
