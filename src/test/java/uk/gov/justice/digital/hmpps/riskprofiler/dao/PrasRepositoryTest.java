@@ -24,8 +24,8 @@ public class PrasRepositoryTest {
             row2.add("Some Value");
         }
 
-        row1.set(11, "NomisId");
-        row2.set(11, "A1234AA");
+        row1.set(Pras.NOMIS_ID_POSITION, "NomisId");
+        row2.set(Pras.NOMIS_ID_POSITION, "A1234AA");
         List<List<String>> prasList = Arrays.asList(row1, row2);
 
         DataRepository<Pras> repository = new PrasRepository();
