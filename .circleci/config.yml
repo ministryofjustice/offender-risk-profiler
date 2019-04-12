@@ -169,7 +169,7 @@ jobs:
             setup-kube-auth
             kubectl config use-context production
       - deploy:
-          name: Deploy to dev
+          name: Deploy to Production
           command: |
             APP_VERSION=$(cat ~/app/app_version.txt)
             kubectl set image -f ./deploy/production/deployment.yaml offender-risk-profiler=${ECR_ENDPOINT}/digcat/offender-risk-profiler:${APP_VERSION} --local -o yaml \
