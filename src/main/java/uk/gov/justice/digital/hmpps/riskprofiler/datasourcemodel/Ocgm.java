@@ -11,8 +11,8 @@ import lombok.ToString;
 @ToString
 public class Ocgm  {
     public static int NOMIS_ID_POSITION = 0;
-    public static int OCG_ID_POSITION = 1;
-    public static int STANDING_POSITION = 8;
+    public static int OCG_ID_POSITION = 4;
+    public static int STANDING_POSITION = 25;
 
     private String nomisId;
     private String ocgId;

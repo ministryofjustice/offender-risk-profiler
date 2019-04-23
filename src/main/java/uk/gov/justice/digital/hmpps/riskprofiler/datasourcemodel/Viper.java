@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(of = { "nomisId"})
 @ToString
 public class Viper implements RiskDataSet {
-    public static int NOMIS_ID_POSITION = 0;
-    public static int SCORE_POSITION = 1;
+    public static int NOMIS_ID_POSITION = 1;
+    public static int SCORE_POSITION = 3;
 
     private String nomisId;
     private BigDecimal score;

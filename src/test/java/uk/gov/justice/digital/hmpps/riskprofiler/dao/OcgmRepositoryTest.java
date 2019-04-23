@@ -1,42 +1,28 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.dao;
 
 import org.junit.Test;
-import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.OcgmList;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class OcgmRepositoryTest {
 
     @Test
     public void testOCGM() {
-        List<String> row1 = Arrays.asList("NomisId", "Birth!", "PNC", "CRO", "OCG", "NewEx", "PG", "PR", "RD", "RT",
-                "SL", "1A", "Principal", "Role", "PS", "Nationality", "Female", "SC", "DSCR", "BLA", "MO", "Rel");
+        final var row1 = Arrays.asList("Nomis No.","Establishment","Region","Prison Category","OCG ID Number","Cell Location","Earliest Possible Release Date","Release Date","Release Type","Main Offence","Sentence Length In Days","Surname","Forenames","Date of Birth","PNC Number","PND Id","CRO Number","CHS Number","OCGM Surname","OCGM Forenames","OCGM Date of Birth","OCGM PNC Number","OCGM Nominal ID","Gender","Aliases / Nicknames","Standing Within Ocg","Role: Corrupter","Can the data on this record be disseminated?","Priority Group");
+        final var row2 = Arrays.asList("A5015DY","","","","001/0010058","","","","","","","","","","","","","","","","","","","","","Principal Subject","","","");
 
-        List<String> row2 = Arrays.asList("A1234AA", "Birth!", "PNC", "CRO", "OCG", "NewEx", "PG", "PR", "RD", "RT",
-                "SL", "15A", "PrincipalSubject", "Role", "PS", "Nationality", "Female", "SC", "DSCR", "BLA", "MO",
-                "Rel");
-
-        List<List<String>> ocgmList = Arrays.asList(row1, row2);
-        DataRepository<OcgmList> repository = new OcgmRepository();
+        final var ocgmList = Arrays.asList(row1, row2);
+        final var repository = new OcgmRepository();
         repository.process(ocgmList, "Ocgm-20190204163820000.csv", LocalDateTime.now());
-        Optional<OcgmList> isThere = repository.getByKey("NomisId");
-        assertTrue(isThere.isEmpty());
-
-        isThere = repository.getByKey("A1234AA");
-        assertTrue(isThere.isPresent());
-        OcgmList ocgm = isThere.get();
-        assertEquals(ocgm.getKey(), "A1234AA");
-        assertThat(ocgm.getData().get(0).getStandingWithinOcg()).isEqualTo("RD");
-
+        var ocgm = repository.getByKey("A5015DY").orElseThrow();
+        assertThat(ocgm).isNotNull();
+        assertThat(ocgm.getKey()).isEqualTo( "A5015DY");
+        assertThat(ocgm.getData().get(0).getStandingWithinOcg()).isEqualTo("Principal Subject");
         assertTrue(repository.getByKey("NotThere").isEmpty());
-
     }
 
 }
