@@ -38,7 +38,8 @@ public class ExtremismDecisionTreeServiceTest {
         var extremismProfile = service.getExtremismProfile(OFFENDER_1, false);
 
         Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("C");
-        Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isFalse();
+        Assertions.assertThat(extremismProfile.isIncreasedRiskOfExtremism()).isTrue();
+        Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isTrue();
     }
 
     @Test
@@ -51,7 +52,8 @@ public class ExtremismDecisionTreeServiceTest {
         var extremismProfile = service.getExtremismProfile(OFFENDER_1, true);
 
         Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("B");
-        Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isFalse();
+        Assertions.assertThat(extremismProfile.isIncreasedRiskOfExtremism()).isTrue();
+        Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isTrue();
     }
 
 
@@ -65,6 +67,7 @@ public class ExtremismDecisionTreeServiceTest {
         var extremismProfile = service.getExtremismProfile(OFFENDER_1, false);
 
         Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("C");
+        Assertions.assertThat(extremismProfile.isIncreasedRiskOfExtremism()).isFalse();
         Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isTrue();
     }
 
@@ -78,6 +81,7 @@ public class ExtremismDecisionTreeServiceTest {
         var extremismProfile = service.getExtremismProfile(OFFENDER_1, false);
 
         Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("C");
+        Assertions.assertThat(extremismProfile.isIncreasedRiskOfExtremism()).isFalse();
         Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isFalse();
     }
 
@@ -88,6 +92,7 @@ public class ExtremismDecisionTreeServiceTest {
         var extremismProfile = service.getExtremismProfile(OFFENDER_1, false);
 
         Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("C");
+        Assertions.assertThat(extremismProfile.isIncreasedRiskOfExtremism()).isFalse();
         Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isFalse();
     }
 

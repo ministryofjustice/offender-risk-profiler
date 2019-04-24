@@ -39,6 +39,7 @@ public class ExtremismDecisionTreeService {
             log.debug("extremism: {} in pathfinder on {}, increased Risk of Extremism", nomsId, banding);
             if (banding.contains("BAND 1") || banding.contains("BAND 2")) {
                 extremism.increasedRiskOfExtremism(true);
+                extremism.notifyRegionalCTLead(true);
                 log.debug("extremism: {} Increased Risk of Extremism", nomsId);
 
                 if (previousOffences) {
@@ -49,7 +50,7 @@ public class ExtremismDecisionTreeService {
                 }
             } else {
                 if (banding.contains("BAND 3")) {
-                    log.debug("extremism: {} - Notify Regional CT Lead", nomsId);
+                    log.debug("extremism: {} - just notify Regional CT Lead", nomsId);
                     extremism.notifyRegionalCTLead(true);
                     extremism.provisionalCategorisation("C");
                 } else {
