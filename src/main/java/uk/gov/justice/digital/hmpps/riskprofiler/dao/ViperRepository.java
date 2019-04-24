@@ -25,8 +25,7 @@ public class ViperRepository implements DataRepository<Viper> {
         data.setFileType(VIPER);
         data.reset();
 
-        csvData.stream().filter(p -> data.getIndex().getAndIncrement() > 0)
-                .forEach(p -> {
+        csvData.forEach(p -> {
                     try {
                         final var key = p.get(Viper.NOMIS_ID_POSITION);
                         if (StringUtils.isNotBlank(key)) {
@@ -45,7 +44,7 @@ public class ViperRepository implements DataRepository<Viper> {
                                     } else {
                                         var viperLine = Viper.builder()
                                                 .nomisId(key)
-                                                .score(new BigDecimal(viperScore))
+                                                .score(BigDecimal.valueOf(Math.exp(Double.valueOf(viperScore))))
                                                 .build();
 
                                         data.getDataSet().put(key, viperLine);
@@ -54,11 +53,11 @@ public class ViperRepository implements DataRepository<Viper> {
                                 }
                             }
                         } else {
-                            log.warn("Missing key in line {}", data.getIndex().get(), key);
+                            log.warn("Missing key in line {} key [{}]", data.getIndex().get(), key);
                             data.getLinesInvalid().incrementAndGet();
                         }
                     } catch (Exception e) {
-                        log.warn("Error in Line {}", data.getIndex().get(), p);
+                        log.warn("Error in Line {} data [{}]", data.getIndex().get(), p);
                         data.getLinesError().incrementAndGet();
                     }
                 });

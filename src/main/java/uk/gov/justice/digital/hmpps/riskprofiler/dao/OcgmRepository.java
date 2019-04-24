@@ -55,11 +55,11 @@ public class OcgmRepository implements DataRepository<OcgmList> {
                                 }
                             }
                         } else {
-                            log.warn("Missing key in line {}", data.getIndex().get(), key);
+                            log.warn("Missing key in line {} key [{}]", data.getIndex().get(), key);
                             data.getLinesInvalid().incrementAndGet();
                         }
                     } catch (Exception e) {
-                        log.warn("Error in Line {}", data.getIndex().get(), p);
+                        log.warn("Error in Line {} data [{}]", data.getIndex().get(), p);
                         data.getLinesError().incrementAndGet();
                     }
                 });

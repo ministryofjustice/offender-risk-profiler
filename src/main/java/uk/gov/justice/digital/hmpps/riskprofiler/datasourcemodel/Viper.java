@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @ToString
 public class Viper implements RiskDataSet {
     public static int NOMIS_ID_POSITION = 1;
-    public static int SCORE_POSITION = 3;
+    public static int SCORE_POSITION = 7;
 
     private String nomisId;
     private BigDecimal score;
