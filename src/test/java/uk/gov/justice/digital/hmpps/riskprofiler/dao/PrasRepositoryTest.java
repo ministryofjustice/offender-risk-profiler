@@ -26,7 +26,7 @@ public class PrasRepositoryTest {
 
         row1.set(Pras.NOMIS_ID_POSITION, "NomisId");
         row2.set(Pras.NOMIS_ID_POSITION, "A1234AA");
-        List<List<String>> prasList = Arrays.asList(row1, row2);
+        final var prasList = Arrays.asList(row1, row2);
 
         DataRepository<Pras> repository = new PrasRepository();
         repository.process(prasList, "Pras-20190204163820000.csv", LocalDateTime.now());

@@ -42,11 +42,11 @@ public class OcgRepository implements DataRepository<Ocg> {
                                 data.getLinesProcessed().incrementAndGet();
                             }
                         } else {
-                            log.warn("Missing Key in line {}", data.getIndex().get(), key);
+                            log.warn("Missing Key in line {} key [{}]", data.getIndex().get(), key);
                             data.getLinesInvalid().incrementAndGet();
                         }
                     } catch (Exception e) {
-                        log.warn("Error in Line {}", data.getIndex(), p);
+                        log.warn("Error in Line {} data [{}]", data.getIndex(), p);
                         data.getLinesError().incrementAndGet();
                     }
                 });
