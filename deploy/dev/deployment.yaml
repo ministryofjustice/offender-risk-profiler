@@ -90,15 +90,15 @@ spec:
             - name: S3_BUCKET_VIPER
               valueFrom:
                 secretKeyRef:
-                  name: viper-digcat-s3-bucket-output
+                  name: risk-profiler-digcat-s3-bucket-output
                   key: bucket_name
             - name: VIPER_AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: viper-digcat-s3-bucket-output
+                  name: risk-profiler-digcat-s3-bucket-output
                   key: access_key_id
             - name: VIPER_AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: viper-digcat-s3-bucket-output
+                  name: risk-profiler-digcat-s3-bucket-output
                   key: secret_access_key
