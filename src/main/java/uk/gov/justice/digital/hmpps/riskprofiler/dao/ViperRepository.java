@@ -60,7 +60,9 @@ public class ViperRepository implements DataRepository<Viper> {
                         log.warn("Error in Line {} data [{}]", data.getIndex().get(), p);
                         data.getLinesError().incrementAndGet();
                     }
-                });
+
+            data.getIndex().getAndIncrement();
+        });
         log.info("Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.getIndex().get(),
                 data.getLinesProcessed().get(), data.getLinesDup().get(), data.getLinesInvalid().get(), data.getLinesError().get());
 
