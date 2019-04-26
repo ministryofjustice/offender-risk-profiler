@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.dao;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.OcgmList;
 
@@ -9,7 +8,6 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 public class OcgmRepositoryTest {
 
     @Test
