@@ -12,11 +12,10 @@ import static uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 
 @Repository
 @Slf4j
-public class PrasRepository implements DataRepository<Pras> {
+public class PrasRepository extends DataRepository<Pras> {
 
-    private final ImportedFile<Pras> data = new ImportedFile<>();
-
-    public void process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
+    @Override
+    protected void doProcess(List<List<String>> csvData, final String filename, final LocalDateTime timestamp, final ImportedFile<Pras> data) {
 
         data.setFileTimestamp(timestamp);
         data.setFileName(filename);
@@ -55,15 +54,5 @@ public class PrasRepository implements DataRepository<Pras> {
                 });
         log.info("Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.getIndex().get(),
                 data.getLinesProcessed().get(), data.getLinesDup().get(), data.getLinesInvalid().get(), data.getLinesError().get());
-
     }
-
-    public LocalDateTime getFileTimestamp() {
-        return data.getFileTimestamp();
-    }
-
-    public ImportedFile<Pras> getData() {
-        return data;
-    }
-
 }

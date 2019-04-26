@@ -12,11 +12,11 @@ import static uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 
 @Repository
 @Slf4j
-public class PathfinderRepository implements DataRepository<PathFinder>{
+public class PathfinderRepository extends DataRepository<PathFinder>{
 
-    private final ImportedFile<PathFinder> data = new ImportedFile<>();
+    @Override
+    protected void doProcess(List<List<String>> csvData, final String filename, final LocalDateTime timestamp, final ImportedFile<PathFinder> data) {
 
-    public void process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
         data.setFileTimestamp(timestamp);
         data.setFileName(filename);
         data.setFileType(PATHFINDER);
@@ -65,14 +65,4 @@ public class PathfinderRepository implements DataRepository<PathFinder>{
         log.info("Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.getIndex().get(),
                 data.getLinesProcessed().get(), data.getLinesDup().get(), data.getLinesInvalid().get(), data.getLinesError().get());
     }
-
-    public LocalDateTime getFileTimestamp() {
-        return data.getFileTimestamp();
-    }
-
-    public ImportedFile<PathFinder> getData() {
-        return data;
-    }
-
-
 }
