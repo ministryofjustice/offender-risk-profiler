@@ -13,12 +13,10 @@ import static uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 
 @Repository
 @Slf4j
-public class ViperRepository implements DataRepository<Viper> {
-
-    private final ImportedFile<Viper> data = new ImportedFile<>();
+public class ViperRepository extends DataRepository<Viper> {
 
     @Override
-    public void process(List<List<String>> csvData, final String filename, final LocalDateTime timestamp) {
+    protected void doProcess(List<List<String>> csvData, final String filename, final LocalDateTime timestamp, final ImportedFile<Viper> data) {
 
         data.setFileTimestamp(timestamp);
         data.setFileName(filename);
@@ -65,16 +63,5 @@ public class ViperRepository implements DataRepository<Viper> {
         });
         log.info("Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.getIndex().get(),
                 data.getLinesProcessed().get(), data.getLinesDup().get(), data.getLinesInvalid().get(), data.getLinesError().get());
-
-
     }
-
-    public LocalDateTime getFileTimestamp() {
-        return data.getFileTimestamp();
-    }
-
-    public ImportedFile<Viper> getData() {
-        return data;
-    }
-
 }
