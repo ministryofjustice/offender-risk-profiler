@@ -17,10 +17,12 @@ public abstract class DataRepository<F extends RiskDataSet> {
     private final ImportedFile<F> dataA = new ImportedFile<>();
     private final ImportedFile<F> dataB = new ImportedFile<>();
     private volatile AtomicBoolean isA = new AtomicBoolean(true);
+    private volatile AtomicBoolean dataAvailable = new AtomicBoolean(false);
 
     public void process(List<List<String>> csvData, String filename, LocalDateTime timestamp) {
         doProcess(csvData,  filename,  timestamp, getStandbyData());
         toggleData();
+        dataAvailable.set(true);
     }
 
     protected abstract void doProcess(List<List<String>> csvData, String filename, LocalDateTime timestamp, ImportedFile<F> data);
@@ -47,5 +49,9 @@ public abstract class DataRepository<F extends RiskDataSet> {
     private void toggleData() {
         isA.set(!isA.get());
         log.debug("Switched to {} data map {}", getData().getFileType(), isA.get() ? "A" : "B");
+    }
+
+    public boolean dataAvailable() {
+        return dataAvailable.get();
     }
 }
