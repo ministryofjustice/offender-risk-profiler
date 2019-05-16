@@ -1,8 +1,11 @@
 info:
   app:
-     name: Offender Risk Profiler
+     name: Offender Risk Profiler API
 
 spring:
+  application:
+    name: offender-risk-profiler-api
+
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
     serialization:
