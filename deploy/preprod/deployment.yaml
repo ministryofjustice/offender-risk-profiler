@@ -52,6 +52,11 @@ spec:
               value: "-Xmx512m"
             - name: SPRING_PROFILES_ACTIVE
               value: "s3"
+            - name: APPLICATION_INSIGHTS_IKEY
+              valueFrom:
+                secretKeyRef:
+                  name: offender-risk-profiler-secrets
+                  key: application-insights-ikey
             - name: NOMIS_AUTH_URL
               value: "https://gateway.preprod.nomis-api.service.hmpps.dsd.io/auth/oauth/token"
             - name: ELITE2API_ENDPOINT_URL
