@@ -46,5 +46,19 @@ public class DefaultFileService implements FileService {
         return null;
     }
 
+    @Override
+    public void deleteHistoricalFiles(String fileLocation) {
+        File folder = new File(fileLocation);
+        File[] listOfFiles = folder.listFiles();
+
+        if (listOfFiles != null) {
+            log.info("Housekeeping- found {} files in {}", listOfFiles.length, fileLocation);
+            Arrays.stream(listOfFiles).sorted(Comparator.comparing(File::lastModified).reversed()).skip(2).forEach(file -> {
+                file.delete();
+                log.info("Deleted file {} ", fileLocation + "/" + file.getName());
+            });
+        }
+    }
+
 
 }

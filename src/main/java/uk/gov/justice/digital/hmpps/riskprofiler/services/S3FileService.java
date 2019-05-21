@@ -49,20 +49,15 @@ public class S3FileService implements FileService {
 
 
     public PendingFile getLatestFile(String fileLocation) {
-        var bucketAndPrefix = new BucketAndPrefix(fileLocation);
-        var bucketName = bucketAndPrefix.getBucketName();
-        var prefix = bucketAndPrefix.getPrefix();
-        var amazonS3Client = bucketAccountMap.get(bucketName);
 
-        ListObjectsV2Result result = amazonS3Client.listObjectsV2(bucketName, prefix);
-        List<S3ObjectSummary> objects = result.getObjectSummaries();
+        var s3Result = getObjectSummaries(fileLocation);
 
-        log.info("Found {} objects in {}", objects.size(), fileLocation);
-        return objects.stream()
+        log.info("Found {} objects in {}", s3Result.getObjects().size(), fileLocation);
+        return s3Result.getObjects().stream()
                 .max(Comparator.comparing(S3ObjectSummary::getLastModified))
                 .map(o -> {
                     try {
-                        var s3Object = amazonS3Client.getObject(bucketName, o.getKey());
+                        var s3Object = s3Result.getAmazonS3Client().getObject(s3Result.getBucketName(), o.getKey());
                         return PendingFile.builder()
                                 .fileName(o.getKey())
                                 .fileTimestamp(o.getLastModified().toInstant()
@@ -77,6 +72,29 @@ public class S3FileService implements FileService {
                 }).orElse(null);
     }
 
+    @Override
+    public void deleteHistoricalFiles(String fileLocation) {
+       var s3ObjectResult = getObjectSummaries(fileLocation);
+
+        log.info("Found {} data files for data housekeeping in {}", s3ObjectResult.getObjects().size(), fileLocation);
+
+        s3ObjectResult.getObjects().stream().sorted(Comparator.comparing(S3ObjectSummary::getLastModified).reversed()).skip(2).forEach(o -> {
+            s3ObjectResult.getAmazonS3Client().deleteObject(s3ObjectResult.getBucketName(), o.getKey());
+            log.info("Deleted s3 data file: {} from bucket {}", o.getKey(), s3ObjectResult.getBucketName());
+        });
+    }
+
+    private ObjectSummaryResult getObjectSummaries(String fileLocation){
+        var bucketAndPrefix = new BucketAndPrefix(fileLocation);
+        var bucketName = bucketAndPrefix.getBucketName();
+        var prefix = bucketAndPrefix.getPrefix();
+        var amazonS3Client = bucketAccountMap.get(bucketName);
+
+        ListObjectsV2Result result = amazonS3Client.listObjectsV2(bucketName, prefix);
+        List<S3ObjectSummary> objects = result.getObjectSummaries();
+        return new ObjectSummaryResult(objects, amazonS3Client, bucketName);
+    }
+
     @Getter
     private static class BucketAndPrefix {
         private String bucketName;
@@ -86,6 +104,19 @@ public class S3FileService implements FileService {
             var split = StringUtils.split(fileLocation, "/");
             bucketName = split[0];
             prefix = split.length > 1 ? split[1] : null;
+        }
+    }
+
+    @Getter
+    private class ObjectSummaryResult {
+        private AmazonS3 amazonS3Client;
+        private String bucketName;
+        List<S3ObjectSummary> objects;
+
+        ObjectSummaryResult(List<S3ObjectSummary> objects, AmazonS3 amazonS3Client, String bucketName) {
+            this.objects = objects;
+            this.amazonS3Client = amazonS3Client;
+            this.bucketName = bucketName;
         }
     }
 }
