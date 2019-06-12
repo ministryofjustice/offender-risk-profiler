@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 
 @Component
 @Slf4j
+@Order(4)
 public class UserContextFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
