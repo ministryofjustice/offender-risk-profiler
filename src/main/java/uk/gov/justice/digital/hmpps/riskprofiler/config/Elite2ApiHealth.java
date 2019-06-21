@@ -23,7 +23,7 @@ public class Elite2ApiHealth implements HealthIndicator {
     @Override
     public Health health() {
         try {
-            final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity("/health", String.class);
+            final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity("/ping", String.class);
             return health(Health.up(), responseEntity.getStatusCode());
         } catch (RestClientException e) {
             return health(Health.outOfService(), HttpStatus.SERVICE_UNAVAILABLE);
