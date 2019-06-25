@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthInterceptor;
-import uk.gov.justice.digital.hmpps.riskprofiler.utils.UserContextInterceptor;
+import uk.gov.justice.digital.hmpps.riskprofiler.utils.W3cTracingInterceptor;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class RestTemplateConfiguration {
 
     private List<ClientHttpRequestInterceptor> getRequestInterceptors() {
         return List.of(
-                new UserContextInterceptor(),
+                new W3cTracingInterceptor(),
                 new JwtAuthInterceptor());
     }
 
@@ -66,7 +66,7 @@ public class RestTemplateConfiguration {
 
         OAuth2RestTemplate elite2SystemRestTemplate = new OAuth2RestTemplate(elite2apiDetails, oauth2ClientContext);
         List<ClientHttpRequestInterceptor> systemInterceptors = elite2SystemRestTemplate.getInterceptors();
-        systemInterceptors.add(new UserContextInterceptor());
+        systemInterceptors.add(new W3cTracingInterceptor());
 
         elite2SystemRestTemplate.setAccessTokenProvider(accessTokenProvider);
 
