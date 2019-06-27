@@ -14,7 +14,8 @@ RUN addgroup --gid 2000 --system appgroup && \
 WORKDIR /app
 
 COPY --chown=appuser:appgroup ./build/libs/offender-risk-profiler*.jar /app/app.jar
+COPY --chown=appuser:appgroup run.sh /app
 
-USER 2000
+USER adduser
 
 ENTRYPOINT ["/bin/sh", "/app/run.sh"]
