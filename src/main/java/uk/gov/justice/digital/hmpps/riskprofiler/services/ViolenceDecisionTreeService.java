@@ -43,7 +43,7 @@ public class ViolenceDecisionTreeService {
     public ViolenceDecisionTreeService(ViperRepository viperDataRepository, NomisService nomisService,
                                         @Value("${app.assaults.min:5}") int minNumAssaults,
                                         @Value("${app.assaults.check.months:12}") int months,
-                                        @Value("${app.viper-threshold:0.10}") BigDecimal viperScoreThreshold,
+                                        @Value("${app.viper-threshold:5.00}") BigDecimal viperScoreThreshold,
                                         @Value("${app.assaults.incident.types:ASSAULT}") List<String> incidentTypes,
                                         @Value("${app.assaults.participation.roles}") List<String> participationRoles) {
         this.viperDataRepository = viperDataRepository;
