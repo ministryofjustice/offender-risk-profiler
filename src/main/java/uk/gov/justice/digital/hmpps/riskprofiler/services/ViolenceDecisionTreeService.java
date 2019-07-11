@@ -43,7 +43,7 @@ public class ViolenceDecisionTreeService {
     public ViolenceDecisionTreeService(ViperRepository viperDataRepository, NomisService nomisService,
                                         @Value("${app.assaults.min:5}") int minNumAssaults,
                                         @Value("${app.assaults.check.months:12}") int months,
-                                        @Value("${app.viper-threshold:5.00}") BigDecimal viperScoreThreshold,
+                                        @Value("${app.viper-threshold:0.10}") BigDecimal viperScoreThreshold,
                                         @Value("${app.assaults.incident.types:ASSAULT}") List<String> incidentTypes,
                                         @Value("${app.assaults.participation.roles}") List<String> participationRoles) {
         this.viperDataRepository = viperDataRepository;
@@ -64,6 +64,7 @@ public class ViolenceDecisionTreeService {
                 .provisionalCategorisation(DEFAULT_CAT);
 
         viperDataRepository.getByKey(nomsId).ifPresentOrElse(viper -> {
+            log.debug("Viper score for {} is {}", nomsId, viper.getScore());
             if (viper.getScore().compareTo(viperScoreThreshold) > 0) {
                 log.debug("violence: Viper score above threshold for {}", nomsId);
                 violenceProfile.notifySafetyCustodyLead(true);
@@ -92,12 +93,15 @@ public class ViolenceDecisionTreeService {
                         violenceProfile.numberOfSeriousAssaults(numberOfSeriousAssaults);
 
                     } else {
+                        log.debug("violence: Viper serious assaults below threshold for {}", nomsId);
                         violenceProfile.provisionalCategorisation("C");
                     }
                 } else {
+                    log.debug("violence: Viper assaults below threshold for {}", nomsId);
                     violenceProfile.provisionalCategorisation("C");
                 }
             } else {
+                log.debug("Viper score is below threshold of {} for {}", viperScoreThreshold, nomsId);
                 violenceProfile.provisionalCategorisation(DEFAULT_CAT);
             }
         }, () -> {
