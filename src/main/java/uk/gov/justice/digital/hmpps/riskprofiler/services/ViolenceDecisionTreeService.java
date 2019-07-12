@@ -64,6 +64,7 @@ public class ViolenceDecisionTreeService {
                 .provisionalCategorisation(DEFAULT_CAT);
 
         viperDataRepository.getByKey(nomsId).ifPresentOrElse(viper -> {
+            log.debug("Viper score for {} is {}", nomsId, viper.getScore());
             if (viper.getScore().compareTo(viperScoreThreshold) > 0) {
                 log.debug("violence: Viper score above threshold for {}", nomsId);
                 violenceProfile.notifySafetyCustodyLead(true);
@@ -92,12 +93,15 @@ public class ViolenceDecisionTreeService {
                         violenceProfile.numberOfSeriousAssaults(numberOfSeriousAssaults);
 
                     } else {
+                        log.debug("violence: Viper serious assaults below threshold for {}", nomsId);
                         violenceProfile.provisionalCategorisation("C");
                     }
                 } else {
+                    log.debug("violence: Viper assaults below threshold for {}", nomsId);
                     violenceProfile.provisionalCategorisation("C");
                 }
             } else {
+                log.debug("Viper score is below threshold of {} for {}", viperScoreThreshold, nomsId);
                 violenceProfile.provisionalCategorisation(DEFAULT_CAT);
             }
         }, () -> {
