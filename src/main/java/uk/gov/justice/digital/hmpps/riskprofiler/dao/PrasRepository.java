@@ -35,11 +35,11 @@ public class PrasRepository extends DataRepository<Pras> {
                                     log.warn("Duplicate key found in line {} for Key {}", data.getIndex().get(), key);
                                     data.getLinesDup().incrementAndGet();
                                 } else {
-                                    var ocgLine = Pras.builder()
+                                    var line = Pras.builder()
                                             .nomisId(key)
                                             .build();
 
-                                    data.getDataSet().put(key, ocgLine);
+                                    data.getDataSet().put(key, line);
                                     data.getLinesProcessed().incrementAndGet();
                                 }
                             }
