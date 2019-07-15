@@ -32,12 +32,12 @@ public class OcgRepository extends DataRepository<Ocg> {
                                 log.warn("Duplicate key found in line {} for Key {}", data.getIndex().get(), key);
                                 data.getLinesDup().incrementAndGet();
                             } else {
-                                var ocgLine = Ocg.builder()
+                                var line = Ocg.builder()
                                         .ocgId(key)
                                         .ocgmBand(StringUtils.trimToNull(p.get(Ocg.OCGM_BAND_POSITION)))
                                         .build();
 
-                                data.getDataSet().put(key, ocgLine);
+                                data.getDataSet().put(key, line);
                                 data.getLinesProcessed().incrementAndGet();
                             }
                         } else {

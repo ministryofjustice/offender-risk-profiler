@@ -42,12 +42,12 @@ public class PathfinderRepository extends DataRepository<PathFinder>{
                                         log.warn("No Banding set in line {} for Key {}", data.getIndex().get(), key);
                                         data.getLinesInvalid().incrementAndGet();
                                     } else {
-                                        var ocgLine = PathFinder.builder()
+                                        var line = PathFinder.builder()
                                                 .nomisId(key)
                                                 .pathFinderBanding(StringUtils.trimToNull(banding))
                                                 .build();
 
-                                        data.getDataSet().put(key, ocgLine);
+                                        data.getDataSet().put(key, line);
                                         data.getLinesProcessed().incrementAndGet();
                                     }
                                 }
