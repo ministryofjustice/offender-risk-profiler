@@ -4,7 +4,7 @@
 replicaCount: 1
 
 image:
-  repository: docker.io/mojdigitalstudio/categorisation-tool 
+  repository: docker.io/mojdigitalstudio/offender-risk-profiler 
   tag: latest
   pullPolicy: Always
   port: 8080
