@@ -20,7 +20,7 @@ env:
     value: {{ .Values.env.NOMIS_AUTH_URL | quote }}
 
   - name: JWT_PUBLIC_KEY 
-    value: {{ .Values.env.NOMIS_OAUTH_PUBLIC_KEY | quote }}
+    value: {{ .Values.env.JWT_PUBLIC_KEY | quote }}
 
   - name: ELITE2API_ENDPOINT_URL
     value: {{ .Values.env.ELITE2API_ENDPOINT_URL | quote }}
