@@ -6,7 +6,7 @@ replicaCount: 1
 image:
   repository: docker.io/mojdigitalstudio/offender-risk-profiler 
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   port: 8080
 
 env:
