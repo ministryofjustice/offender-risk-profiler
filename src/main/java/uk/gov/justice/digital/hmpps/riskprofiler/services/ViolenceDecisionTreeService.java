@@ -59,45 +59,49 @@ public class ViolenceDecisionTreeService {
     public ViolenceProfile getViolenceProfile(@NotNull final String nomsId) {
 
         log.debug("Calculating violence profile for {}", nomsId);
-        var violenceProfile = ViolenceProfile.violenceBuilder()
+
+        // Check NOMIS Have the individuals had 5 or more assaults in custody? (remove DUPS)
+        final var assaults = nomisService.getIncidents(nomsId, incidentTypes, participationRoles).stream()
+                .filter(i -> !"DUP".equals(i.getIncidentStatus())).collect(Collectors.toList());
+
+        // Check NOMIS: Have they had a serious assault in custody in past 12 months
+        final var numberOfSeriousAssaults = assaults.stream()
+                .filter(assault -> assault.getReportTime().compareTo(LocalDateTime.now().minusMonths(months)) >= 0)
+                .filter(assault -> assault.getResponses().stream()
+                        .anyMatch(response -> SERIOUS_ASSAULT_QUESTIONS.stream().anyMatch(saq -> isSerious(response, saq))))
+                .count();
+
+        final var violenceProfile = ViolenceProfile.violenceBuilder()
                 .nomsId(nomsId)
                 .provisionalCategorisation(DEFAULT_CAT);
 
+        violenceProfile.displayAssaults(!assaults.isEmpty());
+        violenceProfile.numberOfAssaults(assaults.size());
+        violenceProfile.numberOfSeriousAssaults(numberOfSeriousAssaults);
+
         viperDataRepository.getByKey(nomsId).ifPresentOrElse(viper -> {
+            log.debug("Viper score for {} is {}", nomsId, viper.getScore());
             if (viper.getScore().compareTo(viperScoreThreshold) > 0) {
                 log.debug("violence: Viper score above threshold for {}", nomsId);
                 violenceProfile.notifySafetyCustodyLead(true);
 
-                // Check NOMIS Have the individuals had 5 or more assaults in custody? (remove DUPS)
-                var assaults = nomisService.getIncidents(nomsId, incidentTypes, participationRoles).stream()
-                        .filter(i -> !"DUP".equals(i.getIncidentStatus())).collect(Collectors.toList());
-
                 if (assaults.size() >= minNumAssaults) {
                     log.debug("violence: Viper assaults above threshold for {}", nomsId);
-                    violenceProfile.displayAssaults(true);
-                    violenceProfile.numberOfAssaults(assaults.size());
-
-                    // Check NOMIS Have they had a serious assault in custody in past 12 months
-                    var numberOfSeriousAssaults = assaults.stream()
-                            .filter(assault -> assault.getReportTime().compareTo(LocalDateTime.now().minusMonths(months)) >= 0)
-                            .filter(assault ->
-                                    assault.getResponses().stream()
-                                            .anyMatch(response ->
-                                                    SERIOUS_ASSAULT_QUESTIONS.stream().anyMatch(saq -> isSerious(response, saq))))
-                            .count();
 
                     if (numberOfSeriousAssaults > 0) {
                         log.debug("violence: Viper serious assaults above threshold for {}", nomsId);
                         violenceProfile.provisionalCategorisation("B");
-                        violenceProfile.numberOfSeriousAssaults(numberOfSeriousAssaults);
 
                     } else {
+                        log.debug("violence: Viper serious assaults below threshold for {}", nomsId);
                         violenceProfile.provisionalCategorisation("C");
                     }
                 } else {
+                    log.debug("violence: Viper assaults below threshold for {}", nomsId);
                     violenceProfile.provisionalCategorisation("C");
                 }
             } else {
+                log.debug("Viper score is below threshold of {} for {}", viperScoreThreshold, nomsId);
                 violenceProfile.provisionalCategorisation(DEFAULT_CAT);
             }
         }, () -> {

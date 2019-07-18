@@ -45,6 +45,30 @@ public class ViolenceDecisionTreeServiceTest {
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(0);
     }
 
+    @Test
+    public void testNotOnViperFileButSeriousAssault() {
+        when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
+
+        var now = LocalDateTime.now();
+        when(nomisService.getIncidents(OFFENDER_1, List.of("ASSAULTS"), List.of("ASSIAL", "FIGHT"))).thenReturn(
+                Arrays.asList(
+                        IncidentCase.builder().incidentStatus("CLOSE").reportTime(now.minusMonths(2))
+                                .responses(Arrays.asList(
+                                        IncidentResponse.builder().question("Question 1").answer("YES").build(),
+                                        IncidentResponse.builder().question("Question 2").answer("NO").build(),
+                                        IncidentResponse.builder().question("WAS A SERIOUS INJURY SUSTAINED").answer("YES").build(),
+                                        IncidentResponse.builder().question("Question 4").answer("NO").build()
+                                )).build()
+                )
+        );
+        var socProfile = service.getViolenceProfile(OFFENDER_1);
+
+        Assertions.assertThat(socProfile.isDisplayAssaults()).isTrue();
+        Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
+        Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(1);
+        Assertions.assertThat(socProfile.getNumberOfSeriousAssaults()).isEqualTo(1);
+        Assertions.assertThat(socProfile.isNotifySafetyCustodyLead()).isFalse();
+    }
 
     @Test
     public void testOnViperFileWithSeriousAssaults() {
@@ -90,7 +114,6 @@ public class ViolenceDecisionTreeServiceTest {
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(3);
         Assertions.assertThat(socProfile.getNumberOfSeriousAssaults()).isEqualTo(1);
     }
-
 
     @Test
     public void testOnViperFileWithOldSeriousAssaults() {
@@ -141,10 +164,9 @@ public class ViolenceDecisionTreeServiceTest {
         var socProfile = service.getViolenceProfile(OFFENDER_1);
 
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
-        Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(0);
+        Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(1);
         Assertions.assertThat(socProfile.getNumberOfSeriousAssaults()).isEqualTo(0);
     }
-
 
     @Test
     public void testOnViperFileWitLowViperScore() {
@@ -156,5 +178,4 @@ public class ViolenceDecisionTreeServiceTest {
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(0);
         Assertions.assertThat(socProfile.getNumberOfSeriousAssaults()).isEqualTo(0);
     }
-
 }
