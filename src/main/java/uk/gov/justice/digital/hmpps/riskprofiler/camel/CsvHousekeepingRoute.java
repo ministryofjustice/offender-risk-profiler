@@ -2,17 +2,14 @@ package uk.gov.justice.digital.hmpps.riskprofiler.camel;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService;
 import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService;
 
 @Component
 public class CsvHousekeepingRoute extends RouteBuilder {
 
-    private final DataService dataService;
     private final FileService fileService;
 
-    public CsvHousekeepingRoute(DataService dataService, FileService fileService) {
-        this.dataService = dataService;
+    public CsvHousekeepingRoute(FileService fileService) {
         this.fileService = fileService;
     }
 

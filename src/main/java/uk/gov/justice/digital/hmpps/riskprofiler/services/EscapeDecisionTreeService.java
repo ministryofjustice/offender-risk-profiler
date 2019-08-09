@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.EscapeProfile;
@@ -20,7 +19,6 @@ public class EscapeDecisionTreeService {
         this.nomisService = nomisService;
     }
 
-    @PreAuthorize("hasRole('RISK_PROFILER')")
     public EscapeProfile getEscapeProfile(@NotNull final String nomsId) {
         log.debug("Calculating escape profile for {}", nomsId);
         var escapeData = nomisService.getEscapeListAlertsForOffender(nomsId);
