@@ -58,4 +58,28 @@ env:
         name: risk-profiler-s3-bucket-output
         key: secret_access_key
 
+  - name: DATABASE_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: dps-rds-instance-output
+        key: risk_profiler_username
+
+  - name: DATABASE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: dps-rds-instance-output
+        key: risk_profiler_password
+
+  - name: DATABASE_NAME
+    valueFrom:
+      secretKeyRef:
+        name: dps-rds-instance-output
+        key: risk_profiler_name
+
+  - name: DATABASE_ENDPOINT
+    valueFrom:
+      secretKeyRef:
+        name: dps-rds-instance-output
+        key: rds_instance_endpoint
+
 {{- end -}}

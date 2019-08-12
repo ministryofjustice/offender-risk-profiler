@@ -24,10 +24,14 @@ public class RestCallHelper {
     }
 
     protected <T> ResponseEntity<T> getForList(URI uri, ParameterizedTypeReference<T> responseType) {
+       return getForList(uri, responseType, null);
+    }
+
+    protected <T> ResponseEntity<T> getForList(URI uri, ParameterizedTypeReference<T> responseType, HttpHeaders headers) {
         return restTemplate.exchange(
                 uri.toString(),
                 HttpMethod.GET,
-                null,
+                headers == null ? null : new HttpEntity<>(null, headers),
                 responseType);
     }
 

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.controllers;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.*;
 import uk.gov.justice.digital.hmpps.riskprofiler.services.EscapeDecisionTreeService;
@@ -46,6 +47,7 @@ public class RiskProfilerResource {
             @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class) })
 
+    @PreAuthorize("hasRole('RISK_PROFILER')")
     @GetMapping(path = "/soc/{nomsId}")
     public SocProfile getSoc(@ApiParam(name = "nomsId", value = "NOMS ID of the offender", example = "A1234AA", required = true) @NotNull @PathVariable(value = "nomsId") String nomsId) {
         return socDecisionTreeServiceService.getSocData(nomsId);
@@ -62,6 +64,7 @@ public class RiskProfilerResource {
             @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class) })
 
+    @PreAuthorize("hasRole('RISK_PROFILER')")
     @GetMapping(path = "/escape/{nomsId}")
     public EscapeProfile getEscape(@ApiParam(name = "nomsId", value = "NOMS ID of the offender", example = "A1234AA", required = true) @NotNull @PathVariable("nomsId") String nomsId) {
 
@@ -79,6 +82,7 @@ public class RiskProfilerResource {
             @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class) })
 
+    @PreAuthorize("hasRole('RISK_PROFILER')")
     @GetMapping(path = "/violence/{nomsId}")
     public ViolenceProfile getViolence(@ApiParam(name = "nomsId", value = "NOMS ID of the offender", example = "A1234AA", required = true) @NotNull @PathVariable("nomsId") String nomsId) {
 
@@ -97,6 +101,7 @@ public class RiskProfilerResource {
             @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class) })
 
+    @PreAuthorize("hasRole('RISK_PROFILER')")
     @GetMapping(path = "/extremism/{nomsId}")
     public ExtremismProfile getExtremism(@ApiParam(name = "nomsId", value = "NOMS ID of the offender", example = "A1234AA", required = true) @NotNull @PathVariable("nomsId") String nomsId,
                                          @ApiParam(name = "previousOffences", value = "Previous Offences under Terrorism Act listed on the person's PNC record", required = false, example = "false") @RequestParam(value = "previousOffences", required = false) Boolean previousOffences) {

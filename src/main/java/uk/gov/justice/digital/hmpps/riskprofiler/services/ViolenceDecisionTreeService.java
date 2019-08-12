@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.riskprofiler.services;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.ViperRepository;
@@ -55,7 +54,6 @@ public class ViolenceDecisionTreeService {
         this.incidentTypes = incidentTypes;
     }
 
-    @PreAuthorize("hasRole('RISK_PROFILER')")
     public ViolenceProfile getViolenceProfile(@NotNull final String nomsId) {
 
         log.debug("Calculating violence profile for {}", nomsId);
