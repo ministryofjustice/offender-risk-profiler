@@ -29,7 +29,7 @@ public class PollPrisonersScheduler {
         this.telemetryClient = telemetryClient;
     }
 
-    @Scheduled(cron = "0 17 12 * * *")
+    @Scheduled(cron = "0 15 2 * * *")
     @SchedulerLock(name = "pollPrisonersLock")
     public void pollPrisonersSchedule() {
         try {
