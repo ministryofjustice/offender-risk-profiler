@@ -8,7 +8,7 @@ env:
     value: "-Xmx512m" 
 
   - name: SPRING_PROFILES_ACTIVE
-    value: "s3"
+    value: "s3,postgres"
 
   - name: APPLICATION_INSIGHTS_IKEY
     valueFrom:
