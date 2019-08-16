@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.ErrorResponse;
 
 
 @org.springframework.web.bind.annotation.RestControllerAdvice(
-        basePackageClasses = RiskProfilerResource.class
+        basePackageClasses = {RiskProfilerResource.class, BatchHelperResource.class}
 )
 @Slf4j
 public class ControllerAdvice {
