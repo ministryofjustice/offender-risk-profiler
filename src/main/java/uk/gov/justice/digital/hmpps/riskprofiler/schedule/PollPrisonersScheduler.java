@@ -42,7 +42,7 @@ public class PollPrisonersScheduler {
         }
     }
 
-    private void pollPrisoners() {
+    public void pollPrisoners() {
         final var prisons = prisonService.getPrisons();
         log.info("There are {} prisons", prisons.size());
         prisons.forEach(p -> {
