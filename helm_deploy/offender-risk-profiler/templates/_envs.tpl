@@ -8,7 +8,7 @@ env:
     value: "-Xmx512m" 
 
   - name: SPRING_PROFILES_ACTIVE
-    value: "s3,postgres"
+    value: "s3,postgres,sqs"
 
   - name: APPLICATION_INSIGHTS_IKEY
     valueFrom:
@@ -81,5 +81,23 @@ env:
       secretKeyRef:
         name: dps-rds-instance-output
         key: rds_instance_endpoint
+
+  - name: SQS_AWS_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: rp-sqs-instance-output
+        key: access_key_id
+
+  - name: SQS_AWS_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: rp-sqs-instance-output
+        key: secret_access_key
+
+  - name: SQS_RPC_QUEUE_URL
+    valueFrom:
+      secretKeyRef:
+        name: rp-sqs-instance-output
+        key: sqs_rpc_url
 
 {{- end -}}

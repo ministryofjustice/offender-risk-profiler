@@ -7,25 +7,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.PreviousProfileRepository;
-import uk.gov.justice.digital.hmpps.riskprofiler.model.EscapeProfile;
-import uk.gov.justice.digital.hmpps.riskprofiler.model.ExtremismProfile;
-import uk.gov.justice.digital.hmpps.riskprofiler.model.PreviousProfile;
-import uk.gov.justice.digital.hmpps.riskprofiler.model.SocProfile;
-import uk.gov.justice.digital.hmpps.riskprofiler.model.Status;
-import uk.gov.justice.digital.hmpps.riskprofiler.model.ViolenceProfile;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static java.lang.Math.abs;
-import static org.assertj.core.api.Assertions.within;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PollPrisonersServiceTest {
@@ -45,6 +36,8 @@ public class PollPrisonersServiceTest {
     private PreviousProfileRepository previousProfileRepository;
     @Mock
     private TelemetryClient telemetryClient;
+    @Mock
+    private SQSService sqsService;
 
     final SocProfile SOC_1 = SocProfile.socBuilder().nomsId(OFFENDER_1).build();
     final ViolenceProfile VIOLENCE_1 = ViolenceProfile.violenceBuilder().nomsId(OFFENDER_1).build();
@@ -67,7 +60,8 @@ public class PollPrisonersServiceTest {
                 escapeDecisionTreeService,
                 extremismDecisionTreeService,
                 previousProfileRepository,
-                telemetryClient);
+                telemetryClient,
+                sqsService);
     }
 
     @Test
@@ -80,7 +74,30 @@ public class PollPrisonersServiceTest {
 
         service.pollPrisoner(OFFENDER_1);
 
-        // TODO verify call to add to queue etc
+        //todo verify arguments
+        var payload = RiskProfileChange.builder()
+                .newProfile(
+                        ProfileMessagePayload.builder()
+                                .soc(SocProfile.socBuilder().nomsId(OFFENDER_1).transferToSecurity(true).build())
+                                .extremism(EXTREMISM_1)
+                                .escape(ESCAPE_1)
+                                .violence(VIOLENCE_1)
+                                .executeDateTime(LocalDateTime.now())
+                                .offenderNo(OFFENDER_1)
+                                .status(Status.NEW)
+                                .build())
+                .oldProfile(
+                        ProfileMessagePayload.builder()
+                                .soc(SOC_1)
+                                .extremism(EXTREMISM_1)
+                                .escape(ESCAPE_1)
+                                .violence(VIOLENCE_1)
+                                .executeDateTime(LocalDateTime.now())
+                                .offenderNo(OFFENDER_1)
+                                .status(Status.NEW)
+                                .build()).build();
+
+        verify(sqsService).sendRiskProfileChangeMessage(any());
         verify(previousProfileRepository, never()).save(any());
     }
 
@@ -94,7 +111,7 @@ public class PollPrisonersServiceTest {
 
         service.pollPrisoner(OFFENDER_1);
 
-        // TODO verify no queue call etc
+        verify(sqsService, never()).sendRiskProfileChangeMessage(any());
         verify(previousProfileRepository, never()).save(any());
     }
 
@@ -110,6 +127,7 @@ public class PollPrisonersServiceTest {
 
         verify(socDecisionTreeService).getSocData(OFFENDER_1);
         verify(previousProfileRepository).save(eqProfiles(PROFILE_1));
+        verify(sqsService, never()).sendRiskProfileChangeMessage(any());
     }
 
     private static PreviousProfile eqProfiles(PreviousProfile profile) {
