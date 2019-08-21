@@ -19,6 +19,7 @@ public class LocalstackConfig {
         var creds = new AnonymousAWSCredentials();
         return AmazonSQSAsyncClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(creds))
+                .withRegion("eu-west-2")
                 .build();
     }
 }
