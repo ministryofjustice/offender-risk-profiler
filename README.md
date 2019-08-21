@@ -16,3 +16,8 @@ rather than calling the `/health` endpoint.
 - `/health`: provides information about the application health and its dependencies.  This should only be used
 by offender risk profiler health monitoring (e.g. pager duty) and not other systems who wish to find out the state of offender risk profiler.
 - `/info`: provides information about the version of deployed application.
+
+#### SQS
+Use `sqs` profile to run against an aws sqs resource. See required env variables in application-sqs.properties
+There is a `localstack` profile for running locally with the sqs resource provided by
+localstack, which can be run as a docker container. See https://github.com/localstack/localstack

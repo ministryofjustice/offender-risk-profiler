@@ -1,14 +1,17 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.microsoft.applicationinsights.TelemetryClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.PreviousProfileRepository;
-import uk.gov.justice.digital.hmpps.riskprofiler.model.PreviousProfile;
-import uk.gov.justice.digital.hmpps.riskprofiler.model.Status;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Optional;
@@ -22,6 +25,7 @@ public class PollPrisonersService {
     private final EscapeDecisionTreeService escapeDecisionTreeService;
     private final ExtremismDecisionTreeService extremismDecisionTreeService;
     private final PreviousProfileRepository previousProfileRepository;
+    private final SQSService sqsService;
     private final TelemetryClient telemetryClient;
 
     private final ObjectMapper jacksonMapper = new ObjectMapper();
@@ -32,13 +36,17 @@ public class PollPrisonersService {
             final EscapeDecisionTreeService escapeDecisionTreeService,
             final ExtremismDecisionTreeService extremismDecisionTreeService,
             final PreviousProfileRepository previousProfileRepository,
-            final TelemetryClient telemetryClient) {
+            final TelemetryClient telemetryClient,
+            final SQSService sqsService) {
         this.socDecisionTreeService = socDecisionTreeService;
         this.violenceDecisionTreeService = violenceDecisionTreeService;
         this.escapeDecisionTreeService = escapeDecisionTreeService;
         this.extremismDecisionTreeService = extremismDecisionTreeService;
         this.previousProfileRepository = previousProfileRepository;
         this.telemetryClient = telemetryClient;
+        this.sqsService = sqsService;
+        jacksonMapper.registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Transactional
@@ -63,10 +71,10 @@ public class PollPrisonersService {
                                 && existing.getViolence().equals(violence)
                                 && existing.getEscape().equals(escape)
                                 && existing.getExtremism().equals(extremism))) {
-                            // TODO There is a change. We may only care about when change is from C to B
-                            // Possibly add to an event queue.
                             // Update db with new data:
                             log.info("Change detected for {}", offenderNo);
+
+                            buildAndSendRiskProfilePayload(offenderNo, socObject, violenceObject, escapeObject, extremismObject, Status.NEW, existing);
 
                             existing.setSoc(soc);
                             existing.setViolence(violence);
@@ -91,6 +99,38 @@ public class PollPrisonersService {
                     });
         } catch (final Exception e) {
             raiseProcessingError(offenderNo, e);
+        }
+    }
+
+    private void buildAndSendRiskProfilePayload(String offenderNo, SocProfile socObject, ViolenceProfile violenceObject, EscapeProfile escapeObject, ExtremismProfile extremismObject, Status status, PreviousProfile existing) {
+        final var newProfile = ProfileMessagePayload.builder()
+                .offenderNo(offenderNo)
+                .soc(socObject)
+                .violence(violenceObject)
+                .escape(escapeObject)
+                .extremism(extremismObject)
+                .executeDateTime(existing.getExecuteDateTime())
+                .status(status)
+                .build();
+
+        final ProfileMessagePayload oldProfile;
+        try {
+            oldProfile = ProfileMessagePayload.builder()
+                    .offenderNo(offenderNo)
+                    .soc(jacksonMapper.readValue(existing.getSoc(), SocProfile.class))
+                    .violence(jacksonMapper.readValue(existing.getViolence(), ViolenceProfile.class))
+                    .escape(jacksonMapper.readValue(existing.getEscape(), EscapeProfile.class))
+                    .extremism(jacksonMapper.readValue(existing.getExtremism(), ExtremismProfile.class))
+                    .executeDateTime(existing.getExecuteDateTime())
+                    .status(existing.getStatus())
+                    .build();
+
+            var payload = RiskProfileChange.builder().newProfile(newProfile).oldProfile(oldProfile).build();
+            log.info("Reporting risk change to queue for offender {}", offenderNo);
+
+            sqsService.sendRiskProfileChangeMessage(payload);
+        } catch (IOException e) {
+            log.error("Problem creating risk profile change message for " +  offenderNo, e);
         }
     }
 
