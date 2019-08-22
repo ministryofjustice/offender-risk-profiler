@@ -21,9 +21,16 @@ spring:
   flyway:
     enabled: true
     baselineOnMigrate: true
+    mixed: true
+    locations: classpath:/db/migration/h2,classpath:/db/migration/common
+    url: 'jdbc:h2:mem:risk-profiler-db;MODE=PostgreSQL;DB_CLOSE_DELAY=-1'
+
+    placeholders:
+      database_password: dummy
 
   datasource:
-    url: 'jdbc:h2:mem:risk-profiler-db;MODE=PostgreSQL'
+    # This reopens the database prepared by flyway
+    url: 'jdbc:h2:mem:risk-profiler-db;MODE=PostgreSQL;SCHEMA=RISK_PROFILER;IFEXISTS=TRUE'
     continue-on-error: true
 
     hikari:
