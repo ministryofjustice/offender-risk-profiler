@@ -1,4 +1,4 @@
-CREATE TABLE RISK_PROFILER.PREVIOUS_PROFILE
+CREATE TABLE PREVIOUS_PROFILE
 (
     OFFENDER_NO       VARCHAR(10) PRIMARY KEY,
     ESCAPE            TEXT,
@@ -9,4 +9,4 @@ CREATE TABLE RISK_PROFILER.PREVIOUS_PROFILE
     STATUS            VARCHAR(20) NOT NULL
 );
 
-COMMENT ON TABLE RISK_PROFILER.PREVIOUS_PROFILE IS 'Records the previous risk profile results for an offender';
+COMMENT ON TABLE PREVIOUS_PROFILE IS 'Records the previous risk profile results for an offender';
