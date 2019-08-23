@@ -59,10 +59,7 @@ env:
         key: secret_access_key
 
   - name: DATABASE_USERNAME
-    valueFrom:
-      secretKeyRef:
-        name: dps-rds-instance-output
-        key: risk_profiler_username
+    value: "risk_profiler"
 
   - name: DATABASE_PASSWORD
     valueFrom:
@@ -70,11 +67,23 @@ env:
         name: dps-rds-instance-output
         key: risk_profiler_password
 
+  - name: SUPERUSER_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: dps-rds-instance-output
+        key: database_username
+
+  - name: SUPERUSER_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: dps-rds-instance-output
+        key: database_password
+
   - name: DATABASE_NAME
     valueFrom:
       secretKeyRef:
         name: dps-rds-instance-output
-        key: risk_profiler_name
+        key: database_name
 
   - name: DATABASE_ENDPOINT
     valueFrom:
