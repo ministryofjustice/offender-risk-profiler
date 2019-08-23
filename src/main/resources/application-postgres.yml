@@ -1,7 +1,7 @@
 spring:
   datasource:
     url: 'jdbc:postgresql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?sslmode=prefer'
-    username: ${DATABASE_USERNAME}
+    username: risk_profiler
     password: ${DATABASE_PASSWORD}
   flyway:
     locations: classpath:/db/migration/postgres,classpath:/db/migration/common
@@ -9,6 +9,7 @@ spring:
     user: ${SUPERUSER_USERNAME}
     password: ${SUPERUSER_PASSWORD}
     placeholders.database_password: ${DATABASE_PASSWORD}
+    schemas: risk_profiler
   jpa:
     properties:
       hibernate:

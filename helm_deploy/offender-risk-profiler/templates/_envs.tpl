@@ -58,9 +58,6 @@ env:
         name: risk-profiler-s3-bucket-output
         key: secret_access_key
 
-  - name: DATABASE_USERNAME
-    value: "risk_profiler"
-
   - name: DATABASE_PASSWORD
     valueFrom:
       secretKeyRef:
