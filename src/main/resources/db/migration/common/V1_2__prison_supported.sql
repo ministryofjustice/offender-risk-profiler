@@ -8,3 +8,5 @@ COMMENT ON TABLE PRISON_SUPPORTED IS 'Records the prisons which have started usi
 
 COMMENT ON COLUMN PRISON_SUPPORTED.PRISON_ID IS 'Prison ID (NOMIS column is Agency ID)';
 COMMENT ON COLUMN PRISON_SUPPORTED.START_DATE_TIME IS 'Indicates when the prison started using risk profiler';
+
+GRANT SELECT, INSERT, UPDATE ON PRISON_SUPPORTED TO risk_profiler;
