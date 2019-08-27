@@ -42,14 +42,14 @@ public class SocDecisionTreeServiceTest {
 
     @Before
     public void setup() {
-        var factory = new DataRepositoryFactory(ocgmRepo, ocgRepo, pathfinderRepo, prasRepo, viperRepo);
+        final var factory = new DataRepositoryFactory(ocgmRepo, ocgRepo, pathfinderRepo, prasRepo, viperRepo);
         service = new SocDecisionTreeService(factory, nomisService);
     }
 
     @Test
     public void testOnPrasFile() {
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Pras.builder().nomisId(OFFENDER_1).build()));
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
 
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isTrue();
@@ -57,15 +57,15 @@ public class SocDecisionTreeServiceTest {
 
     @Test
     public void testNotOnPrasFileAndBandNotInList() {
-        var xfo = Alert.builder().active(true).alertCode("XFO").dateCreated(LocalDate.now().minusMonths(11)).build();
-        var xd = Alert.builder().active(false).alertCode("XD").dateExpires(LocalDate.now().minusYears(2)).build();
+        final var xfo = Alert.builder().active(true).alertCode("XFO").dateCreated(LocalDate.now().minusMonths(11)).build();
+        final var xd = Alert.builder().active(false).alertCode("XD").dateExpires(LocalDate.now().minusYears(2)).build();
 
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
         when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(OcgmList.builder().nomisId(OFFENDER_1).ocgm(Ocgm.builder().nomisId(OFFENDER_1).ocgId("123").build()).build()));
         when(ocgRepo.getByKey(eq("123"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("5c").build()));
         when(nomisService.getSocListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xfo, xd));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isFalse();
     }
@@ -76,7 +76,7 @@ public class SocDecisionTreeServiceTest {
         when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(OcgmList.builder().nomisId(OFFENDER_1).ocgm(Ocgm.builder().nomisId(OFFENDER_1).ocgId("1234").build()).build()));
         when(ocgRepo.getByKey(eq("1234"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("2a").build()));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isFalse();
     }
@@ -96,7 +96,7 @@ public class SocDecisionTreeServiceTest {
                     ).build()));
         when(ocgRepo.getByKey(eq("12345"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("2a").build()));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isTrue();
     }
@@ -110,16 +110,16 @@ public class SocDecisionTreeServiceTest {
                 .ocgId("123456").build()).build()));
         when(ocgRepo.getByKey(eq("123456"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("4a").build()));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isTrue();
     }
 
     @Test
     public void testNotOnPrasFileAndBandNotInListWithOldAlerts() {
-        var now = LocalDate.now();
-        var xfo = Alert.builder().active(true).alertCode("XFO").dateCreated(now.minusMonths(13)).build();
-        var xd = Alert.builder().active(false).alertCode("XD").dateExpires(now.minusYears(2)).dateExpires(now.minusMonths(16)).expired(true).build();
+        final var now = LocalDate.now();
+        final var xfo = Alert.builder().active(true).alertCode("XFO").dateCreated(now.minusMonths(13)).build();
+        final var xd = Alert.builder().active(false).alertCode("XD").dateExpires(now.minusYears(2)).dateExpires(now.minusMonths(16)).expired(true).build();
 
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
         when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(OcgmList.builder().nomisId(OFFENDER_1)
@@ -127,46 +127,46 @@ public class SocDecisionTreeServiceTest {
         when(ocgRepo.getByKey(eq("123"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("5c").build()));
         when(nomisService.getSocListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xfo, xd));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isFalse();
     }
 
     @Test
     public void testNotOnPrasFileAndNoOcgmWithActiveAlerts() {
-        var now = LocalDate.now();
-        var xfo = Alert.builder().active(true).alertCode("XFO").dateCreated(now.minusMonths(11)).build();
-        var xd = Alert.builder().active(false).alertCode("XD").dateExpires(now.minusYears(2)).build();
+        final var now = LocalDate.now();
+        final var xfo = Alert.builder().active(true).alertCode("XFO").dateCreated(now.minusMonths(11)).build();
+        final var xd = Alert.builder().active(false).alertCode("XD").dateExpires(now.minusYears(2)).build();
 
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
         when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
         when(nomisService.getSocListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xfo, xd));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isFalse();
     }
 
     @Test
     public void testNotOnPrasFileAndNoOcgmWithOldAlerts() {
-        var now = LocalDate.now();
-        var xfo = Alert.builder().active(true).alertCode("XFO").dateCreated(now.minusMonths(13)).build();
-        var xd = Alert.builder().active(false).alertCode("XD").dateExpires(now.minusYears(2)).dateExpires(now.minusMonths(16)).expired(true).build();
+        final var now = LocalDate.now();
+        final var xfo = Alert.builder().active(true).alertCode("XFO").dateCreated(now.minusMonths(13)).build();
+        final var xd = Alert.builder().active(false).alertCode("XD").dateExpires(now.minusYears(2)).dateExpires(now.minusMonths(16)).expired(true).build();
 
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
         when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
         when(nomisService.getSocListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xfo, xd));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isFalse();
     }
 
     @Test
     public void testNotOnPrasFileAndHasOcgmNotNoOcgWithOldAlerts() {
-        var now = LocalDate.now();
-        var xfo = Alert.builder().active(true).alertCode("XFO").dateCreated(now.minusMonths(13)).build();
-        var xd = Alert.builder().active(false).alertCode("XD").dateExpires(now.minusYears(2)).dateExpires(now.minusMonths(16)).expired(true).build();
+        final var now = LocalDate.now();
+        final var xfo = Alert.builder().active(true).alertCode("XFO").dateCreated(now.minusMonths(13)).build();
+        final var xd = Alert.builder().active(false).alertCode("XD").dateExpires(now.minusYears(2)).dateExpires(now.minusMonths(16)).expired(true).build();
 
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
         when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(OcgmList.builder().nomisId(OFFENDER_1)
@@ -174,7 +174,7 @@ public class SocDecisionTreeServiceTest {
         when(ocgRepo.getByKey(eq("123"))).thenReturn(Optional.empty());
         when(nomisService.getSocListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(xfo, xd));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isFalse();
     }
@@ -182,22 +182,22 @@ public class SocDecisionTreeServiceTest {
     @Test
     public void testNotOnPrasFileAndOneWithInBandInListAndAnotherEntryWithoutAndPrincipleStanding() {
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
-        Ocgm ocgm1 = Ocgm.builder().nomisId(OFFENDER_1)
+        final Ocgm ocgm1 = Ocgm.builder().nomisId(OFFENDER_1)
                 .standingWithinOcg("SomethingElse")
                 .ocgId("123456")
                 .build();
-        Ocgm ocgm2 = Ocgm.builder().nomisId(OFFENDER_1)
+        final Ocgm ocgm2 = Ocgm.builder().nomisId(OFFENDER_1)
                 .standingWithinOcg("SomethingElse")
                 .ocgId("1234567")
                 .build();
-        OcgmList ocgmList = OcgmList.builder().nomisId(OFFENDER_1)
+        final OcgmList ocgmList = OcgmList.builder().nomisId(OFFENDER_1)
                 .ocgms(List.of(ocgm1, ocgm2)).build();
 
         when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(ocgmList));
         when(ocgRepo.getByKey(eq("123456"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("4a").build()));
         when(ocgRepo.getByKey(eq("1234567"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("1a").build()));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isFalse();
     }
@@ -205,19 +205,19 @@ public class SocDecisionTreeServiceTest {
     @Test
     public void testNotOnPrasFileAndMultipleOffendersForSameNomsIDOneWithBand1a() {
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
-        Ocgm ocgm1 = Ocgm.builder().nomisId(OFFENDER_1)
+        final Ocgm ocgm1 = Ocgm.builder().nomisId(OFFENDER_1)
                 .standingWithinOcg("SomethingElse")
                 .ocgId("123456")
                 .build();
-        Ocgm ocgm2 = Ocgm.builder().nomisId(OFFENDER_1)
+        final Ocgm ocgm2 = Ocgm.builder().nomisId(OFFENDER_1)
                 .standingWithinOcg("SomethingElse")
                 .ocgId("1234567")
                 .build();
-        Ocgm ocgm3 = Ocgm.builder().nomisId(OFFENDER_1)
+        final Ocgm ocgm3 = Ocgm.builder().nomisId(OFFENDER_1)
                 .standingWithinOcg(PRINCIPAL_SUBJECT)
                 .ocgId("1234568")
                 .build();
-        OcgmList ocgmList = OcgmList.builder().nomisId(OFFENDER_1)
+        final OcgmList ocgmList = OcgmList.builder().nomisId(OFFENDER_1)
                 .ocgms(List.of(ocgm1, ocgm2, ocgm3)).build();
 
         when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(ocgmList));
@@ -225,7 +225,7 @@ public class SocDecisionTreeServiceTest {
         when(ocgRepo.getByKey(eq("1234567"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("5a").build()));
         when(ocgRepo.getByKey(eq("1234568"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("1a").build()));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isTrue();
     }
@@ -233,19 +233,19 @@ public class SocDecisionTreeServiceTest {
     @Test
     public void testNotOnPrasFileAndMultipleOffendersForSameNomsIDOneWithBand5aButPrincipal() {
         when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
-        Ocgm ocgm1 = Ocgm.builder().nomisId(OFFENDER_1)
+        final Ocgm ocgm1 = Ocgm.builder().nomisId(OFFENDER_1)
                 .standingWithinOcg("SomethingElse")
                 .ocgId("123456")
                 .build();
-        Ocgm ocgm2 = Ocgm.builder().nomisId(OFFENDER_1)
+        final Ocgm ocgm2 = Ocgm.builder().nomisId(OFFENDER_1)
                 .standingWithinOcg(PRINCIPAL_SUBJECT)
                 .ocgId("1234567")
                 .build();
-        Ocgm ocgm3 = Ocgm.builder().nomisId(OFFENDER_1)
+        final Ocgm ocgm3 = Ocgm.builder().nomisId(OFFENDER_1)
                 .standingWithinOcg("SomethingElse")
                 .ocgId("1234568")
                 .build();
-        OcgmList ocgmList = OcgmList.builder().nomisId(OFFENDER_1)
+        final OcgmList ocgmList = OcgmList.builder().nomisId(OFFENDER_1)
                 .ocgms(List.of(ocgm1, ocgm2, ocgm3)).build();
 
         when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(ocgmList));
@@ -253,7 +253,27 @@ public class SocDecisionTreeServiceTest {
         when(ocgRepo.getByKey(eq("1234567"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("5a").build()));
         when(ocgRepo.getByKey(eq("1234568"))).thenReturn(Optional.of(Ocg.builder().ocgmBand("1a").build()));
 
-        var socProfile = service.getSocData(OFFENDER_1);
+        final var socProfile = service.getSocData(OFFENDER_1);
+        Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
+        Assertions.assertThat(socProfile.isTransferToSecurity()).isTrue();
+    }
+
+    @Test
+    public void testPrisonerInListButBandMissing() {
+        when(prasRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
+        when(ocgmRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(
+                OcgmList.builder().nomisId(OFFENDER_1)
+                        .ocgm(
+                                Ocgm.builder()
+                                        .nomisId(OFFENDER_1)
+                                        .standingWithinOcg(PRINCIPAL_SUBJECT)
+                                        .ocgId("12345")
+                                        .build()
+                        ).build()));
+        // return ocg with no band:
+        when(ocgRepo.getByKey(eq("12345"))).thenReturn(Optional.of(Ocg.builder().build()));
+
+        final var socProfile = service.getSocData(OFFENDER_1);
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.isTransferToSecurity()).isTrue();
     }
