@@ -25,7 +25,7 @@ public class SocDecisionTreeService {
 
     private final Set<String> OCGM_BANDS = Set.of("1a", "1b", "1c", "2a", "2b", "2c", "3a", "3b", "3c");
 
-    public SocDecisionTreeService(DataRepositoryFactory factory, NomisService nomisService) {
+    public SocDecisionTreeService(final DataRepositoryFactory factory, final NomisService nomisService) {
         this.repositoryFactory = factory;
         this.nomisService = nomisService;
     }
@@ -33,9 +33,9 @@ public class SocDecisionTreeService {
     public SocProfile getSocData(@NotNull final String nomsId) {
         log.debug("Calculating SOC profile for {}", nomsId);
 
-        var soc = buildSocProfile(nomsId);
+        final var soc = buildSocProfile(nomsId);
 
-        var prasData = repositoryFactory.getRepository(Pras.class).getByKey(nomsId);
+        final var prasData = repositoryFactory.getRepository(Pras.class).getByKey(nomsId);
 
         if (prasData.isPresent()) {
             log.debug("SOC: {} is present in PRAS", nomsId);
@@ -68,15 +68,16 @@ public class SocDecisionTreeService {
 
     }
 
-    private SocProfile.SocProfileBuilder buildSocProfile(@NotNull String nomsId) {
+    private SocProfile.SocProfileBuilder buildSocProfile(@NotNull final String nomsId) {
         return SocProfile.socBuilder()
                 .nomsId(nomsId)
                 .provisionalCategorisation(DEFAULT_CAT);
     }
 
-    private void checkBand(@NotNull String nomsId, SocProfile.SocProfileBuilder soc, Ocgm ocgm, Ocg ocg) {
-        //Check OCGM Band = 1a, 1b, 1c, 2a, 2b, 2c, 3a, 3b, 3c?
-        if (OCGM_BANDS.contains(ocg.getOcgmBand())) {
+    private void checkBand(@NotNull final String nomsId, final SocProfile.SocProfileBuilder soc, final Ocgm ocgm, final Ocg ocg) {
+        // Check OCGM Band = 1a, 1b, 1c, 2a, 2b, 2c, 3a, 3b, 3c?
+        // If band info is missing, we should assume it is effectively 5c
+        if (ocg.getOcgmBand() != null && OCGM_BANDS.contains(ocg.getOcgmBand())) {
             log.debug("SOC: {} in OGCM band 1 to 3", nomsId);
             soc.provisionalCategorisation("C");
             if (PRINCIPAL_SUBJECT.equalsIgnoreCase(ocgm.getStandingWithinOcg())) {
@@ -95,7 +96,7 @@ public class SocDecisionTreeService {
         }
     }
 
-    private void checkAlerts(@NotNull String nomsId, SocProfile.SocProfileBuilder soc, String defaultCat) {
+    private void checkAlerts(@NotNull final String nomsId, final SocProfile.SocProfileBuilder soc, final String defaultCat) {
         if (isHasActiveSocAlerts(nomsId)) {
             log.debug("SOC: active alerts for {}", nomsId);
             // TODO: NOT MVP - we will trigger a notification to security
@@ -106,7 +107,7 @@ public class SocDecisionTreeService {
         }
     }
 
-    private boolean isHasActiveSocAlerts(String nomsId) {
+    private boolean isHasActiveSocAlerts(final String nomsId) {
         return nomisService.getSocListAlertsForOffender(nomsId).stream()
                 .anyMatch(alert -> alert.isActive() &&
                         alert.getDateCreated().isAfter(LocalDate.now().minusYears(1)));
