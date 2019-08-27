@@ -10,3 +10,5 @@ CREATE TABLE PREVIOUS_PROFILE
 );
 
 COMMENT ON TABLE PREVIOUS_PROFILE IS 'Records the previous risk profile results for an offender';
+
+GRANT SELECT, INSERT, UPDATE ON PREVIOUS_PROFILE TO risk_profiler;
