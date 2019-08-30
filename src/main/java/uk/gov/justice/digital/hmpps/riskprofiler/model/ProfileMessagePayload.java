@@ -13,11 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class ProfileMessagePayload {
-    private String offenderNo;
     private EscapeProfile escape;
     private ExtremismProfile extremism;
     private SocProfile soc;
     private ViolenceProfile violence;
-    private LocalDateTime executeDateTime;
-    private Status status;
 }
