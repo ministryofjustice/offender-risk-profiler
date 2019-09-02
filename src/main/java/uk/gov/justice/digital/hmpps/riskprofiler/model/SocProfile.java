@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@ToString(callSuper = true)
 public class SocProfile extends RiskProfile implements Comparable<SocProfile> {
     @ApiModelProperty(value = "Indicates the offender must be transferred to security", example = "true", position = 4)
     private boolean transferToSecurity;

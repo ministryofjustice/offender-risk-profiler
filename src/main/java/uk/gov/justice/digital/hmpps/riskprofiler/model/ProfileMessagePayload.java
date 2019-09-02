@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,12 +9,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@EqualsAndHashCode
 public class ProfileMessagePayload {
-    private String offenderNo;
     private EscapeProfile escape;
     private ExtremismProfile extremism;
     private SocProfile soc;
     private ViolenceProfile violence;
-    private LocalDateTime executeDateTime;
-    private Status status;
 }

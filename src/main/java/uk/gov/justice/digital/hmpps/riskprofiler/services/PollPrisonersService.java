@@ -74,14 +74,13 @@ public class PollPrisonersService {
                             // Update db with new data:
                             log.info("Change detected for {}", offenderNo);
 
-                            buildAndSendRiskProfilePayload(offenderNo, socObject, violenceObject, escapeObject, extremismObject, Status.NEW, existing);
+                            buildAndSendRiskProfilePayload(offenderNo, socObject, violenceObject, escapeObject, extremismObject, existing);
 
                             existing.setSoc(soc);
                             existing.setViolence(violence);
                             existing.setEscape(escape);
                             existing.setExtremism(extremism);
                             existing.setExecuteDateTime(LocalDateTime.now());
-                            existing.setStatus(Status.NEW);
                         }
                     },
                     () -> {
@@ -93,7 +92,6 @@ public class PollPrisonersService {
                                 .escape(escape)
                                 .extremism(extremism)
                                 .executeDateTime(LocalDateTime.now())
-                                .status(Status.NEW)
                                 .build());
                         log.info("Added new offender {} to DB", offenderNo);
                     });
@@ -102,30 +100,25 @@ public class PollPrisonersService {
         }
     }
 
-    private void buildAndSendRiskProfilePayload(String offenderNo, SocProfile socObject, ViolenceProfile violenceObject, EscapeProfile escapeObject, ExtremismProfile extremismObject, Status status, PreviousProfile existing) {
+    private void buildAndSendRiskProfilePayload(String offenderNo, SocProfile socObject, ViolenceProfile violenceObject, EscapeProfile escapeObject, ExtremismProfile extremismObject, PreviousProfile existing) {
         final var newProfile = ProfileMessagePayload.builder()
-                .offenderNo(offenderNo)
                 .soc(socObject)
                 .violence(violenceObject)
                 .escape(escapeObject)
                 .extremism(extremismObject)
-                .executeDateTime(existing.getExecuteDateTime())
-                .status(status)
                 .build();
 
         final ProfileMessagePayload oldProfile;
         try {
             oldProfile = ProfileMessagePayload.builder()
-                    .offenderNo(offenderNo)
                     .soc(jacksonMapper.readValue(existing.getSoc(), SocProfile.class))
                     .violence(jacksonMapper.readValue(existing.getViolence(), ViolenceProfile.class))
                     .escape(jacksonMapper.readValue(existing.getEscape(), EscapeProfile.class))
                     .extremism(jacksonMapper.readValue(existing.getExtremism(), ExtremismProfile.class))
-                    .executeDateTime(existing.getExecuteDateTime())
-                    .status(existing.getStatus())
                     .build();
 
-            var payload = RiskProfileChange.builder().newProfile(newProfile).oldProfile(oldProfile).build();
+            var payload = RiskProfileChange.builder().newProfile(newProfile).oldProfile(oldProfile)
+                    .offenderNo(offenderNo).executeDateTime(existing.getExecuteDateTime()).build();
             log.info("Reporting risk change to queue for offender {}", offenderNo);
 
             sqsService.sendRiskProfileChangeMessage(payload);

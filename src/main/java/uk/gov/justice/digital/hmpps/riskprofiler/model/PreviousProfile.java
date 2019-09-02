@@ -28,8 +28,4 @@ public class PreviousProfile {
 
     @NotNull
     private LocalDateTime executeDateTime;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Status status;
 }

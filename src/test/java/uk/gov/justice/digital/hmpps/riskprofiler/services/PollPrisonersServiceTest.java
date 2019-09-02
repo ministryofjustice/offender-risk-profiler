@@ -39,18 +39,17 @@ public class PollPrisonersServiceTest {
     @Mock
     private SQSService sqsService;
 
-    final SocProfile SOC_1 = SocProfile.socBuilder().nomsId(OFFENDER_1).build();
-    final ViolenceProfile VIOLENCE_1 = ViolenceProfile.violenceBuilder().nomsId(OFFENDER_1).build();
-    final EscapeProfile ESCAPE_1 = EscapeProfile.escapeBuilder().nomsId(OFFENDER_1).build();
-    final ExtremismProfile EXTREMISM_1 = ExtremismProfile.extremismBuilder().nomsId(OFFENDER_1).build();
-    final PreviousProfile PROFILE_1 = PreviousProfile.builder()
+    private final SocProfile SOC_1 = SocProfile.socBuilder().nomsId(OFFENDER_1).provisionalCategorisation("C").build();
+    private final ViolenceProfile VIOLENCE_1 = ViolenceProfile.violenceBuilder().nomsId(OFFENDER_1).provisionalCategorisation("C").build();
+    private final EscapeProfile ESCAPE_1 = EscapeProfile.escapeBuilder().nomsId(OFFENDER_1).provisionalCategorisation("C").build();
+    private final ExtremismProfile EXTREMISM_1 = ExtremismProfile.extremismBuilder().nomsId(OFFENDER_1).provisionalCategorisation("C").build();
+    private final PreviousProfile PROFILE_1 = PreviousProfile.builder()
             .offenderNo(OFFENDER_1)
-            .soc("{\"nomsId\":\"" + OFFENDER_1 + "\",\"transferToSecurity\":false,\"riskType\":\"SOC\"}")
-            .violence("{\"nomsId\":\"" + OFFENDER_1 + "\",\"veryHighRiskViolentOffender\":false,\"notifySafetyCustodyLead\":false,\"displayAssaults\":false,\"numberOfAssaults\":0,\"numberOfSeriousAssaults\":0,\"riskType\":\"VIOLENCE\"}")
-            .escape("{\"nomsId\":\"" + OFFENDER_1 + "\",\"activeEscapeList\":false,\"activeEscapeRisk\":false,\"riskType\":\"ESCAPE\"}")
-            .extremism("{\"nomsId\":\"" + OFFENDER_1 + "\",\"notifyRegionalCTLead\":false,\"increasedRiskOfExtremism\":false,\"riskType\":\"EXTREMISM\"}")
+            .soc("{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"transferToSecurity\":false,\"riskType\":\"SOC\"}")
+            .violence("{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"veryHighRiskViolentOffender\":false,\"notifySafetyCustodyLead\":false,\"displayAssaults\":false,\"numberOfAssaults\":0,\"numberOfSeriousAssaults\":0,\"riskType\":\"VIOLENCE\"}")
+            .escape("{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"activeEscapeList\":false,\"activeEscapeRisk\":false,\"riskType\":\"ESCAPE\"}")
+            .extremism("{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"notifyRegionalCTLead\":false,\"increasedRiskOfExtremism\":false,\"riskType\":\"EXTREMISM\"}")
             .executeDateTime(LocalDateTime.now())
-            .status(Status.NEW)
             .build();
 
     @Before
@@ -74,17 +73,13 @@ public class PollPrisonersServiceTest {
 
         service.pollPrisoner(OFFENDER_1);
 
-        //todo verify arguments
-        var payload = RiskProfileChange.builder()
+        var rpc = RiskProfileChange.builder()
                 .newProfile(
                         ProfileMessagePayload.builder()
-                                .soc(SocProfile.socBuilder().nomsId(OFFENDER_1).transferToSecurity(true).build())
+                                .soc(SocProfile.socBuilder().transferToSecurity(true).nomsId(OFFENDER_1).build())
                                 .extremism(EXTREMISM_1)
                                 .escape(ESCAPE_1)
                                 .violence(VIOLENCE_1)
-                                .executeDateTime(LocalDateTime.now())
-                                .offenderNo(OFFENDER_1)
-                                .status(Status.NEW)
                                 .build())
                 .oldProfile(
                         ProfileMessagePayload.builder()
@@ -92,12 +87,11 @@ public class PollPrisonersServiceTest {
                                 .extremism(EXTREMISM_1)
                                 .escape(ESCAPE_1)
                                 .violence(VIOLENCE_1)
-                                .executeDateTime(LocalDateTime.now())
-                                .offenderNo(OFFENDER_1)
-                                .status(Status.NEW)
-                                .build()).build();
+                                .build())
+                .executeDateTime(LocalDateTime.now())
+                .offenderNo(OFFENDER_1).build();
 
-        verify(sqsService).sendRiskProfileChangeMessage(any());
+        verify(sqsService).sendRiskProfileChangeMessage(eqRiskProfileChange(rpc));
         verify(previousProfileRepository, never()).save(any());
     }
 
@@ -136,7 +130,14 @@ public class PollPrisonersServiceTest {
                         && profile.getViolence().equals(argument.getViolence())
                         && profile.getEscape().equals(argument.getEscape())
                         && profile.getExtremism().equals(argument.getExtremism())
-                        && abs(ChronoUnit.SECONDS.between(profile.getExecuteDateTime(), argument.getExecuteDateTime())) < 2
-                        && profile.getStatus().equals(argument.getStatus()));
+                        && abs(ChronoUnit.SECONDS.between(profile.getExecuteDateTime(), argument.getExecuteDateTime())) < 2);
+    }
+
+    private static RiskProfileChange eqRiskProfileChange(RiskProfileChange rpc) {
+        return argThat(argument ->
+                rpc.getNewProfile().equals(argument.getNewProfile())
+                && rpc.getOldProfile().equals(argument.getOldProfile())
+                        && abs(ChronoUnit.SECONDS.between(rpc.getExecuteDateTime(), argument.getExecuteDateTime())) < 2
+                        && rpc.getOffenderNo().equals(argument.getOffenderNo()));
     }
 }
