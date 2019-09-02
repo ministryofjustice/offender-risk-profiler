@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@ToString(callSuper = true)
 public class EscapeProfile extends RiskProfile {
 
     @ApiModelProperty(value = "Indicates offender is on the escape list", example = "true", position = 1)

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@ToString(callSuper = true)
 public class ViolenceProfile extends RiskProfile {
     @ApiModelProperty(value = "Indicates that offender is very high risk of violence", example = "false", position = 3)
     private boolean veryHighRiskViolentOffender;

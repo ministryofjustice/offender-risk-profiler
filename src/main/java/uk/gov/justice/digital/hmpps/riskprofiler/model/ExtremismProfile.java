@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@ToString(callSuper = true)
 public class ExtremismProfile extends RiskProfile {
     @ApiModelProperty(value = "Indicates Regional CT Lead should be informed", example = "false", position = 3)
     private boolean notifyRegionalCTLead;

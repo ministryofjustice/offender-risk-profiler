@@ -9,7 +9,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.PreviousProfile;
-import uk.gov.justice.digital.hmpps.riskprofiler.model.Status;
 
 import java.time.LocalDateTime;
 
@@ -40,8 +39,6 @@ public class PreviousProfileRepositoryTest {
 
         // equals only compares the business key columns: staffId
         assertThat(retrievedEntity).isEqualTo(transientEntity);
-
-        assertThat(retrievedEntity.getStatus()).isEqualTo(transientEntity.getStatus());
     }
 
     @Test
@@ -67,7 +64,6 @@ public class PreviousProfileRepositoryTest {
                 .builder()
                 .offenderNo("A1234AA")
                 .executeDateTime(LocalDateTime.of(2020, 3, 30, 14, 40))
-                .status(Status.NEW)
                 .build();
     }
 }
