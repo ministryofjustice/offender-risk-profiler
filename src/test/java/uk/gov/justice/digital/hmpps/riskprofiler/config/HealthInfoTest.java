@@ -58,7 +58,7 @@ public class HealthInfoTest {
 
         final Health health = healthInfo.health();
         assertThat(health.getStatus()).isEqualTo(Status.UP);
-        assertThat(health.getDetails()).extracting("version").contains("1.2.3");
+        assertThat(health.getDetails()).extracting("version").isEqualTo("1.2.3");
     }
 
     @Test
