@@ -16,6 +16,7 @@ import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthInterceptor;
 
+import java.time.Duration;
 import java.util.List;
 
 @Configuration
@@ -30,12 +31,16 @@ public class RestTemplateConfiguration {
     @Value("${elite2api.endpoint.url}")
     private String elite2apiRootUri;
 
+    private final Duration healthTimeout;
+
     @Autowired
     public RestTemplateConfiguration(
             OAuth2ClientContext oauth2ClientContext,
-            ClientCredentialsResourceDetails elite2apiDetails) {
+            ClientCredentialsResourceDetails elite2apiDetails,
+            @Value("${api.health-timeout:1s}") Duration healthTimeout) {
         this.oauth2ClientContext = oauth2ClientContext;
         this.elite2apiDetails = elite2apiDetails;
+        this.healthTimeout = healthTimeout;
     }
 
     @Bean
@@ -51,6 +56,8 @@ public class RestTemplateConfiguration {
         return restTemplateBuilder
                 .rootUri(elite2apiRootUri)
                 .additionalInterceptors(new JwtAuthInterceptor())
+                .setConnectTimeout(healthTimeout)
+                .setReadTimeout(healthTimeout)
                 .build();
     }
 
