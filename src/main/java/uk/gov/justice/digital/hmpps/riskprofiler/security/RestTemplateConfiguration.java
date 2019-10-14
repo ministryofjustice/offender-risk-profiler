@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthInterceptor;
-import uk.gov.justice.digital.hmpps.riskprofiler.utils.W3cTracingInterceptor;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class RestTemplateConfiguration {
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
                 .rootUri(apiRootUri)
-                .additionalInterceptors(getRequestInterceptors())
+                .additionalInterceptors(new JwtAuthInterceptor())
                 .build();
     }
 
@@ -51,14 +50,8 @@ public class RestTemplateConfiguration {
     public RestTemplate elite2ApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
                 .rootUri(elite2apiRootUri)
-                .additionalInterceptors(getRequestInterceptors())
+                .additionalInterceptors(new JwtAuthInterceptor())
                 .build();
-    }
-
-    private List<ClientHttpRequestInterceptor> getRequestInterceptors() {
-        return List.of(
-                new W3cTracingInterceptor(),
-                new JwtAuthInterceptor());
     }
 
     @Bean
@@ -66,7 +59,6 @@ public class RestTemplateConfiguration {
 
         OAuth2RestTemplate elite2SystemRestTemplate = new OAuth2RestTemplate(elite2apiDetails, oauth2ClientContext);
         List<ClientHttpRequestInterceptor> systemInterceptors = elite2SystemRestTemplate.getInterceptors();
-        systemInterceptors.add(new W3cTracingInterceptor());
 
         elite2SystemRestTemplate.setAccessTokenProvider(accessTokenProvider);
 
