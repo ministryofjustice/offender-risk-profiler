@@ -7,33 +7,32 @@ import com.microsoft.applicationinsights.web.internal.ThreadContext;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import java.security.KeyPair;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Optional;
 
+@Slf4j
 @Configuration
 public class ClientTrackingTelemetryModule implements WebTelemetryModule, TelemetryModule {
-    private final KeyPair keyPair;
+    private final String jwtPublicKey;
 
     @Autowired
-    public ClientTrackingTelemetryModule(@Value("${jwt.signing.key.pair}") final String privateKeyPair,
-                                         @Value("${jwt.keystore.password}") final String keystorePassword,
-                                         @Value("${jwt.keystore.alias:elite2api}") final String keystoreAlias) {
-
-        final var keyStoreKeyFactory = new KeyStoreKeyFactory(new ByteArrayResource(Base64.decodeBase64(privateKeyPair)),
-                keystorePassword.toCharArray());
-        keyPair = keyStoreKeyFactory.getKeyPair(keystoreAlias);
+    public ClientTrackingTelemetryModule(
+            @Value("${jwt.public.key}") final String jwtPublicKey) {
+        this.jwtPublicKey = jwtPublicKey;
     }
 
     @Override
@@ -54,17 +53,29 @@ public class ClientTrackingTelemetryModule implements WebTelemetryModule, Teleme
 
                 properties.put("clientId", String.valueOf(jwtBody.get("client_id")));
 
-            } catch ( ExpiredJwtException e){
+            } catch (ExpiredJwtException e) {
                 // Expired token which spring security will handle
+            } catch (GeneralSecurityException e) {
+                log.warn("problem decoding jwt public key for application insights", e);
             }
         }
     }
 
-    private Claims getClaimsFromJWT(final String token) throws ExpiredJwtException {
+    private Claims getClaimsFromJWT(final String token) throws ExpiredJwtException, GeneralSecurityException {
+
         return Jwts.parser()
-                .setSigningKey(keyPair.getPublic())
+                .setSigningKey(getPublicKeyFromString(jwtPublicKey))
                 .parseClaimsJws(token.substring(7))
                 .getBody();
+    }
+
+    RSAPublicKey getPublicKeyFromString(final String key) throws GeneralSecurityException {
+        final var publicKey = new String(Base64.decodeBase64(key))
+                .replace("-----BEGIN PUBLIC KEY-----", "")
+                .replace("-----END PUBLIC KEY-----", "")
+                .replaceAll("\\R", "");
+        final var encoded = Base64.decodeBase64(publicKey);
+        return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(encoded));
     }
 
     @Override
