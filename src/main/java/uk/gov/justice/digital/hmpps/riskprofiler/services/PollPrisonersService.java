@@ -25,10 +25,12 @@ public class PollPrisonersService {
     private final EscapeDecisionTreeService escapeDecisionTreeService;
     private final ExtremismDecisionTreeService extremismDecisionTreeService;
     private final PreviousProfileRepository previousProfileRepository;
+    private final NomisService nomisService;
     private final SQSService sqsService;
     private final TelemetryClient telemetryClient;
 
     private final ObjectMapper jacksonMapper = new ObjectMapper();
+    private final LocalDateTime defaultFromDateTime = LocalDateTime.of(2019, 10, 25, 0, 0);
 
     public PollPrisonersService(
             final SocDecisionTreeService socDecisionTreeService,
@@ -37,6 +39,7 @@ public class PollPrisonersService {
             final ExtremismDecisionTreeService extremismDecisionTreeService,
             final PreviousProfileRepository previousProfileRepository,
             final TelemetryClient telemetryClient,
+            final NomisService nomisService,
             final SQSService sqsService) {
         this.socDecisionTreeService = socDecisionTreeService;
         this.violenceDecisionTreeService = violenceDecisionTreeService;
@@ -44,6 +47,7 @@ public class PollPrisonersService {
         this.extremismDecisionTreeService = extremismDecisionTreeService;
         this.previousProfileRepository = previousProfileRepository;
         this.telemetryClient = telemetryClient;
+        this.nomisService = nomisService;
         this.sqsService = sqsService;
         jacksonMapper.registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -98,6 +102,20 @@ public class PollPrisonersService {
         } catch (final Exception e) {
             raiseProcessingError(offenderNo, e);
         }
+    }
+
+    public void evictCaches() {
+        LocalDateTime time = previousProfileRepository.findApproxLastRunTime();
+        final LocalDateTime fromDateTime = time == null ? defaultFromDateTime : time.minusHours(1);
+        final var alertCandidates = nomisService.getAlertCandidates(fromDateTime);
+        alertCandidates.forEach(offender -> {
+            nomisService.evictEscapeListAlertsCache(offender);
+            nomisService.evictSocListAlertsCache(offender);
+        });
+        final var incidentCandidates = nomisService.getIncidentCandidates(fromDateTime);
+        incidentCandidates.forEach(offender -> {
+            nomisService.evictIncidentsCache(offender);
+        });
     }
 
     private void buildAndSendRiskProfilePayload(String offenderNo, SocProfile socObject, ViolenceProfile violenceObject, EscapeProfile escapeObject, ExtremismProfile extremismObject, PreviousProfile existing) {

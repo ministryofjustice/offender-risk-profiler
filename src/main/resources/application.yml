@@ -6,6 +6,15 @@ spring:
   application:
     name: offender-risk-profiler-api
 
+  data:
+    redis:
+      repositories:
+        enabled: false
+
+  h2:
+    console:
+      enabled: false
+
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
     serialization:

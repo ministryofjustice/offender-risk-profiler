@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +15,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IncidentCase {
+public class IncidentCase implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long incidentCaseId;
     private String incidentTitle;
@@ -31,5 +34,3 @@ public class IncidentCase {
     private List<IncidentResponse> responses;
     private List<IncidentParty> parties;
 }
-
-

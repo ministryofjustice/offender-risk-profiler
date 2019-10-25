@@ -3,13 +3,17 @@ package uk.gov.justice.digital.hmpps.riskprofiler.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.io.Serializable;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
 @Data
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class IncidentParty {
+public class IncidentParty implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long bookingId;
     private Long partySeq;
@@ -19,5 +23,4 @@ public class IncidentParty {
     private String outcomeCode;
     private String commentText;
     private Long incidentCaseId;
-
 }

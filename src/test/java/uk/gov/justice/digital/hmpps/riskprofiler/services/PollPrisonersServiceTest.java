@@ -6,11 +6,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.verification.VerificationMode;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.PreviousProfileRepository;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Math.abs;
@@ -37,6 +39,8 @@ public class PollPrisonersServiceTest {
     @Mock
     private TelemetryClient telemetryClient;
     @Mock
+    private NomisService nomisService;
+    @Mock
     private SQSService sqsService;
 
     private final SocProfile SOC_1 = SocProfile.socBuilder().nomsId(OFFENDER_1).provisionalCategorisation("C").build();
@@ -60,6 +64,7 @@ public class PollPrisonersServiceTest {
                 extremismDecisionTreeService,
                 previousProfileRepository,
                 telemetryClient,
+                nomisService,
                 sqsService);
     }
 
@@ -122,6 +127,24 @@ public class PollPrisonersServiceTest {
         verify(socDecisionTreeService).getSocData(OFFENDER_1);
         verify(previousProfileRepository).save(eqProfiles(PROFILE_1));
         verify(sqsService, never()).sendRiskProfileChangeMessage(any());
+    }
+
+    @Test
+    public void testEvictCaches() {
+        final var cutoff = LocalDateTime.of(2019, 11, 4, 3, 40);
+        final var anHourEarlier = LocalDateTime.of(2019, 11, 4, 2, 40);
+        when(previousProfileRepository.findApproxLastRunTime()).thenReturn(cutoff);
+        when(nomisService.getAlertCandidates(anHourEarlier)).thenReturn(List.of("OFF1","OFF2"));
+        when(nomisService.getIncidentCandidates(anHourEarlier)).thenReturn(List.of("OFF3","OFF4"));
+
+        service.evictCaches();
+
+        verify(nomisService).evictEscapeListAlertsCache("OFF1");
+        verify(nomisService).evictEscapeListAlertsCache("OFF2");
+        verify(nomisService).evictSocListAlertsCache("OFF1");
+        verify(nomisService).evictSocListAlertsCache("OFF2");
+        verify(nomisService).evictIncidentsCache("OFF3");
+        verify(nomisService).evictIncidentsCache("OFF4");
     }
 
     private static PreviousProfile eqProfiles(PreviousProfile profile) {

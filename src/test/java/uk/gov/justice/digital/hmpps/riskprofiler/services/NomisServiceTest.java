@@ -6,12 +6,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.PagingAndSortingDto;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -98,5 +102,68 @@ public class NomisServiceTest {
 
         verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/incidents?incidentType=ASSAULTS&participationRoles=ACTINV&participationRoles=ASSIAL")), isA(ParameterizedTypeReference.class));
         verifyNoMoreInteractions(restCallHelper);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testIncidentCandidates() throws Exception {
+
+        var body = List.of("OFF1", "OFF2");
+        var response = new ResponseEntity<>(body, HttpStatus.OK);
+
+        when(restCallHelper.getWithPaging(eq(new URI("/offenders/incidents/candidates?fromDateTime=2019-10-03T04:50")),
+                eq(new PagingAndSortingDto(0L, 1000L)), isA(ParameterizedTypeReference.class)))
+                .thenReturn(response);
+
+        var offenders = service.getIncidentCandidates(LocalDateTime.of(2019, 10, 3, 4, 50));
+
+        assertThat(offenders).asList().containsExactlyElementsOf(body);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testAlertCandidates() throws Exception {
+
+        var page1 = List.of("OFF1", "OFF2", "OFF3");
+        var response1 = new ResponseEntity<>(page1, HttpStatus.OK);
+
+        when(restCallHelper.getWithPaging(eq(new URI("/offenders/alerts/candidates?fromDateTime=2019-10-03T04:50")),
+                eq(new PagingAndSortingDto(0L, 1000L)), isA(ParameterizedTypeReference.class)))
+                .thenReturn(response1);
+
+        var offenders = service.getAlertCandidates(LocalDateTime.of(2019, 10, 3, 4, 50));
+
+        assertThat(offenders).asList().containsExactlyElementsOf(page1);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testAlertCandidates2Pages() throws Exception {
+
+        var page1 = List.of("OFF1", "OFF2", "OFF3");
+        HttpHeaders page1headers = new HttpHeaders();
+        page1headers.add(PagingAndSortingDto.HEADER_PAGE_OFFSET, "0");
+        page1headers.add(PagingAndSortingDto.HEADER_PAGE_LIMIT, "3");
+        page1headers.add(PagingAndSortingDto.HEADER_TOTAL_RECORDS, "5");
+        var response1 = new ResponseEntity<>(page1, page1headers, HttpStatus.OK);
+
+        var page2 = List.of("OFF4", "OFF5");
+        HttpHeaders page2headers = new HttpHeaders();
+        page2headers.add(PagingAndSortingDto.HEADER_PAGE_OFFSET, "3");
+        page2headers.add(PagingAndSortingDto.HEADER_PAGE_LIMIT, "5");
+        page2headers.add(PagingAndSortingDto.HEADER_TOTAL_RECORDS, "5");
+        var response2 = new ResponseEntity<>(page2, page2headers, HttpStatus.OK);
+
+        when(restCallHelper.getWithPaging(eq(new URI("/offenders/alerts/candidates?fromDateTime=2019-10-03T04:50")),
+                eq(new PagingAndSortingDto(0L, 1000L)), isA(ParameterizedTypeReference.class)))
+                .thenReturn(response1);
+        when(restCallHelper.getWithPaging(eq(new URI("/offenders/alerts/candidates?fromDateTime=2019-10-03T04:50")),
+                eq(new PagingAndSortingDto(3L, 5L)), isA(ParameterizedTypeReference.class)))
+                .thenReturn(response2);
+
+        var offenders = service.getAlertCandidates(LocalDateTime.of(2019, 10, 3, 4, 50));
+
+        assertThat(offenders).asList().containsAll(page1);
+        assertThat(offenders).asList().containsAll(page2);
     }
 }
