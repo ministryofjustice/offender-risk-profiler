@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @ApiModel(description = "Alert")
@@ -14,7 +15,10 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @ToString
 @Data
-public class Alert {
+public class Alert implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Long alertId;
     private Long bookingId;
     private String offenderNo;

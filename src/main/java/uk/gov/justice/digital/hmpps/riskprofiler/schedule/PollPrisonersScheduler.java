@@ -22,27 +22,29 @@ public class PollPrisonersScheduler {
             final NomisService nomisService,
             final PollPrisonersService pollPrisonersService,
             final PrisonService prisonService,
-            TelemetryClient telemetryClient) {
+            final TelemetryClient telemetryClient) {
         this.nomisService = nomisService;
         this.pollPrisonersService = pollPrisonersService;
         this.prisonService = prisonService;
         this.telemetryClient = telemetryClient;
     }
 
-    @Scheduled(cron = "0 15 2 * * *")
+    @Scheduled(cron = "0 15 2 * * MON-SAT")
     @SchedulerLock(name = "pollPrisonersLock")
     public void pollPrisonersSchedule() {
         try {
             log.info("Starting: Poll of all prisoners");
             pollPrisoners();
             log.info("Complete: Poll of all prisoners");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("pollPrisoners: Global exception handler", e);
             telemetryClient.trackException(e);
         }
     }
 
     public void pollPrisoners() {
+        pollPrisonersService.evictCaches();
+
         final var prisons = prisonService.getPrisons();
         log.info("There are {} prisons", prisons.size());
         prisons.forEach(p -> {

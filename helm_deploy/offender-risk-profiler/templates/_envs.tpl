@@ -106,4 +106,19 @@ env:
         name: rp-sqs-instance-output
         key: sqs_rpc_url
 
+  - name: REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: oc-elasticache-redis
+        key: primary_endpoint_address
+
+  - name: REDIS_AUTH_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: oc-elasticache-redis
+        key: auth_token
+
+  - name: REDIS_TLS_ENABLED
+    value: "true"
+
 {{- end -}}
