@@ -106,6 +106,9 @@ env:
         name: rp-sqs-instance-output
         key: sqs_rpc_url
 
+  - name: CACHE_TYPE
+    value: "elasticache"
+
   - name: SPRING_REDIS_HOST
     valueFrom:
       secretKeyRef:
