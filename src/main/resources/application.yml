@@ -19,6 +19,7 @@ spring:
     ssl: false
     cache:
       timeout-days: 30
+    client-name: risk-profiler
 
   h2:
     console:
