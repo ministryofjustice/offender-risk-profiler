@@ -85,7 +85,8 @@ public class NomisService {
         return getCandidates(uri);
     }
 
-    @Cacheable("incident")
+    //@Cacheable("incident")
+    // TODO caching disabled for now as the initial query is too slow
     public List<IncidentCase> getIncidents(@NotNull final String nomsId, @NotNull final List<String> incidentTypes, final List<String> participationRoles) {
         log.info("Getting incidents for noms id {} and type {}, with roles of {}", nomsId, incidentTypes, participationRoles);
 
@@ -102,7 +103,7 @@ public class NomisService {
         return restCallHelper.getForList(uri, INCIDENTS).getBody();
     }
 
-    @CacheEvict("incident")
+    //@CacheEvict("incident")
     public void evictIncidentsCache(final String nomsId) {
         log.info("Evicting {} from incident cache", nomsId);
     }

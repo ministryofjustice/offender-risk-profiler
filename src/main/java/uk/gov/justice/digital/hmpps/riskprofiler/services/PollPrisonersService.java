@@ -112,10 +112,11 @@ public class PollPrisonersService {
             nomisService.evictEscapeListAlertsCache(offender);
             nomisService.evictSocListAlertsCache(offender);
         });
-        final var incidentCandidates = nomisService.getIncidentCandidates(fromDateTime);
-        incidentCandidates.forEach(offender -> {
-            nomisService.evictIncidentsCache(offender);
-        });
+        // TODO disabled for now as it is too slow
+//        final var incidentCandidates = nomisService.getIncidentCandidates(fromDateTime);
+//        incidentCandidates.forEach(offender -> {
+//            nomisService.evictIncidentsCache(offender);
+//        });
     }
 
     private void buildAndSendRiskProfilePayload(String offenderNo, SocProfile socObject, ViolenceProfile violenceObject, EscapeProfile escapeObject, ExtremismProfile extremismObject, PreviousProfile existing) {
