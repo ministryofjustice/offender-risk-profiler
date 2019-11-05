@@ -103,10 +103,10 @@ public class NomisService {
         return restCallHelper.getForList(uri, INCIDENTS).getBody();
     }
 
-    //@CacheEvict("incident")
-    public void evictIncidentsCache(final String nomsId) {
-        log.info("Evicting {} from incident cache", nomsId);
-    }
+    // @CacheEvict("incident")
+//    public void evictIncidentsCache(final String nomsId) {
+//        log.info("Evicting {} from incident cache", nomsId);
+//    }
 
     public List<String> getIncidentCandidates(@NotNull final LocalDateTime fromDateTime) {
         log.info("Getting incident candidates");
