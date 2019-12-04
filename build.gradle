@@ -89,8 +89,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.security.oauth:spring-security-oauth2:2.3.7.RELEASE")
     implementation("org.springframework.security:spring-security-jwt:1.0.11.RELEASE")
-
+    implementation 'org.springframework:spring-jms'
+    implementation 'com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8'
     implementation 'org.apache.camel:camel-spring-boot:2.23.2'
+
     implementation 'org.apache.camel:camel-csv:2.23.2'
     implementation 'org.apache.camel:camel-aws:2.23.2'
     implementation 'net.javacrumbs.shedlock:shedlock-spring:3.0.0'

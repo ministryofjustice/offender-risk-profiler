@@ -4,12 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.util.UriTemplate;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.PagingAndSortingDto;
 
@@ -115,7 +115,7 @@ public class NomisService {
         return getCandidates(uri);
     }
 
-    List<String> getCandidates(URI uri) {
+    List<String> getCandidates(final URI uri) {
         final var results = restCallHelper.getWithPaging(uri,
                 new PagingAndSortingDto(0L, 1000L), new ParameterizedTypeReference<List<String>>() {
                 });
@@ -144,5 +144,11 @@ public class NomisService {
 
         final var results = restCallHelper.getWithPaging(uri, new PagingAndSortingDto(0L, (long) Integer.MAX_VALUE), OFFENDERS).getBody();
         return results.stream().map(m -> (String) m.get("offenderNo")).collect(Collectors.toList());
+    }
+
+    public String getOffender(@NotNull final Long bookingId) {
+        final var uri = new UriTemplate(format("/bookings/%d?basicInfo=true", bookingId)).expand();
+        final var result = restCallHelper.get(uri, BookingDetails.class);
+        return result.getOffenderNo();
     }
 }
