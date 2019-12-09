@@ -181,12 +181,11 @@ workflows:
   scheduled:
     triggers:
       - schedule:
-          cron: "20 12 * * 1-5"
+          cron: "0 7 * * 1-5"
           filters:
             branches:
               only:
                 - master
-                - sm-DT-412-owasp-dependency-check
     jobs:
       - owasp/gradle_owasp_dependency_check:
           executor: builder
