@@ -106,6 +106,25 @@ env:
         name: rp-sqs-instance-output
         key: sqs_rpc_url
 
+
+  - name: SQS_EVENTS_QUEUE_NAME
+    valueFrom:
+      secretKeyRef:
+        name: oc-events-sqs-instance-output
+        key: sqs_oce_name
+
+  - name: SQS_EVENTS_AWS_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: oc-events-sqs-instance-output
+        key: access_key_id
+
+  - name: SQS_EVENTS_AWS_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: oc-events-sqs-instance-output
+        key: secret_access_key
+
   - name: CACHE_TYPE
     value: "elasticache"
 
