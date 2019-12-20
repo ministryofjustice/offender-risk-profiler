@@ -9,13 +9,13 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.PagingAndSortingDto;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,7 +51,7 @@ public class NomisServiceTest {
         when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'&latestOnly=false")), isA(ParameterizedTypeReference.class)))
                 .thenReturn(response);
 
-        var alertsForOffender = service.getAlertsForOffender("A1234AA", "SOC");
+        var alertsForOffender = service.getAlertsForOffender("A1234AA", Arrays.asList("SOC"));
 
         assertThat(alertsForOffender).hasSize(1);
 

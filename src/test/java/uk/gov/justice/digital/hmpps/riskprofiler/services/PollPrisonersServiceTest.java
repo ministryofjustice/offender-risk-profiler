@@ -129,24 +129,6 @@ public class PollPrisonersServiceTest {
         verify(sqsService, never()).sendRiskProfileChangeMessage(any());
     }
 
-    @Test
-    public void testEvictCaches() {
-        final var cutoff = LocalDateTime.of(2019, 11, 4, 3, 40);
-        final var anHourEarlier = LocalDateTime.of(2019, 11, 4, 2, 40);
-        when(previousProfileRepository.findApproxLastRunTime()).thenReturn(cutoff);
-        when(nomisService.getAlertCandidates(anHourEarlier)).thenReturn(List.of("OFF1","OFF2"));
-        // when(nomisService.getIncidentCandidates(anHourEarlier)).thenReturn(List.of("OFF3","OFF4"));
-
-        service.evictCaches();
-
-        verify(nomisService).evictEscapeListAlertsCache("OFF1");
-        verify(nomisService).evictEscapeListAlertsCache("OFF2");
-        verify(nomisService).evictSocListAlertsCache("OFF1");
-        verify(nomisService).evictSocListAlertsCache("OFF2");
-//        verify(nomisService).evictIncidentsCache("OFF3");
-//        verify(nomisService).evictIncidentsCache("OFF4");
-    }
-
     private static PreviousProfile eqProfiles(PreviousProfile profile) {
         return argThat(argument ->
                 profile.getSoc().equals(argument.getSoc())
