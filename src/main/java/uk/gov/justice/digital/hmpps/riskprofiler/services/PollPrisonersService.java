@@ -104,21 +104,6 @@ public class PollPrisonersService {
         }
     }
 
-    public void evictCaches() {
-        LocalDateTime time = previousProfileRepository.findApproxLastRunTime();
-        final LocalDateTime fromDateTime = time == null ? defaultFromDateTime : time.minusHours(1);
-        final var alertCandidates = nomisService.getAlertCandidates(fromDateTime);
-        alertCandidates.forEach(offender -> {
-            nomisService.evictEscapeListAlertsCache(offender);
-            nomisService.evictSocListAlertsCache(offender);
-        });
-        // TODO disabled for now as it is too slow
-//        final var incidentCandidates = nomisService.getIncidentCandidates(fromDateTime);
-//        incidentCandidates.forEach(offender -> {
-//            nomisService.evictIncidentsCache(offender);
-//        });
-    }
-
     private void buildAndSendRiskProfilePayload(String offenderNo, SocProfile socObject, ViolenceProfile violenceObject, EscapeProfile escapeObject, ExtremismProfile extremismObject, PreviousProfile existing) {
         final var newProfile = ProfileMessagePayload.builder()
                 .soc(socObject)

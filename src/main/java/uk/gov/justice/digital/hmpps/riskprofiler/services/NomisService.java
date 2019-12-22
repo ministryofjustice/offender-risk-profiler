@@ -4,12 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.util.UriTemplate;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.PagingAndSortingDto;
 
@@ -33,10 +33,10 @@ public class NomisService {
     };
     private static final ParameterizedTypeReference<List<Map>> OFFENDERS = new ParameterizedTypeReference<>() {
     };
-    private static final String[] ESCAPE_LIST_ALERT_TYPES = {"XER", "XEL"};
+    public static final List<String> ESCAPE_LIST_ALERT_TYPES = Arrays.asList("XER", "XEL");
 
-    private static final String[] SOC_ALERT_TYPES = {"PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
-            "XFO", "XGANG", "XOCGN", "XP", "XSC"};
+    public static final List<String> SOC_ALERT_TYPES = Arrays.asList("PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
+            "XFO", "XGANG", "XOCGN", "XP", "XSC");
 
     private final RestCallHelper restCallHelper;
 
@@ -66,10 +66,10 @@ public class NomisService {
         log.info("Evicting {} from socAlert cache", nomsId);
     }
 
-    List<Alert> getAlertsForOffender(final String nomsId, final String... alertTypes) {
+    List<Alert> getAlertsForOffender(final String nomsId, final List<String> alertTypes) {
         log.info("Getting alerts for noms id {} and types {}", nomsId, alertTypes);
 
-        final var types = Arrays.stream(alertTypes)
+        final var types = alertTypes.stream()
                 .map(alertType -> format("alertCode:eq:'%s'", alertType))
                 .collect(Collectors.joining(",or:"));
 
@@ -85,9 +85,8 @@ public class NomisService {
         return getCandidates(uri);
     }
 
-    //@Cacheable("incident")
-    // TODO caching disabled for now as the initial query is too slow
-    public List<IncidentCase> getIncidents(@NotNull final String nomsId, @NotNull final List<String> incidentTypes, final List<String> participationRoles) {
+    @Cacheable(value = "incident", key = "#p0")
+    public List<IncidentCase> getIncidents(@NotNull final String nomsId, final List<String> incidentTypes, final List<String> participationRoles) {
         log.info("Getting incidents for noms id {} and type {}, with roles of {}", nomsId, incidentTypes, participationRoles);
 
         final var incidentTypesStr = incidentTypes.stream()
@@ -103,10 +102,10 @@ public class NomisService {
         return restCallHelper.getForList(uri, INCIDENTS).getBody();
     }
 
-    // @CacheEvict("incident")
-//    public void evictIncidentsCache(final String nomsId) {
-//        log.info("Evicting {} from incident cache", nomsId);
-//    }
+    @CacheEvict("incident")
+    public void evictIncidentsCache(final String nomsId) {
+        log.info("Evicting {} from incident cache", nomsId);
+    }
 
     public List<String> getIncidentCandidates(@NotNull final LocalDateTime fromDateTime) {
         log.info("Getting incident candidates");
@@ -115,7 +114,7 @@ public class NomisService {
         return getCandidates(uri);
     }
 
-    List<String> getCandidates(URI uri) {
+    List<String> getCandidates(final URI uri) {
         final var results = restCallHelper.getWithPaging(uri,
                 new PagingAndSortingDto(0L, 1000L), new ParameterizedTypeReference<List<String>>() {
                 });
@@ -144,5 +143,20 @@ public class NomisService {
 
         final var results = restCallHelper.getWithPaging(uri, new PagingAndSortingDto(0L, (long) Integer.MAX_VALUE), OFFENDERS).getBody();
         return results.stream().map(m -> (String) m.get("offenderNo")).collect(Collectors.toList());
+    }
+
+    public String getOffender(@NotNull final Long bookingId) {
+        final var uri = new UriTemplate(format("/bookings/%d?basicInfo=true", bookingId)).expand();
+        final var result = restCallHelper.get(uri, BookingDetails.class);
+        return result.getOffenderNo();
+    }
+
+    public List<String> getPartiesOfIncident(@NotNull final Long incidentId) {
+        final var uri = new UriTemplate(format("/incidents/%d", incidentId)).expand();
+        final var incident = restCallHelper.get(uri, IncidentCase.class);
+        return incident.getParties().stream()
+                .map(party -> party.getBookingId() == null ? null : getOffender(party.getBookingId()))
+                .filter(p -> p != null)
+                .collect(Collectors.toList());
     }
 }

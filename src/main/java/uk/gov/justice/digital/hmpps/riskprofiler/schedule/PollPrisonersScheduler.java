@@ -43,8 +43,6 @@ public class PollPrisonersScheduler {
     }
 
     public void pollPrisoners() {
-        pollPrisonersService.evictCaches();
-
         final var prisons = prisonService.getPrisons();
         log.info("There are {} prisons", prisons.size());
         prisons.forEach(p -> {
