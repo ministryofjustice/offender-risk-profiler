@@ -33,7 +33,7 @@ public class ViolenceDecisionTreeServiceTest {
 
     @Before
     public void setup() {
-        service = new ViolenceDecisionTreeService(viperRepo, nomisService, 2, 6, new BigDecimal("2.50"), List.of("ASSAULTS"), List.of("ASSIAL", "FIGHT"));
+        service = new ViolenceDecisionTreeService(viperRepo, nomisService, 2, 6, new BigDecimal("2.50"));
     }
 
     @Test
@@ -50,7 +50,7 @@ public class ViolenceDecisionTreeServiceTest {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
 
         var now = LocalDateTime.now();
-        when(nomisService.getIncidents(OFFENDER_1, List.of("ASSAULTS"), List.of("ASSIAL", "FIGHT"))).thenReturn(
+        when(nomisService.getIncidents(OFFENDER_1)).thenReturn(
                 Arrays.asList(
                         IncidentCase.builder().incidentStatus("CLOSE").reportTime(now.minusMonths(2))
                                 .responses(Arrays.asList(
@@ -75,7 +75,7 @@ public class ViolenceDecisionTreeServiceTest {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Viper.builder().nomisId(OFFENDER_1).score(new BigDecimal("2.51")).build()));
 
         var now = LocalDateTime.now();
-        when(nomisService.getIncidents(OFFENDER_1, List.of("ASSAULTS"), List.of("ASSIAL", "FIGHT"))).thenReturn(
+        when(nomisService.getIncidents(OFFENDER_1)).thenReturn(
                 Arrays.asList(
                         IncidentCase.builder().incidentStatus("CLOSE").reportTime(now.minusMonths(2))
                                 .responses(Arrays.asList(
@@ -120,7 +120,7 @@ public class ViolenceDecisionTreeServiceTest {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Viper.builder().nomisId(OFFENDER_1).score(new BigDecimal("2.51")).build()));
 
         var now = LocalDateTime.now();
-        when(nomisService.getIncidents(OFFENDER_1, List.of("ASSAULTS"), List.of("ASSIAL", "FIGHT"))).thenReturn(
+        when(nomisService.getIncidents(OFFENDER_1)).thenReturn(
                 Arrays.asList(
                         IncidentCase.builder().incidentStatus("CLOSE").reportTime(now.minusMonths(7))
                                 .responses(Arrays.asList(
@@ -150,7 +150,7 @@ public class ViolenceDecisionTreeServiceTest {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Viper.builder().nomisId(OFFENDER_1).score(new BigDecimal("2.51")).build()));
 
         var now = LocalDateTime.now();
-        when(nomisService.getIncidents(OFFENDER_1, List.of("ASSAULTS"), List.of("ASSIAL", "FIGHT"))).thenReturn(
+        when(nomisService.getIncidents(OFFENDER_1)).thenReturn(
                 Arrays.asList(
                         IncidentCase.builder().incidentStatus("CLOSE").reportTime(now.minusMonths(3))
                                 .responses(Arrays.asList(

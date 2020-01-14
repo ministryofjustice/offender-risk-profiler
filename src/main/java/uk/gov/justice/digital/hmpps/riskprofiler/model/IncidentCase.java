@@ -11,7 +11,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode(of = {"incidentCaseId"})
 @Data
-@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

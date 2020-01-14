@@ -29,9 +29,6 @@ public class ViolenceDecisionTreeService {
     private final DataRepository<Viper> viperDataRepository;
     private final NomisService nomisService;
 
-    private final List<String> incidentTypes;
-    private final List<String> participationRoles;
-
     private final static List<SeriousQuestionAndResponse> SERIOUS_ASSAULT_QUESTIONS = List.of(
             SeriousQuestionAndResponse.builder().question("WAS THIS A SEXUAL ASSAULT").needAnswer("YES").build(),
             SeriousQuestionAndResponse.builder().question("WAS MEDICAL TREATMENT FOR CONCUSSION OR INTERNAL INJURIES REQUIRED").needAnswer("YES").build(),
@@ -42,16 +39,12 @@ public class ViolenceDecisionTreeService {
     public ViolenceDecisionTreeService(ViperRepository viperDataRepository, NomisService nomisService,
                                         @Value("${app.assaults.min:5}") int minNumAssaults,
                                         @Value("${app.assaults.check.months:12}") int months,
-                                        @Value("${app.viper-threshold:5.00}") BigDecimal viperScoreThreshold,
-                                        @Value("${app.assaults.incident.types:ASSAULT}") List<String> incidentTypes,
-                                        @Value("${app.assaults.participation.roles}") List<String> participationRoles) {
+                                        @Value("${app.viper-threshold:5.00}") BigDecimal viperScoreThreshold) {
         this.viperDataRepository = viperDataRepository;
         this.nomisService = nomisService;
         this.minNumAssaults = minNumAssaults;
         this.months = months;
         this.viperScoreThreshold = viperScoreThreshold;
-        this.participationRoles = participationRoles;
-        this.incidentTypes = incidentTypes;
     }
 
     public ViolenceProfile getViolenceProfile(@NotNull final String nomsId) {
@@ -59,7 +52,7 @@ public class ViolenceDecisionTreeService {
         log.debug("Calculating violence profile for {}", nomsId);
 
         // Check NOMIS Have the individuals had 5 or more assaults in custody? (remove DUPS)
-        final var assaults = nomisService.getIncidents(nomsId, incidentTypes, participationRoles).stream()
+        final var assaults = nomisService.getIncidents(nomsId).stream()
                 .filter(i -> !"DUP".equals(i.getIncidentStatus())).collect(Collectors.toList());
 
         // Check NOMIS: Have they had a serious assault in custody in past 12 months
