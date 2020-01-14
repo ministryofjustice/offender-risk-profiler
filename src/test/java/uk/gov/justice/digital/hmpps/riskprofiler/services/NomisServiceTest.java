@@ -10,7 +10,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentParty;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.PagingAndSortingDto;
 
 import java.net.URI;
@@ -35,7 +37,7 @@ public class NomisServiceTest {
     @Before
     public void setup() {
         initMocks(restCallHelper);
-        service = new NomisService(restCallHelper);
+        service = new NomisService(restCallHelper, List.of("ASSAULTS"), List.of("ACTINV", "ASSIAL"));
     }
 
     @Test
@@ -96,7 +98,7 @@ public class NomisServiceTest {
                 isA(ParameterizedTypeReference.class)))
                 .thenReturn(response);
 
-        var incidentsForOffender = service.getIncidents("A1234AA", List.of("ASSAULTS"), List.of("ACTINV", "ASSIAL"));
+        var incidentsForOffender = service.getIncidents("A1234AA");
 
         assertThat(incidentsForOffender).hasSize(2);
 
@@ -165,5 +167,77 @@ public class NomisServiceTest {
 
         assertThat(offenders).asList().containsAll(page1);
         assertThat(offenders).asList().containsAll(page2);
+    }
+
+    @Test
+    public void testGetPartiesOfIncidentHappy() throws Exception {
+        final var incidentParty1 = IncidentParty.builder()
+                .bookingId(12345L)
+                .build();
+        final var incidentParty2 = IncidentParty.builder()
+                .bookingId(12346L)
+                .build();
+
+        final var incidentCase = IncidentCase.builder()
+                .incidentCaseId(123L)
+                .incidentType("ASSAULTS")
+                .parties(List.of(incidentParty1, incidentParty2))
+                .build();
+
+        when(restCallHelper.get(new URI("/incidents/123"), IncidentCase.class)).thenReturn(incidentCase);
+
+        final var bookingDetails1 = BookingDetails
+                .builder()
+                .bookingId(12345L)
+                .offenderNo("OFFENDER1")
+                .build();
+        when(restCallHelper.get(new URI("/bookings/12345?basicInfo=true"), BookingDetails.class)).thenReturn(bookingDetails1);
+        final var bookingDetails2 = BookingDetails
+                .builder()
+                .bookingId(12346L)
+                .offenderNo("OFFENDER2")
+                .build();
+        when(restCallHelper.get(new URI("/bookings/12346?basicInfo=true"), BookingDetails.class)).thenReturn(bookingDetails2);
+
+        final var partiesOfIncident = service.getPartiesOfIncident(123L);
+
+        assertThat(partiesOfIncident).asList().containsExactly("OFFENDER1", "OFFENDER2");
+    }
+
+    @Test
+    public void testGetPartiesOfIncidentIrrelevantType() throws Exception {
+        final var incidentParty = IncidentParty.builder()
+                .bookingId(12345L)
+                .build();
+
+        final var incidentCase = IncidentCase.builder()
+                .incidentCaseId(123L)
+                .incidentType("OTHER")
+                .parties(List.of(incidentParty))
+                .build();
+
+        when(restCallHelper.get(new URI("/incidents/123"), IncidentCase.class)).thenReturn(incidentCase);
+
+        final var partiesOfIncident = service.getPartiesOfIncident(123L);
+
+        assertThat(partiesOfIncident).asList().isEmpty();
+    }
+
+    @Test
+    public void testGetPartiesOfIncidentNoBookingId() throws Exception {
+        final var incidentParty = IncidentParty.builder()
+                .build();
+
+        final var incidentCase = IncidentCase.builder()
+                .incidentCaseId(123L)
+                .incidentType("ASSAULTS")
+                .parties(List.of(incidentParty))
+                .build();
+
+        when(restCallHelper.get(new URI("/incidents/123"), IncidentCase.class)).thenReturn(incidentCase);
+
+        final var partiesOfIncident = service.getPartiesOfIncident(123L);
+
+        assertThat(partiesOfIncident).asList().isEmpty();
     }
 }

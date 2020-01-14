@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
@@ -17,7 +18,7 @@ import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,15 +34,21 @@ public class NomisService {
     };
     private static final ParameterizedTypeReference<List<Map>> OFFENDERS = new ParameterizedTypeReference<>() {
     };
-    public static final List<String> ESCAPE_LIST_ALERT_TYPES = Arrays.asList("XER", "XEL");
+    public static final List<String> ESCAPE_LIST_ALERT_TYPES = List.of("XER", "XEL");
 
-    public static final List<String> SOC_ALERT_TYPES = Arrays.asList("PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
+    public static final List<String> SOC_ALERT_TYPES = List.of("PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
             "XFO", "XGANG", "XOCGN", "XP", "XSC");
 
     private final RestCallHelper restCallHelper;
+    private final List<String> incidentTypes;
+    private final List<String> participationRoles;
 
-    public NomisService(final RestCallHelper restCallHelper) {
+    public NomisService(final RestCallHelper restCallHelper,
+                        @Value("${app.assaults.incident.types:ASSAULT}") List<String> incidentTypes,
+                        @Value("${app.assaults.participation.roles}") List<String> participationRoles) {
         this.restCallHelper = restCallHelper;
+        this.incidentTypes = incidentTypes;
+        this.participationRoles = participationRoles;
     }
 
     @Cacheable("escapeAlert")
@@ -85,8 +92,8 @@ public class NomisService {
         return getCandidates(uri);
     }
 
-    @Cacheable(value = "incident", key = "#p0")
-    public List<IncidentCase> getIncidents(@NotNull final String nomsId, final List<String> incidentTypes, final List<String> participationRoles) {
+    @Cacheable("incident")
+    public List<IncidentCase> getIncidents(@NotNull final String nomsId) {
         log.info("Getting incidents for noms id {} and type {}, with roles of {}", nomsId, incidentTypes, participationRoles);
 
         final var incidentTypesStr = incidentTypes.stream()
@@ -154,9 +161,12 @@ public class NomisService {
     public List<String> getPartiesOfIncident(@NotNull final Long incidentId) {
         final var uri = new UriTemplate(format("/incidents/%d", incidentId)).expand();
         final var incident = restCallHelper.get(uri, IncidentCase.class);
-        return incident.getParties().stream()
-                .map(party -> party.getBookingId() == null ? null : getOffender(party.getBookingId()))
-                .filter(p -> p != null)
-                .collect(Collectors.toList());
+        if (incidentTypes.contains(incident.getIncidentType())) {
+            return incident.getParties().stream()
+                    .map(party -> party.getBookingId() == null ? null : getOffender(party.getBookingId()))
+                    .filter(p -> p != null)
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }

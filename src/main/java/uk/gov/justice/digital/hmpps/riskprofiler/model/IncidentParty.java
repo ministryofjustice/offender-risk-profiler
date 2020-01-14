@@ -6,11 +6,10 @@ import lombok.*;
 import java.io.Serializable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@EqualsAndHashCode
 @Data
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class IncidentParty implements Serializable {
 
     private static final long serialVersionUID = 1L;

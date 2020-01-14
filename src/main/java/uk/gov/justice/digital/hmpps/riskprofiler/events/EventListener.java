@@ -29,21 +29,25 @@ public class EventListener {
 
     @JmsListener(destination = "${sqs.events.queue.name}")
     public void eventListener(final String requestJson) {
-        log.info("In eventListener with event: " + requestJson);
+        log.info(requestJson);
         final var event = getOffenderEvent(requestJson);
         if (event != null) {
             switch (event.getEventType()) {
                 case "ALERT-INSERTED":
                 case "ALERT-UPDATED":
                 case "ALERT-DELETED":
-                    final var nomsId = nomisService.getOffender(event.getBookingId());
-                    if (NomisService.ESCAPE_LIST_ALERT_TYPES.contains(event.getAlertCode())) {
-                        nomisService.evictEscapeListAlertsCache(nomsId);
+                    final var isEscape = NomisService.ESCAPE_LIST_ALERT_TYPES.contains(event.getAlertCode());
+                    final var isSoc = NomisService.SOC_ALERT_TYPES.contains(event.getAlertCode());
+                    if (isEscape || isSoc) {
+                        final var nomsId = nomisService.getOffender(event.getBookingId());
+                        if (isEscape) {
+                            nomisService.evictEscapeListAlertsCache(nomsId);
+                        }
+                        if (isSoc) {
+                            nomisService.evictSocListAlertsCache(nomsId);
+                        }
+                        pollPrisonersService.pollPrisoner(nomsId);
                     }
-                    if (NomisService.SOC_ALERT_TYPES.contains(event.getAlertCode())) {
-                        nomisService.evictSocListAlertsCache(nomsId);
-                    }
-                    pollPrisonersService.pollPrisoner(nomsId);
                     break;
                 case "INCIDENT-INSERTED":
                 case "INCIDENT-CHANGED-CASES":
@@ -51,11 +55,9 @@ public class EventListener {
                 case "INCIDENT-CHANGED-RESPONSES":
                 case "INCIDENT-CHANGED-REQUIREMENTS":
                     final var nomsIds = nomisService.getPartiesOfIncident(event.getIncidentCaseId());
-                    nomsIds.forEach(offenderNo -> {
-                        nomisService.evictIncidentsCache(offenderNo);
-                        // TODO: Do not poll immediately (leave for batch) as one incident generates a lot of events
-                        // pollPrisonersService.pollPrisoner(offenderNo);
-                    });
+                    // TODO: Do not poll immediately (leave for batch) as one incident generates a lot of events
+                    // Also should apply filter choosing only the relevant types of Assault incidents
+                    nomsIds.forEach(nomisService::evictIncidentsCache);
                     break;
             }
         }

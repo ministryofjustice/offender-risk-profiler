@@ -56,11 +56,22 @@ public class EventListenerTest {
 
         when(nomisService.getOffender(BOOKING_1)).thenReturn(OFFENDER_1);
 
-        service.eventListener("{ \"Message\":\"{ \\\"eventType\\\":\\\"ALERT-INSERTED\\\", \\\"alertCode\\\":\\\"XEAN\\\", \\\"bookingId\\\":" + BOOKING_1 + " }\"}");
+        service.eventListener("{ \"Message\":\"{ \\\"eventType\\\":\\\"ALERT-UPDATED\\\", \\\"alertCode\\\":\\\"XEAN\\\", \\\"bookingId\\\":" + BOOKING_1 + " }\"}");
 
         verify(nomisService, never()).evictEscapeListAlertsCache(OFFENDER_1);
         verify(nomisService).evictSocListAlertsCache(OFFENDER_1);
         verify(pollPrisonersService).pollPrisoner(OFFENDER_1);
+        verify(nomisService, never()).getPartiesOfIncident(any());
+    }
+
+    @Test
+    public void testAlertsIrrelevant() {
+
+        service.eventListener("{ \"Message\":\"{ \\\"eventType\\\":\\\"ALERT-INSERTED\\\", \\\"alertCode\\\":\\\"OTHER\\\", \\\"bookingId\\\":" + BOOKING_1 + " }\"}");
+
+        verify(nomisService, never()).evictEscapeListAlertsCache(any());
+        verify(nomisService, never()).evictSocListAlertsCache(any());
+        verify(pollPrisonersService, never()).pollPrisoner(any());
         verify(nomisService, never()).getPartiesOfIncident(any());
     }
 
@@ -73,8 +84,6 @@ public class EventListenerTest {
 
         verify(nomisService).evictIncidentsCache(OFFENDER_1);
         verify(nomisService).evictIncidentsCache(OFFENDER_2);
-//        verify(pollPrisonersService).pollPrisoner(OFFENDER_1);
-//        verify(pollPrisonersService).pollPrisoner(OFFENDER_2);
         verify(nomisService, never()).getOffender(any());
     }
 
