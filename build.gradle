@@ -40,7 +40,7 @@ def todaysDate = LocalDate.now().format('yyyy-MM-dd')
 version = System.getenv('CI') ? "${todaysDate}.${System.getenv('CIRCLE_BUILD_NUM')}" : todaysDate
 
 jar {
-    archiveBaseName = rootProject.name
+    baseName = rootProject.name
     manifest {
         attributes 'Implementation-Title': rootProject.name, 'Implementation-Version': archiveVersion
     }
@@ -145,7 +145,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.14.0")
     testImplementation 'io.github.http-builder-ng:http-builder-ng-apache:1.0.4'
 
-    testImplementation 'org.apache.camel:camel-test-spring:3.0.1'
+    testImplementation 'org.apache.camel:camel-test-spring:2.24.3'
 
     compile configurations.agentDeps
 }
