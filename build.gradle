@@ -11,6 +11,18 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.27.0'
 }
 
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+dependencyUpdates {
+    rejectVersionIf {
+        isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)
+    }
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -103,7 +115,7 @@ dependencies {
 
     implementation 'org.apache.camel:camel-spring-boot:2.24.3'
     implementation 'org.apache.camel:camel-csv:2.24.3'
-    implementation ('org.apache.camel:camel-aws:2.24.3') {
+    implementation ('org.apache.camel:camel-aws:2.25.0') {
         exclude group: 'com.amazonaws', module: 'aws-java-sdk-sagemaker'
         exclude group: 'com.amazonaws', module: 'aws-java-sdk-sagemakerruntime'
         exclude group: 'com.amazonaws', module: 'aws-java-sdk-opsworkscm'
