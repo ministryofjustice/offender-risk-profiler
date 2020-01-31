@@ -48,8 +48,6 @@ public class ControllerAdvice {
                         .build());
     }
 
-
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error("Unexpected exception", e);
@@ -72,7 +70,4 @@ public class ControllerAdvice {
                         .developerMessage(e.getMessage())
                         .build());
     }
-
-
-
 }

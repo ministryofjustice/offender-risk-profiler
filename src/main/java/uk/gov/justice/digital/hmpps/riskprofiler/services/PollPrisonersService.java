@@ -60,6 +60,7 @@ public class PollPrisonersService {
             final var violenceObject = violenceDecisionTreeService.getViolenceProfile(offenderNo);
             final var escapeObject = escapeDecisionTreeService.getEscapeProfile(offenderNo);
             final var extremismObject = extremismDecisionTreeService.getExtremismProfile(offenderNo, false);
+            // Life Decision Tree deliberately omitted
 
             final var soc = jacksonMapper.writeValueAsString(socObject);
             final var violence = jacksonMapper.writeValueAsString(violenceObject);

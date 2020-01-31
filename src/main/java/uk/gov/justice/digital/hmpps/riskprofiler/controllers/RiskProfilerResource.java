@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.*;
 import uk.gov.justice.digital.hmpps.riskprofiler.services.EscapeDecisionTreeService;
 import uk.gov.justice.digital.hmpps.riskprofiler.services.ExtremismDecisionTreeService;
+import uk.gov.justice.digital.hmpps.riskprofiler.services.LifeDecisionTreeService;
 import uk.gov.justice.digital.hmpps.riskprofiler.services.SocDecisionTreeService;
 import uk.gov.justice.digital.hmpps.riskprofiler.services.ViolenceDecisionTreeService;
 
@@ -19,7 +20,7 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(
-        value="risk-profile",
+        value = "risk-profile",
         produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class RiskProfilerResource {
@@ -28,24 +29,30 @@ public class RiskProfilerResource {
     private final ViolenceDecisionTreeService violenceDecisionTreeService;
     private final EscapeDecisionTreeService escapeDecisionTreeService;
     private final ExtremismDecisionTreeService extremismDecisionTreeService;
+    private final LifeDecisionTreeService lifeDecisionTreeService;
 
-    public RiskProfilerResource(SocDecisionTreeService socDecisionTreeServiceService, ViolenceDecisionTreeService violenceDecisionTreeService, EscapeDecisionTreeService escapeDecisionTreeService, ExtremismDecisionTreeService extremismDecisionTreeService) {
+    public RiskProfilerResource(SocDecisionTreeService socDecisionTreeServiceService,
+                                ViolenceDecisionTreeService violenceDecisionTreeService,
+                                EscapeDecisionTreeService escapeDecisionTreeService,
+                                ExtremismDecisionTreeService extremismDecisionTreeService,
+                                LifeDecisionTreeService lifeDecisionTreeService) {
         this.socDecisionTreeServiceService = socDecisionTreeServiceService;
         this.violenceDecisionTreeService = violenceDecisionTreeService;
         this.escapeDecisionTreeService = escapeDecisionTreeService;
         this.extremismDecisionTreeService = extremismDecisionTreeService;
+        this.lifeDecisionTreeService = lifeDecisionTreeService;
     }
 
     @ApiOperation(
             value = "Return SOC Risk for offender",
             notes = "Value can be true or false",
             authorizations = { @Authorization("RISK_PROFILER") },
-            nickname="getSoc")
+            nickname = "getSoc")
 
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = SocProfile.class),
             @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
-            @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class) })
+            @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class)})
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
     @GetMapping(path = "/soc/{nomsId}")
@@ -56,13 +63,13 @@ public class RiskProfilerResource {
     @ApiOperation(
             value = "Return Escape Risk for offender",
             notes = "Value can be true or false",
-            authorizations = { @Authorization("RISK_PROFILER") },
-            nickname="getEscape")
+            authorizations = {@Authorization("RISK_PROFILER")},
+            nickname = "getEscape")
 
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = EscapeProfile.class),
             @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
-            @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class) })
+            @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class)})
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
     @GetMapping(path = "/escape/{nomsId}")
@@ -74,32 +81,31 @@ public class RiskProfilerResource {
     @ApiOperation(
             value = "Return Violence Risk for offender",
             notes = "Value can be high, low or none",
-            authorizations = { @Authorization("RISK_PROFILER") },
-            nickname="getViolence")
+            authorizations = {@Authorization("RISK_PROFILER")},
+            nickname = "getViolence")
 
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ViolenceProfile.class),
             @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
-            @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class) })
+            @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class)})
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
     @GetMapping(path = "/violence/{nomsId}")
     public ViolenceProfile getViolence(@ApiParam(name = "nomsId", value = "NOMS ID of the offender", example = "A1234AA", required = true) @NotNull @PathVariable("nomsId") String nomsId) {
 
         return violenceDecisionTreeService.getViolenceProfile(nomsId);
-
     }
 
     @ApiOperation(
             value = "Return Extremism Risk for offender",
             notes = "Value can be true or false",
-            authorizations = { @Authorization("RISK_PROFILER") },
-            nickname="getExtremism")
+            authorizations = {@Authorization("RISK_PROFILER")},
+            nickname = "getExtremism")
 
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ExtremismProfile.class),
             @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
-            @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class) })
+            @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class)})
 
     @PreAuthorize("hasRole('RISK_PROFILER')")
     @GetMapping(path = "/extremism/{nomsId}")
@@ -107,6 +113,18 @@ public class RiskProfilerResource {
                                          @ApiParam(name = "previousOffences", value = "Previous Offences under Terrorism Act listed on the person's PNC record", required = false, example = "false") @RequestParam(value = "previousOffences", required = false) Boolean previousOffences) {
 
         return extremismDecisionTreeService.getExtremismProfile(nomsId, previousOffences);
+    }
 
+    @ApiOperation(
+            value = "Assess whether offender is a lifer",
+            authorizations = {@Authorization("RISK_PROFILER")})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = LifeProfile.class),
+            @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
+            @ApiResponse(code = 500, message = "Unrecoverable error occurred whilst processing request.", response = ErrorResponse.class)})
+    @PreAuthorize("hasRole('RISK_PROFILER')")
+    @GetMapping(path = "/life/{nomsId}")
+    public LifeProfile getLife(@ApiParam(name = "nomsId", value = "NOMS ID of the offender", example = "A1234AA", required = true) @NotNull @PathVariable("nomsId") String nomsId) {
+        return lifeDecisionTreeService.getLifeProfile(nomsId);
     }
 }
