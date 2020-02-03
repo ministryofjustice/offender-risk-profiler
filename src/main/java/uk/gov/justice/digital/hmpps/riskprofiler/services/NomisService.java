@@ -11,6 +11,8 @@ import org.springframework.web.util.UriTemplate;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderBooking;
+import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderSentenceTerms;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.PagingAndSortingDto;
 
 import javax.validation.constraints.NotNull;
@@ -30,6 +32,10 @@ public class NomisService {
     private static final ParameterizedTypeReference<List<IncidentCase>> INCIDENTS = new ParameterizedTypeReference<>() {
     };
     private static final ParameterizedTypeReference<List<Map>> OFFENDERS = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<OffenderBooking>> BOOKING_DETAILS = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<OffenderSentenceTerms>> SENTENCE_TERMS = new ParameterizedTypeReference<>() {
     };
     public static final List<String> ESCAPE_LIST_ALERT_TYPES = List.of("XER", "XEL");
 
@@ -82,6 +88,12 @@ public class NomisService {
         return restCallHelper.getForList(uri, ALERTS).getBody();
     }
 
+    public List<OffenderSentenceTerms> getSentencesForOffender(final Long bookingId) {
+        log.info("Getting sentences for bookingId {}", bookingId);
+        final var uri = new UriTemplate("/offender-sentences/booking/{bookingId}/sentenceTerms").expand(bookingId);
+        return restCallHelper.getForList(uri, SENTENCE_TERMS).getBody();
+    }
+
     @Cacheable("incident")
     public List<IncidentCase> getIncidents(@NotNull final String nomsId) {
         log.info("Getting incidents for noms id {} and type {}, with roles of {}", nomsId, incidentTypes, participationRoles);
@@ -106,15 +118,26 @@ public class NomisService {
 
     public List<String> getOffendersAtPrison(@NotNull final String prisonId) {
         final var uri = new UriTemplate(format("/bookings?query=agencyId:eq:'%s'", prisonId)).expand();
-
         final var results = restCallHelper.getWithPaging(uri, new PagingAndSortingDto(0L, (long) Integer.MAX_VALUE), OFFENDERS).getBody();
         return results.stream().map(m -> (String) m.get("offenderNo")).collect(Collectors.toList());
+    }
+
+    public List<OffenderBooking> getBookingDetails(final Long bookingId) {
+        log.info("Getting details for bookingId {}", bookingId);
+        final var uri = new UriTemplate("/bookings?bookingId={bookingId}").expand(bookingId);
+        return restCallHelper.getForList(uri, BOOKING_DETAILS).getBody();
     }
 
     public String getOffender(@NotNull final Long bookingId) {
         final var uri = new UriTemplate(format("/bookings/%d?basicInfo=true", bookingId)).expand();
         final var result = restCallHelper.get(uri, BookingDetails.class);
         return result.getOffenderNo();
+    }
+
+    public Long getBooking(@NotNull final String nomsId) {
+        final var uri = new UriTemplate(format("/bookings/offenderNo/%s", nomsId)).expand();
+        final var result = restCallHelper.get(uri, BookingDetails.class);
+        return result.getBookingId();
     }
 
     public List<String> getPartiesOfIncident(@NotNull final Long incidentId) {
