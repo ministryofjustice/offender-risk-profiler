@@ -26,6 +26,9 @@ public class ViolenceProfile extends RiskProfile {
     @ApiModelProperty(value = "The number of serious assaults in the last 12 months", example = "2", position = 7)
     private Long numberOfSeriousAssaults;
 
+    @ApiModelProperty(value = "The number of non-serious assaults in the last 12 months", example = "2", position = 8)
+    private Long numberOfNonSeriousAssaults;
+
     public RiskType getRiskType() {
         return RiskType.VIOLENCE;
     }
@@ -33,13 +36,14 @@ public class ViolenceProfile extends RiskProfile {
     @Builder(builderMethodName = "violenceBuilder")
     public ViolenceProfile(@NotBlank String nomsId, @NotBlank String provisionalCategorisation,
                            boolean veryHighRiskViolentOffender, boolean notifySafetyCustodyLead, boolean displayAssaults,
-                           long numberOfAssaults, long numberOfSeriousAssaults) {
+                           long numberOfAssaults, long numberOfSeriousAssaults, long numberOfNonSeriousAssaults) {
         super(nomsId, provisionalCategorisation);
         this.veryHighRiskViolentOffender = veryHighRiskViolentOffender;
         this.notifySafetyCustodyLead = notifySafetyCustodyLead;
         this.displayAssaults = displayAssaults;
         this.numberOfAssaults = numberOfAssaults;
         this.numberOfSeriousAssaults = numberOfSeriousAssaults;
+        this.numberOfNonSeriousAssaults = numberOfNonSeriousAssaults;
     }
 
 }

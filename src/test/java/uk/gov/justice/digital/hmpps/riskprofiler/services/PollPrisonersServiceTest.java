@@ -50,7 +50,7 @@ public class PollPrisonersServiceTest {
     private final PreviousProfile PROFILE_1 = PreviousProfile.builder()
             .offenderNo(OFFENDER_1)
             .soc("{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"transferToSecurity\":false,\"riskType\":\"SOC\"}")
-            .violence("{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"veryHighRiskViolentOffender\":false,\"notifySafetyCustodyLead\":false,\"displayAssaults\":false,\"numberOfAssaults\":0,\"numberOfSeriousAssaults\":0,\"riskType\":\"VIOLENCE\"}")
+            .violence("{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"veryHighRiskViolentOffender\":false,\"notifySafetyCustodyLead\":false,\"displayAssaults\":false,\"numberOfAssaults\":0,\"numberOfSeriousAssaults\":0,\"numberOfNonSeriousAssaults\":0,\"riskType\":\"VIOLENCE\"}")
             .escape("{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"activeEscapeList\":false,\"activeEscapeRisk\":false,\"riskType\":\"ESCAPE\"}")
             .extremism("{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"notifyRegionalCTLead\":false,\"increasedRiskOfExtremism\":false,\"riskType\":\"EXTREMISM\"}")
             .executeDateTime(LocalDateTime.now())

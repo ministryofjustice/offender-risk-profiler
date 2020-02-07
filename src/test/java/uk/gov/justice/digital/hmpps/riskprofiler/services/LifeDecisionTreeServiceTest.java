@@ -49,7 +49,6 @@ public class LifeDecisionTreeServiceTest {
     public void testWhenLifeFlagTrue() {
         when(nomisService.getBooking(OFFENDER_1)).thenReturn(BOOKING_1);
         when(nomisService.getSentencesForOffender(BOOKING_1)).thenReturn(List.of(nonLifeSentence, lifeSentence));
-        when(nomisService.getBookingDetails(BOOKING_1)).thenReturn(List.of(nonLifeCode));
 
         final var profile = service.getLifeProfile(OFFENDER_1);
 
@@ -72,10 +71,25 @@ public class LifeDecisionTreeServiceTest {
     }
 
     @Test
+    public void testWhenMurder() {
+        when(nomisService.getBooking(OFFENDER_1)).thenReturn(BOOKING_1);
+        when(nomisService.getSentencesForOffender(BOOKING_1)).thenReturn(List.of(nonLifeSentence));
+        when(nomisService.getBookingDetails(BOOKING_1)).thenReturn(List.of(nonLifeCode));
+        when(nomisService.getMainOffences(BOOKING_1)).thenReturn(List.of("Murder etc."));
+
+        final var profile = service.getLifeProfile(OFFENDER_1);
+
+        Assertions.assertThat(profile.getProvisionalCategorisation()).isEqualTo("B");
+        Assertions.assertThat(profile.getNomsId()).isEqualTo(OFFENDER_1);
+        Assertions.assertThat(profile.isLife()).isTrue();
+    }
+
+    @Test
     public void testWhenNotLife() {
         when(nomisService.getBooking(OFFENDER_1)).thenReturn(BOOKING_1);
         when(nomisService.getSentencesForOffender(BOOKING_1)).thenReturn(List.of(nonLifeSentence));
         when(nomisService.getBookingDetails(BOOKING_1)).thenReturn(List.of(nonLifeCode, nonLifeCode));
+        when(nomisService.getMainOffences(BOOKING_1)).thenReturn(List.of("Trivial etc.", "another"));
 
         final var profile = service.getLifeProfile(OFFENDER_1);
 
