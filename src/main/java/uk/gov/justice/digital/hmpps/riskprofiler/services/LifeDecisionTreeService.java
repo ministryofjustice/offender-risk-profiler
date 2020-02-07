@@ -29,12 +29,29 @@ public class LifeDecisionTreeService {
     public LifeProfile getLifeProfile(@NotNull final String nomsId) {
         log.debug("Calculating life profile for {}", nomsId);
         final var bookingId = nomisService.getBooking(nomsId);
-        final var sentenceData = nomisService.getSentencesForOffender(bookingId);
-        final var imprisonmentData = nomisService.getBookingDetails(bookingId);
-        final boolean life = sentenceData.stream().anyMatch(s -> Boolean.TRUE.equals(s.getLifeSentence()))
-                || imprisonmentData.stream().anyMatch(s -> s.getImprisonmentStatus() != null && LIFE_STATUS.contains(s.getImprisonmentStatus()));
+
+        final var lifeFlag = isLifeFlag(bookingId);
+        final var lifeStatus = isLifeStatus(bookingId);
+        final var murder = isMurder(bookingId);
+        final boolean life = lifeFlag || lifeStatus || murder;
+
         final String cat = life ? "B" : RiskProfile.DEFAULT_CAT;
-        log.debug("Life result for {}: {}", nomsId, life);
+        log.info("Life result for {}: {} (lifeFlag={} lifeStatus={} murder={})", nomsId, life, lifeFlag, lifeStatus, murder);
         return new LifeProfile(nomsId, cat, life);
+    }
+
+    private boolean isLifeFlag(Long bookingId) {
+        final var sentenceData = nomisService.getSentencesForOffender(bookingId);
+        return sentenceData.stream().anyMatch(s -> Boolean.TRUE.equals(s.getLifeSentence()));
+    }
+
+    private boolean isLifeStatus(Long bookingId) {
+        final var imprisonmentData = nomisService.getBookingDetails(bookingId);
+        return imprisonmentData.stream().anyMatch(s -> s.getImprisonmentStatus() != null && LIFE_STATUS.contains(s.getImprisonmentStatus()));
+    }
+
+    private boolean isMurder(Long bookingId) {
+        final var mainOffence = nomisService.getMainOffences(bookingId);
+        return mainOffence.stream().anyMatch(o -> o.toUpperCase().startsWith("MURDER"));
     }
 }

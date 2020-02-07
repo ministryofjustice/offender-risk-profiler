@@ -116,7 +116,7 @@ public class RiskProfilerResource {
     }
 
     @ApiOperation(
-            value = "Assess whether offender is a lifer",
+            value = "Assess whether offender has a life sentence",
             authorizations = {@Authorization("RISK_PROFILER")})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = LifeProfile.class),

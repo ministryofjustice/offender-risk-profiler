@@ -31,7 +31,7 @@ public class NomisService {
     };
     private static final ParameterizedTypeReference<List<IncidentCase>> INCIDENTS = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<Map>> OFFENDERS = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<Map>> MAP = new ParameterizedTypeReference<>() {
     };
     private static final ParameterizedTypeReference<List<OffenderBooking>> BOOKING_DETAILS = new ParameterizedTypeReference<>() {
     };
@@ -118,7 +118,7 @@ public class NomisService {
 
     public List<String> getOffendersAtPrison(@NotNull final String prisonId) {
         final var uri = new UriTemplate(format("/bookings?query=agencyId:eq:'%s'", prisonId)).expand();
-        final var results = restCallHelper.getWithPaging(uri, new PagingAndSortingDto(0L, (long) Integer.MAX_VALUE), OFFENDERS).getBody();
+        final var results = restCallHelper.getWithPaging(uri, new PagingAndSortingDto(0L, (long) Integer.MAX_VALUE), MAP).getBody();
         return results.stream().map(m -> (String) m.get("offenderNo")).collect(Collectors.toList());
     }
 
@@ -126,6 +126,12 @@ public class NomisService {
         log.info("Getting details for bookingId {}", bookingId);
         final var uri = new UriTemplate("/bookings?bookingId={bookingId}").expand(bookingId);
         return restCallHelper.getForList(uri, BOOKING_DETAILS).getBody();
+    }
+
+    public List<String> getMainOffences(final Long bookingId) {
+        final var uri = new UriTemplate(format("/bookings/%d/mainOffence", bookingId)).expand();
+        final var results = restCallHelper.getForList(uri, MAP).getBody();
+        return results.stream().map(m -> (String) m.get("offenceDescription")).collect(Collectors.toList());
     }
 
     public String getOffender(@NotNull final Long bookingId) {

@@ -67,6 +67,7 @@ public class ViolenceDecisionTreeServiceTest {
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(1);
         Assertions.assertThat(socProfile.getNumberOfSeriousAssaults()).isEqualTo(1);
+        Assertions.assertThat(socProfile.getNumberOfNonSeriousAssaults()).isEqualTo(0);
         Assertions.assertThat(socProfile.isNotifySafetyCustodyLead()).isFalse();
     }
 
@@ -113,6 +114,7 @@ public class ViolenceDecisionTreeServiceTest {
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("B");
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(3);
         Assertions.assertThat(socProfile.getNumberOfSeriousAssaults()).isEqualTo(1);
+        Assertions.assertThat(socProfile.getNumberOfNonSeriousAssaults()).isEqualTo(1);
     }
 
     @Test
@@ -143,6 +145,7 @@ public class ViolenceDecisionTreeServiceTest {
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(2);
         Assertions.assertThat(socProfile.getNumberOfSeriousAssaults()).isEqualTo(0);
+        Assertions.assertThat(socProfile.getNumberOfNonSeriousAssaults()).isEqualTo(1);
     }
 
     @Test
@@ -166,6 +169,7 @@ public class ViolenceDecisionTreeServiceTest {
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(1);
         Assertions.assertThat(socProfile.getNumberOfSeriousAssaults()).isEqualTo(0);
+        Assertions.assertThat(socProfile.getNumberOfNonSeriousAssaults()).isEqualTo(1);
     }
 
     @Test

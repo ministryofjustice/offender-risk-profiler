@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.PagingAndSortingDto;
 
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 
 /**

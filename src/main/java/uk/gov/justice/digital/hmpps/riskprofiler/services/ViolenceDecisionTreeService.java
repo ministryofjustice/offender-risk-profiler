@@ -36,10 +36,10 @@ public class ViolenceDecisionTreeService {
             SeriousQuestionAndResponse.builder().question("DID INJURIES RESULT IN DETENTION IN OUTSIDE HOSPITAL AS AN IN-PATIENT").needAnswer("YES").build()
     );
 
-    public ViolenceDecisionTreeService(ViperRepository viperDataRepository, NomisService nomisService,
-                                        @Value("${app.assaults.min:5}") int minNumAssaults,
-                                        @Value("${app.assaults.check.months:12}") int months,
-                                        @Value("${app.viper-threshold:5.00}") BigDecimal viperScoreThreshold) {
+    public ViolenceDecisionTreeService(final ViperRepository viperDataRepository, final NomisService nomisService,
+                                       @Value("${app.assaults.min:5}") final int minNumAssaults,
+                                       @Value("${app.assaults.check.months:12}") final int months,
+                                       @Value("${app.viper-threshold:5.00}") final BigDecimal viperScoreThreshold) {
         this.viperDataRepository = viperDataRepository;
         this.nomisService = nomisService;
         this.minNumAssaults = minNumAssaults;
@@ -62,6 +62,10 @@ public class ViolenceDecisionTreeService {
                         .anyMatch(response -> SERIOUS_ASSAULT_QUESTIONS.stream().anyMatch(saq -> isSerious(response, saq))))
                 .count();
 
+        final var numberOfNonSeriousAssaults = assaults.stream()
+                .filter(assault -> assault.getReportTime().compareTo(LocalDateTime.now().minusMonths(months)) >= 0)
+                .count() - numberOfSeriousAssaults;
+
         final var violenceProfile = ViolenceProfile.violenceBuilder()
                 .nomsId(nomsId)
                 .provisionalCategorisation(DEFAULT_CAT);
@@ -69,6 +73,7 @@ public class ViolenceDecisionTreeService {
         violenceProfile.displayAssaults(!assaults.isEmpty());
         violenceProfile.numberOfAssaults(assaults.size());
         violenceProfile.numberOfSeriousAssaults(numberOfSeriousAssaults);
+        violenceProfile.numberOfNonSeriousAssaults(numberOfNonSeriousAssaults);
 
         viperDataRepository.getByKey(nomsId).ifPresentOrElse(viper -> {
             log.debug("Viper score for {} is {}", nomsId, viper.getScore());
@@ -102,17 +107,16 @@ public class ViolenceDecisionTreeService {
         );
 
         return violenceProfile.build();
-
     }
 
-    private boolean isSerious(IncidentResponse incidentResponse, SeriousQuestionAndResponse seriousQuestionAndResponse) {
+    private boolean isSerious(final IncidentResponse incidentResponse, final SeriousQuestionAndResponse seriousQuestionAndResponse) {
         return seriousQuestionAndResponse.question.equalsIgnoreCase(incidentResponse.getQuestion())
             && seriousQuestionAndResponse.needAnswer.equalsIgnoreCase(incidentResponse.getAnswer());
     }
 
     @Builder
     private static class SeriousQuestionAndResponse {
-        private String question;
-        private String needAnswer;
+        private final String question;
+        private final String needAnswer;
     }
 }
