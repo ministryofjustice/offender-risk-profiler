@@ -5,10 +5,10 @@ import java.time.LocalDate
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'org.owasp.dependencycheck' version '5.3.0'
-    id 'com.github.ben-manes.versions' version '0.27.0'
+    id 'com.github.ben-manes.versions' version '0.28.0'
 }
 
 def isNonStable = { String version ->
@@ -88,11 +88,11 @@ configurations {
 
 dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-    annotationProcessor('org.projectlombok:lombok:1.18.10')
+    annotationProcessor('org.projectlombok:lombok:1.18.12')
 
     runtimeOnly 'com.h2database:h2:1.4.200'
-    runtimeOnly 'org.flywaydb:flyway-core:6.2.0'
-    runtimeOnly 'org.postgresql:postgresql:42.2.9'
+    runtimeOnly 'org.flywaydb:flyway-core:6.2.4'
+    runtimeOnly 'org.postgresql:postgresql:42.2.10'
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -101,11 +101,11 @@ dependencies {
 
     // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
     // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
-    implementation 'org.springframework.data:spring-data-redis:2.2.4.RELEASE'
+    implementation 'org.springframework.data:spring-data-redis'
     implementation 'redis.clients:jedis:3.2.0'
 
     implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.1.RELEASE")
-    implementation 'org.springframework:spring-jms:5.2.3.RELEASE'
+    implementation 'org.springframework:spring-jms:5.2.4.RELEASE'
     implementation 'com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8'
     implementation 'org.apache.camel:camel-spring-boot:2.23.2'
 
@@ -120,8 +120,8 @@ dependencies {
         exclude group: 'com.amazonaws', module: 'aws-java-sdk-sagemakerruntime'
         exclude group: 'com.amazonaws', module: 'aws-java-sdk-opsworkscm'
     }
-    implementation 'net.javacrumbs.shedlock:shedlock-spring:4.2.0'
-    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.2.0'
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:4.5.0'
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.5.0'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation 'com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.0-BETA'
@@ -144,16 +144,16 @@ dependencies {
     implementation("net.sf.ehcache:ehcache:2.10.6")
     implementation("org.apache.commons:commons-lang3:3.9")
     implementation("org.apache.commons:commons-text:1.8")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2")
-    implementation("com.pauldijou:jwt-core_2.11:4.2.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.3")
+    implementation("com.pauldijou:jwt-core_2.11:4.3.0")
     implementation 'com.google.guava:guava:28.2-jre'
 
-    compileOnly('org.projectlombok:lombok:1.18.10')
+    compileOnly('org.projectlombok:lombok:1.18.12')
 
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.10'
-    testCompileOnly 'org.projectlombok:lombok:1.18.10'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.assertj:assertj-core:3.14.0")
+    testImplementation("org.assertj:assertj-core:3.15.0")
     testImplementation 'io.github.http-builder-ng:http-builder-ng-apache:1.0.4'
 
     testImplementation 'org.apache.camel:camel-test-spring:2.24.3'
