@@ -15,19 +15,19 @@ public class EscapeDecisionTreeService {
 
     private final NomisService nomisService;
 
-    public EscapeDecisionTreeService(NomisService nomisService) {
+    public EscapeDecisionTreeService(final NomisService nomisService) {
         this.nomisService = nomisService;
     }
 
     public EscapeProfile getEscapeProfile(@NotNull final String nomsId) {
         log.debug("Calculating escape profile for {}", nomsId);
-        var escapeData = nomisService.getEscapeListAlertsForOffender(nomsId);
+        final var escapeData = nomisService.getEscapeListAlertsForOffender(nomsId);
 
         final var splitLists =
                 escapeData.stream().filter(Alert::isActive).collect(Collectors.partitioningBy(a -> a.getAlertCode().equals("XEL")));
 
-        var escapeListAlerts = splitLists.get(true);
-        var escapeRiskAlerts = splitLists.get(false);
+        final var escapeListAlerts = splitLists.get(true);
+        final var escapeRiskAlerts = splitLists.get(false);
         log.debug("Escape profile for {}: {} list alerts, {} risk alerts", nomsId, escapeListAlerts.size(), escapeRiskAlerts.size());
         return EscapeProfile.escapeBuilder()
                 .nomsId(nomsId)
