@@ -4,7 +4,7 @@
 replicaCount: 4
 
 image:
-  repository: docker.io/mojdigitalstudio/offender-risk-profiler 
+  repository: quay.io/hmpps/offender-risk-profiler
   tag: latest
   pullPolicy: IfNotPresent
   port: 8080
