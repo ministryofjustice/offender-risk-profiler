@@ -42,7 +42,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
           requires:
             - validate
       - hmpps/deploy_env:
@@ -51,7 +51,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
           requires:
             - build_docker
       - request-preprod-approval:
@@ -83,7 +83,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
     jobs:
       - owasp/gradle_owasp_dependency_check:
           executor: hmpps/java
