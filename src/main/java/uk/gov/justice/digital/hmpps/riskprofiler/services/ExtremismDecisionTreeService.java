@@ -18,25 +18,25 @@ public class ExtremismDecisionTreeService {
 
     private final DataRepository<PathFinder> repository;
 
-    public ExtremismDecisionTreeService(PathfinderRepository repository) {
+    public ExtremismDecisionTreeService(final PathfinderRepository repository) {
         this.repository = repository;
     }
 
-    public ExtremismProfile getExtremismProfile(@NotNull final String nomsId, Boolean previousOffences) {
+    public ExtremismProfile getExtremismProfile(@NotNull final String nomsId, final Boolean previousOffences) {
         log.debug("Calculating extremism profile for {}", nomsId);
         return decisionProcess(nomsId, Boolean.TRUE.equals(previousOffences), repository.getByKey(nomsId));
     }
 
-    private ExtremismProfile decisionProcess(String nomsId, boolean previousOffences, Optional<PathFinder> pathFinder) {
-        var extremism = ExtremismProfile.extremismBuilder()
+    private ExtremismProfile decisionProcess(final String nomsId, final boolean previousOffences, final Optional<PathFinder> pathFinder) {
+        final var extremism = ExtremismProfile.extremismBuilder()
                 .nomsId(nomsId)
                 .provisionalCategorisation(RiskProfile.DEFAULT_CAT);
 
         pathFinder.ifPresent(pf -> {
-            var banding = StringUtils.upperCase(pf.getPathFinderBanding());
+            final var banding = StringUtils.upperCase(pf.getPathFinderBanding());
             log.debug("extremism: {} in pathfinder on {}, increased Risk of Extremism", nomsId, banding);
+            extremism.increasedRiskOfExtremism(true);
             if (banding.contains("BAND 1") || banding.contains("BAND 2")) {
-                extremism.increasedRiskOfExtremism(true);
                 extremism.notifyRegionalCTLead(true);
                 log.debug("extremism: {} Increased Risk of Extremism", nomsId);
 
