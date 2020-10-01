@@ -1,5 +1,5 @@
 plugins {
-    id("uk.gov.justice.hmpps.gradle-spring-boot") version "0.4.8"
+    id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.6"
 }
 
 configurations {
@@ -12,7 +12,7 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2:1.4.200'
     runtimeOnly 'org.flywaydb:flyway-core:6.5.4'
-    runtimeOnly 'org.postgresql:postgresql:42.2.14'
+    runtimeOnly 'org.postgresql:postgresql:42.2.16'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -22,20 +22,20 @@ dependencies {
     implementation 'org.springframework.data:spring-data-redis'
     implementation 'redis.clients:jedis:3.3.0'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.3.RELEASE'
-    implementation 'org.springframework:spring-jms:5.2.8.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.4.RELEASE'
+    implementation 'org.springframework:spring-jms:5.2.9.RELEASE'
     implementation 'com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8'
 
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.security.oauth:spring-security-oauth2:2.5.0.RELEASE")
     implementation("org.springframework.security:spring-security-jwt:1.1.1.RELEASE")
 
-    implementation 'org.apache.camel.springboot:camel-spring-boot:3.4.2'
-    implementation 'org.apache.camel:camel-csv:3.4.2'
-    implementation 'org.apache.camel:camel-aws-s3:3.4.2'
-    implementation 'org.apache.camel:camel-aws-sqs:3.4.2'
-    implementation 'org.apache.camel:camel-xml-jaxp:3.4.2'
-    implementation 'org.apache.camel:camel-timer:3.4.2'
+    implementation 'org.apache.camel.springboot:camel-spring-boot:3.5.0'
+    implementation 'org.apache.camel:camel-csv:3.5.0'
+    implementation 'org.apache.camel:camel-aws-s3:3.5.0'
+    implementation 'org.apache.camel:camel-aws-sqs:3.5.0'
+    implementation 'org.apache.camel:camel-xml-jaxp:3.5.0'
+    implementation 'org.apache.camel:camel-timer:3.5.0'
 
     implementation 'net.javacrumbs.shedlock:shedlock-spring:4.14.0'
     implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.14.0'
