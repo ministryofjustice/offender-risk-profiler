@@ -42,13 +42,11 @@ public class ExtremismDecisionTreeService {
                 } else {
                     extremism.provisionalCategorisation("C");
                 }
+            } else if (banding == 3) {
+                extremism.notifyRegionalCTLead(true);
+                extremism.provisionalCategorisation("C");
             } else {
-                if (banding == 3) {
-                    extremism.notifyRegionalCTLead(true);
-                    extremism.provisionalCategorisation("C");
-                } else {
-                    extremism.provisionalCategorisation("C");
-                }
+                extremism.provisionalCategorisation("C");
             }
         });
 
