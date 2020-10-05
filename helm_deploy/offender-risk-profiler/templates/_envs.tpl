@@ -25,6 +25,9 @@ env:
   - name: ELITE2API_ENDPOINT_URL
     value: {{ .Values.env.ELITE2API_ENDPOINT_URL | quote }}
 
+  - name: PATHFINDERAPI_ENDPOINT_URL
+    value: {{ .Values.env.PATHFINDERAPI_ENDPOINT_URL | quote }}
+
   - name: AWS_REGION
     value: "eu-west-2"
 

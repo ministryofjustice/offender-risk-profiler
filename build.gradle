@@ -63,5 +63,6 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     testCompileOnly 'org.projectlombok:lombok:1.18.12'
     testImplementation 'io.github.http-builder-ng:http-builder-ng-apache:1.0.4'
-    testImplementation 'org.apache.camel:camel-test-spring:3.4.2'
+    testImplementation 'org.apache.camel:camel-test-spring:3.5.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
 }

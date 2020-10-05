@@ -21,17 +21,6 @@ public class CsvProcessorRoute extends RouteBuilder {
 
         getContext().setStreamCaching(true);
 
-        from("timer://pathfinder-schedule?fixedRate=true&period={{pathfinder.period}}")
-                .bean(fileService, "getLatestFile('{{s3.path.pathfinder}}')")
-                .choice()
-                    .when().simple("${body} != null")
-                        .setProperty("fileInfo", simple("${body}"))
-                        .setProperty("fileType", simple("PATHFINDER"))
-                        .setBody(simple("${body.data}"))
-                        .unmarshal().csv()
-                        .bean(dataService, "process")
-                .endChoice();
-
         from("timer://pras-schedule?fixedRate=true&period={{pras.period}}")
                 .bean(fileService, "getLatestFile('{{s3.path.pras}}')")
                 .choice()
@@ -75,7 +64,5 @@ public class CsvProcessorRoute extends RouteBuilder {
                         .unmarshal().csv()
                         .bean(dataService, "process")
                 .endChoice();
-
-
     }
 }

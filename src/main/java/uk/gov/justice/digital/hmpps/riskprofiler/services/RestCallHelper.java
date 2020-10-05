@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -16,12 +17,12 @@ import java.net.URI;
 @Component
 public class RestCallHelper {
 
-    private static final HttpHeaders CONTENT_TYPE_APPLICATION_JSON = httpContentTypeHeaders();
+    public static final HttpHeaders CONTENT_TYPE_APPLICATION_JSON = httpContentTypeHeaders();
 
     private final OAuth2RestTemplate restTemplate;
 
     @Autowired
-    public RestCallHelper(OAuth2RestTemplate restTemplate) {
+    public RestCallHelper(@Qualifier("elite2SystemRestTemplate")OAuth2RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

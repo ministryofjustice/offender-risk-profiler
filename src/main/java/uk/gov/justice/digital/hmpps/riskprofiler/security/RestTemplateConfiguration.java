@@ -31,6 +31,9 @@ public class RestTemplateConfiguration {
     @Value("${elite2api.endpoint.url}")
     private String elite2apiRootUri;
 
+    @Value("${pathfinderapi.endpoint.url}")
+    private String pathfinderApiRootUri;
+
     private final Duration healthTimeout;
 
     @Autowired
@@ -43,11 +46,12 @@ public class RestTemplateConfiguration {
         this.healthTimeout = healthTimeout;
     }
 
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+    @Bean(name = "pathfinderApiHealthRestTemplate")
+    public RestTemplate pathfinderApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
-                .rootUri(apiRootUri)
-                .additionalInterceptors(new JwtAuthInterceptor())
+                .rootUri(pathfinderApiRootUri)
+                .setConnectTimeout(healthTimeout)
+                .setReadTimeout(healthTimeout)
                 .build();
     }
 
@@ -55,22 +59,31 @@ public class RestTemplateConfiguration {
     public RestTemplate elite2ApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
                 .rootUri(elite2apiRootUri)
-                .additionalInterceptors(new JwtAuthInterceptor())
                 .setConnectTimeout(healthTimeout)
                 .setReadTimeout(healthTimeout)
                 .build();
     }
 
-    @Bean
+    @Bean(name = "elite2SystemRestTemplate")
     public OAuth2RestTemplate elite2SystemRestTemplate(GatewayAwareAccessTokenProvider accessTokenProvider) {
 
         OAuth2RestTemplate elite2SystemRestTemplate = new OAuth2RestTemplate(elite2apiDetails, oauth2ClientContext);
-        List<ClientHttpRequestInterceptor> systemInterceptors = elite2SystemRestTemplate.getInterceptors();
 
         elite2SystemRestTemplate.setAccessTokenProvider(accessTokenProvider);
 
         RootUriTemplateHandler.addTo(elite2SystemRestTemplate, this.apiRootUri);
         return elite2SystemRestTemplate;
+    }
+
+    @Bean(name = "pathfinderSystemRestTemplate")
+    public OAuth2RestTemplate pathfinderSystemRestTemplate(GatewayAwareAccessTokenProvider accessTokenProvider) {
+
+        OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(elite2apiDetails, oauth2ClientContext);
+
+        restTemplate.setAccessTokenProvider(accessTokenProvider);
+
+        RootUriTemplateHandler.addTo(restTemplate, this.pathfinderApiRootUri);
+        return restTemplate;
     }
 
     /**

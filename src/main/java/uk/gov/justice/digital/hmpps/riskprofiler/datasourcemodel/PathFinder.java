@@ -7,17 +7,10 @@ import lombok.ToString;
 
 @Data
 @Builder
-@EqualsAndHashCode(of = { "nomisId"})
+@EqualsAndHashCode(of = {"nomisId"})
 @ToString
-public class PathFinder implements RiskDataSet {
-    public static int NOMIS_ID_POSITION = 3;
-    public static int PATH_FINDER_BANDING_POSITION = 6;
+public class PathFinder {
 
     private String nomisId;
-    private String pathFinderBanding;
-
-    public String getKey() {
-        return nomisId;
-    }
-
+    private Integer pathFinderBanding;
 }

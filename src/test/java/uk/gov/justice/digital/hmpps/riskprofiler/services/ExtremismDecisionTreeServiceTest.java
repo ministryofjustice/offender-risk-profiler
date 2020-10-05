@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.PathfinderRepository;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder;
 
 import java.util.Optional;
@@ -21,7 +20,7 @@ public class ExtremismDecisionTreeServiceTest {
     private ExtremismDecisionTreeService service;
 
     @Mock
-    private PathfinderRepository pathfinderRepo;
+    private PathfinderService pathfinderRepo;
 
     @BeforeEach
     public void setup() {
@@ -32,9 +31,9 @@ public class ExtremismDecisionTreeServiceTest {
     public void testWhenPathfinderOnFileWithBand1NoPreviousOffences() {
         final PathFinder pathFinder = PathFinder.builder()
                 .nomisId(OFFENDER_1)
-                .pathFinderBanding("BAND 1")
+                .pathFinderBanding(1)
                 .build();
-        when(pathfinderRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder));
+        when(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder));
         final var extremismProfile = service.getExtremismProfile(OFFENDER_1, false);
 
         Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("C");
@@ -46,9 +45,9 @@ public class ExtremismDecisionTreeServiceTest {
     public void testWhenPathfinderOnFileWithBand2WithPreviousOffences() {
         final PathFinder pathFinder = PathFinder.builder()
                 .nomisId(OFFENDER_1)
-                .pathFinderBanding("BAND 2")
+                .pathFinderBanding(2)
                 .build();
-        when(pathfinderRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder));
+        when(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder));
         final var extremismProfile = service.getExtremismProfile(OFFENDER_1, true);
 
         Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("B");
@@ -61,9 +60,9 @@ public class ExtremismDecisionTreeServiceTest {
     public void testWhenPathfinderOnFileWithBand3() {
         final PathFinder pathFinder = PathFinder.builder()
                 .nomisId(OFFENDER_1)
-                .pathFinderBanding("BAND 3")
+                .pathFinderBanding(3)
                 .build();
-        when(pathfinderRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder));
+        when(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder));
         final var extremismProfile = service.getExtremismProfile(OFFENDER_1, false);
 
         Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("C");
@@ -75,9 +74,9 @@ public class ExtremismDecisionTreeServiceTest {
     public void testWhenPathfinderOnFileWithBand4() {
         final PathFinder pathFinder = PathFinder.builder()
                 .nomisId(OFFENDER_1)
-                .pathFinderBanding("BAND 4")
+                .pathFinderBanding(4)
                 .build();
-        when(pathfinderRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder));
+        when(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder));
         final var extremismProfile = service.getExtremismProfile(OFFENDER_1, false);
 
         Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("C");
@@ -88,13 +87,11 @@ public class ExtremismDecisionTreeServiceTest {
 
     @Test
     public void testWhenPathfinderNotOnFile() {
-        when(pathfinderRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
+        when(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.empty());
         final var extremismProfile = service.getExtremismProfile(OFFENDER_1, false);
 
         Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(extremismProfile.isIncreasedRiskOfExtremism()).isFalse();
         Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isFalse();
     }
-
-
 }
