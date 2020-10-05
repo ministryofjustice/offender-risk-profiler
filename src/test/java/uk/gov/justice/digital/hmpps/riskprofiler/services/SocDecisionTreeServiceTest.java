@@ -36,13 +36,11 @@ public class SocDecisionTreeServiceTest {
     @Mock
     private OcgmRepository ocgmRepo;
     @Mock
-    private PathfinderRepository pathfinderRepo;
-    @Mock
     private ViperRepository viperRepo;
 
     @Before
     public void setup() {
-        final var factory = new DataRepositoryFactory(ocgmRepo, ocgRepo, pathfinderRepo, prasRepo, viperRepo);
+        final var factory = new DataRepositoryFactory(ocgmRepo, ocgRepo, prasRepo, viperRepo);
         service = new SocDecisionTreeService(factory, nomisService);
     }
 

@@ -17,7 +17,6 @@ public class CsvHousekeepingRoute extends RouteBuilder {
     public void configure() {
 
         from("timer://data-deletion-schedule?fixedRate=true&period={{data.deletion.period}}")
-                .bean(fileService, "deleteHistoricalFiles('{{s3.path.pathfinder}}')")
                 .bean(fileService, "deleteHistoricalFiles('{{s3.path.ocg}}')")
                 .bean(fileService, "deleteHistoricalFiles('{{s3.path.ocgm}}')")
                 .bean(fileService, "deleteHistoricalFiles('{{s3.path.pras}}')")

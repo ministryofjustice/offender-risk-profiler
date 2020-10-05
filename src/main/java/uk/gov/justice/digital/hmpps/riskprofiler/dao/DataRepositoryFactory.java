@@ -10,14 +10,12 @@ public class DataRepositoryFactory {
 
     private final DataRepository<OcgmList> ocgmRepository;
     private final DataRepository<Ocg> ocgRepository;
-    private final DataRepository<PathFinder> pathfinderRepository;
     private final DataRepository<Pras> prasRepository;
     private final DataRepository<Viper> viperRepository;
 
-    public DataRepositoryFactory(OcgmRepository ocgmRepository, OcgRepository ocgRepository, PathfinderRepository pathfinderRepository, PrasRepository prasRepository, ViperRepository viperRepository) {
+    public DataRepositoryFactory(OcgmRepository ocgmRepository, OcgRepository ocgRepository, PrasRepository prasRepository, ViperRepository viperRepository) {
         this.ocgmRepository = ocgmRepository;
         this.ocgRepository = ocgRepository;
-        this.pathfinderRepository = pathfinderRepository;
         this.prasRepository = prasRepository;
         this.viperRepository = viperRepository;
     }
@@ -38,9 +36,6 @@ public class DataRepositoryFactory {
             case OCG:
                 return (DataRepository<T>)ocgRepository;
 
-            case PATHFINDER:
-                return (DataRepository<T>)pathfinderRepository;
-
             case VIPER:
                 return (DataRepository<T>)viperRepository;
         }
@@ -53,7 +48,6 @@ public class DataRepositoryFactory {
                 getRepository(Pras.class),
                 getRepository(Viper.class),
                 getRepository(Ocg.class),
-                getRepository(OcgmList.class),
-                getRepository(PathFinder.class));
+                getRepository(OcgmList.class));
     }
 }

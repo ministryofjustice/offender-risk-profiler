@@ -4,18 +4,13 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.common.collect.ImmutableList;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.PathfinderRepository;
-import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;

@@ -1,10 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository;
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.PathfinderRepository;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.ExtremismProfile;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile;
@@ -16,15 +13,16 @@ import java.util.Optional;
 @Slf4j
 public class ExtremismDecisionTreeService {
 
-    private final DataRepository<PathFinder> repository;
+    private final PathfinderService repository;
 
-    public ExtremismDecisionTreeService(final PathfinderRepository repository) {
+    public ExtremismDecisionTreeService(final PathfinderService repository) {
         this.repository = repository;
     }
 
     public ExtremismProfile getExtremismProfile(@NotNull final String nomsId, final Boolean previousOffences) {
         log.debug("Calculating extremism profile for {}", nomsId);
-        return decisionProcess(nomsId, Boolean.TRUE.equals(previousOffences), repository.getByKey(nomsId));
+        final var pathFinder = repository.getBand(nomsId);
+        return decisionProcess(nomsId, Boolean.TRUE.equals(previousOffences), pathFinder);
     }
 
     private ExtremismProfile decisionProcess(final String nomsId, final boolean previousOffences, final Optional<PathFinder> pathFinder) {
@@ -33,22 +31,19 @@ public class ExtremismDecisionTreeService {
                 .provisionalCategorisation(RiskProfile.DEFAULT_CAT);
 
         pathFinder.ifPresent(pf -> {
-            final var banding = StringUtils.upperCase(pf.getPathFinderBanding());
-            log.debug("extremism: {} in pathfinder on {}, increased Risk of Extremism", nomsId, banding);
+            final var banding = pf.getPathFinderBanding();
+            log.info("extremism: {} in pathfinder on {}, increased Risk of Extremism", nomsId, banding);
             extremism.increasedRiskOfExtremism(true);
-            if (banding.contains("BAND 1") || banding.contains("BAND 2")) {
+            if (banding == 1 || banding == 2) {
                 extremism.notifyRegionalCTLead(true);
-                log.debug("extremism: {} Increased Risk of Extremism", nomsId);
-
                 if (previousOffences) {
-                    log.debug("extremism: {} has previous offences", nomsId);
+                    log.info("extremism: {} has previous offences", nomsId);
                     extremism.provisionalCategorisation("B");
                 } else {
                     extremism.provisionalCategorisation("C");
                 }
             } else {
-                if (banding.contains("BAND 3")) {
-                    log.debug("extremism: {} - just notify Regional CT Lead", nomsId);
+                if (banding == 3) {
                     extremism.notifyRegionalCTLead(true);
                     extremism.provisionalCategorisation("C");
                 } else {

@@ -66,8 +66,9 @@ server:
     context-path: /
   forward-headers-strategy: native
   tomcat:
-    remote-ip-header: x-forwarded-for
-    protocol_header: x-forwarded-proto
+    remote-ip:
+      remote-ip-header: x-forwarded-for
+      protocol_header: x-forwarded-proto
 
 logging:
   level:
@@ -87,6 +88,8 @@ management:
         time-to-live: 2000ms
       show-components: always
       show-details: always
+      probes:
+        enabled: true
     info:
       cache:
         time-to-live: 2000ms

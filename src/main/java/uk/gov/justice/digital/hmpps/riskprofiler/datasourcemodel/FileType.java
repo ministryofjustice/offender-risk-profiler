@@ -6,7 +6,6 @@ public enum FileType {
     PRAS(Pras.class),
     OCGM(OcgmList.class),
     OCG(Ocg.class),
-    PATHFINDER(PathFinder.class),
     VIPER(Viper.class);
 
     private final Class<? extends RiskDataSet> type;
