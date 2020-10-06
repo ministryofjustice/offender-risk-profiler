@@ -55,7 +55,6 @@ public class ExtremismDecisionTreeServiceTest {
         Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isTrue();
     }
 
-
     @Test
     public void testWhenPathfinderOnFileWithBand3() {
         final PathFinder pathFinder = PathFinder.builder()
@@ -84,6 +83,19 @@ public class ExtremismDecisionTreeServiceTest {
         Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isFalse();
     }
 
+    @Test
+    public void testWhenPathfinderOnFileWithNoBand() {
+        final PathFinder pathFinder = PathFinder.builder()
+                .nomisId(OFFENDER_1)
+                .pathFinderBanding(null)
+                .build();
+        when(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder));
+        final var extremismProfile = service.getExtremismProfile(OFFENDER_1, false);
+
+        Assertions.assertThat(extremismProfile.getProvisionalCategorisation()).isEqualTo("C");
+        Assertions.assertThat(extremismProfile.isIncreasedRiskOfExtremism()).isTrue();
+        Assertions.assertThat(extremismProfile.isNotifyRegionalCTLead()).isFalse();
+    }
 
     @Test
     public void testWhenPathfinderNotOnFile() {
