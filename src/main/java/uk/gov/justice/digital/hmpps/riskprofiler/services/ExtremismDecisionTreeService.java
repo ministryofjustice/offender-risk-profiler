@@ -34,7 +34,9 @@ public class ExtremismDecisionTreeService {
             final var banding = pf.getPathFinderBanding();
             log.info("extremism: {} in pathfinder on {}, increased Risk of Extremism", nomsId, banding);
             extremism.increasedRiskOfExtremism(true);
-            if (banding == 1 || banding == 2) {
+            if (banding == null) {
+                extremism.provisionalCategorisation("C");
+            } else if (banding == 1 || banding == 2) {
                 extremism.notifyRegionalCTLead(true);
                 if (previousOffences) {
                     log.info("extremism: {} has previous offences", nomsId);
