@@ -23,9 +23,7 @@ public class PollPrisonersService {
     private final SocDecisionTreeService socDecisionTreeService;
     private final ViolenceDecisionTreeService violenceDecisionTreeService;
     private final EscapeDecisionTreeService escapeDecisionTreeService;
-    private final ExtremismDecisionTreeService extremismDecisionTreeService;
     private final PreviousProfileRepository previousProfileRepository;
-    private final NomisService nomisService;
     private final SQSService sqsService;
     private final TelemetryClient telemetryClient;
 
@@ -36,18 +34,14 @@ public class PollPrisonersService {
             final SocDecisionTreeService socDecisionTreeService,
             final ViolenceDecisionTreeService violenceDecisionTreeService,
             final EscapeDecisionTreeService escapeDecisionTreeService,
-            final ExtremismDecisionTreeService extremismDecisionTreeService,
             final PreviousProfileRepository previousProfileRepository,
             final TelemetryClient telemetryClient,
-            final NomisService nomisService,
             final SQSService sqsService) {
         this.socDecisionTreeService = socDecisionTreeService;
         this.violenceDecisionTreeService = violenceDecisionTreeService;
         this.escapeDecisionTreeService = escapeDecisionTreeService;
-        this.extremismDecisionTreeService = extremismDecisionTreeService;
         this.previousProfileRepository = previousProfileRepository;
         this.telemetryClient = telemetryClient;
-        this.nomisService = nomisService;
         this.sqsService = sqsService;
         jacksonMapper.registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -59,13 +53,12 @@ public class PollPrisonersService {
             final var socObject = socDecisionTreeService.getSocData(offenderNo);
             final var violenceObject = violenceDecisionTreeService.getViolenceProfile(offenderNo);
             final var escapeObject = escapeDecisionTreeService.getEscapeProfile(offenderNo);
-            final var extremismObject = extremismDecisionTreeService.getExtremismProfile(offenderNo, false);
             // Life Decision Tree deliberately omitted
+            // Extremism deliberately omitted. offender is referred to security only when a categorisation is started
 
             final var soc = jacksonMapper.writeValueAsString(socObject);
             final var violence = jacksonMapper.writeValueAsString(violenceObject);
             final var escape = jacksonMapper.writeValueAsString(escapeObject);
-            final var extremism = jacksonMapper.writeValueAsString(extremismObject);
 
             // Check if in db
             final Optional<PreviousProfile> previousProfile = previousProfileRepository.findById(offenderNo);
@@ -75,16 +68,15 @@ public class PollPrisonersService {
                         if (!(existing.getSoc().equals(soc)
                                 && existing.getViolence().equals(violence)
                                 && existing.getEscape().equals(escape)
-                                && existing.getExtremism().equals(extremism))) {
+                               )) {
                             // Update db with new data:
                             log.info("Change detected for {}", offenderNo);
 
-                            buildAndSendRiskProfilePayload(offenderNo, socObject, violenceObject, escapeObject, extremismObject, existing);
+                            buildAndSendRiskProfilePayload(offenderNo, socObject, violenceObject, escapeObject, existing);
 
                             existing.setSoc(soc);
                             existing.setViolence(violence);
                             existing.setEscape(escape);
-                            existing.setExtremism(extremism);
                             existing.setExecuteDateTime(LocalDateTime.now());
                         }
                     },
@@ -95,7 +87,6 @@ public class PollPrisonersService {
                                 .soc(soc)
                                 .violence(violence)
                                 .escape(escape)
-                                .extremism(extremism)
                                 .executeDateTime(LocalDateTime.now())
                                 .build());
                         log.info("Added new offender {} to DB", offenderNo);
@@ -105,12 +96,11 @@ public class PollPrisonersService {
         }
     }
 
-    private void buildAndSendRiskProfilePayload(String offenderNo, SocProfile socObject, ViolenceProfile violenceObject, EscapeProfile escapeObject, ExtremismProfile extremismObject, PreviousProfile existing) {
+    private void buildAndSendRiskProfilePayload(String offenderNo, SocProfile socObject, ViolenceProfile violenceObject, EscapeProfile escapeObject, PreviousProfile existing) {
         final var newProfile = ProfileMessagePayload.builder()
                 .soc(socObject)
                 .violence(violenceObject)
                 .escape(escapeObject)
-                .extremism(extremismObject)
                 .build();
 
         final ProfileMessagePayload oldProfile;
@@ -119,7 +109,6 @@ public class PollPrisonersService {
                     .soc(jacksonMapper.readValue(existing.getSoc(), SocProfile.class))
                     .violence(jacksonMapper.readValue(existing.getViolence(), ViolenceProfile.class))
                     .escape(jacksonMapper.readValue(existing.getEscape(), EscapeProfile.class))
-                    .extremism(jacksonMapper.readValue(existing.getExtremism(), ExtremismProfile.class))
                     .build();
 
             var payload = RiskProfileChange.builder().newProfile(newProfile).oldProfile(oldProfile)
