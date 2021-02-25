@@ -4,17 +4,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentParty;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NomisServiceTest {
@@ -30,12 +29,12 @@ public class NomisServiceTest {
     private NomisService service;
 
     @Mock
-    private RestCallHelper restCallHelper;
+    private WebClientCallHelper webClientCallHelper;
 
     @Before
     public void setup() {
-        initMocks(restCallHelper);
-        service = new NomisService(restCallHelper, List.of("ASSAULTS"), List.of("ACTINV", "ASSIAL"));
+        MockitoAnnotations.openMocks(webClientCallHelper);
+        service = new NomisService(webClientCallHelper, List.of("ASSAULTS"), List.of("ACTINV", "ASSIAL"));
     }
 
     @Test
@@ -48,15 +47,15 @@ public class NomisServiceTest {
 
         var response = new ResponseEntity<>(body, HttpStatus.OK);
 
-        when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'&latestOnly=false")), isA(ParameterizedTypeReference.class)))
+        when(webClientCallHelper.getForList(eq("/api/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'&latestOnly=false"), isA(ParameterizedTypeReference.class)))
                 .thenReturn(response);
 
         var alertsForOffender = service.getAlertsForOffender("A1234AA", Arrays.asList("SOC"));
 
         assertThat(alertsForOffender).hasSize(1);
 
-        verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'&latestOnly=false")), isA(ParameterizedTypeReference.class));
-        verifyNoMoreInteractions(restCallHelper);
+        verify(webClientCallHelper).getForList(eq("/api/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'&latestOnly=false"), isA(ParameterizedTypeReference.class));
+        verifyNoMoreInteractions(webClientCallHelper);
     }
 
     @Test
@@ -70,15 +69,15 @@ public class NomisServiceTest {
 
         var response = new ResponseEntity<>(body, HttpStatus.OK);
 
-        when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'XER',or:alertCode:eq:'XEL'&latestOnly=false")), isA(ParameterizedTypeReference.class)))
+        when(webClientCallHelper.getForList(eq("/api/offenders/A1234AA/alerts?query=alertCode:eq:'XER',or:alertCode:eq:'XEL'&latestOnly=false"), isA(ParameterizedTypeReference.class)))
                 .thenReturn(response);
 
         var alertsForOffender = service.getEscapeListAlertsForOffender("A1234AA");
 
         assertThat(alertsForOffender).hasSize(2);
 
-        verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/alerts?query=alertCode:eq:'XER',or:alertCode:eq:'XEL'&latestOnly=false")), isA(ParameterizedTypeReference.class));
-        verifyNoMoreInteractions(restCallHelper);
+        verify(webClientCallHelper).getForList(eq("/api/offenders/A1234AA/alerts?query=alertCode:eq:'XER',or:alertCode:eq:'XEL'&latestOnly=false"), isA(ParameterizedTypeReference.class));
+        verifyNoMoreInteractions(webClientCallHelper);
     }
 
     @Test
@@ -92,7 +91,7 @@ public class NomisServiceTest {
 
         var response = new ResponseEntity<>(body, HttpStatus.OK);
 
-        when(restCallHelper.getForList(eq(new URI("/offenders/A1234AA/incidents?incidentType=ASSAULTS&participationRoles=ACTINV&participationRoles=ASSIAL")),
+        when(webClientCallHelper.getForList(eq("/api/offenders/A1234AA/incidents?incidentType=ASSAULTS&participationRoles=ACTINV&participationRoles=ASSIAL"),
                 isA(ParameterizedTypeReference.class)))
                 .thenReturn(response);
 
@@ -100,8 +99,8 @@ public class NomisServiceTest {
 
         assertThat(incidentsForOffender).hasSize(2);
 
-        verify(restCallHelper).getForList(eq(new URI("/offenders/A1234AA/incidents?incidentType=ASSAULTS&participationRoles=ACTINV&participationRoles=ASSIAL")), isA(ParameterizedTypeReference.class));
-        verifyNoMoreInteractions(restCallHelper);
+        verify(webClientCallHelper).getForList(eq("/api/offenders/A1234AA/incidents?incidentType=ASSAULTS&participationRoles=ACTINV&participationRoles=ASSIAL"), isA(ParameterizedTypeReference.class));
+        verifyNoMoreInteractions(webClientCallHelper);
     }
 
     @Test
@@ -119,20 +118,20 @@ public class NomisServiceTest {
                 .parties(List.of(incidentParty1, incidentParty2))
                 .build();
 
-        when(restCallHelper.get(new URI("/incidents/123"), IncidentCase.class)).thenReturn(incidentCase);
+        when(webClientCallHelper.get("/api/incidents/123", IncidentCase.class)).thenReturn(incidentCase);
 
         final var bookingDetails1 = BookingDetails
                 .builder()
                 .bookingId(12345L)
                 .offenderNo("OFFENDER1")
                 .build();
-        when(restCallHelper.get(new URI("/bookings/12345?basicInfo=true"), BookingDetails.class)).thenReturn(bookingDetails1);
+        when(webClientCallHelper.get("/api/bookings/12345?basicInfo=true", BookingDetails.class)).thenReturn(bookingDetails1);
         final var bookingDetails2 = BookingDetails
                 .builder()
                 .bookingId(12346L)
                 .offenderNo("OFFENDER2")
                 .build();
-        when(restCallHelper.get(new URI("/bookings/12346?basicInfo=true"), BookingDetails.class)).thenReturn(bookingDetails2);
+        when(webClientCallHelper.get("/api/bookings/12346?basicInfo=true", BookingDetails.class)).thenReturn(bookingDetails2);
 
         final var partiesOfIncident = service.getPartiesOfIncident(123L);
 
@@ -151,7 +150,7 @@ public class NomisServiceTest {
                 .parties(List.of(incidentParty))
                 .build();
 
-        when(restCallHelper.get(new URI("/incidents/123"), IncidentCase.class)).thenReturn(incidentCase);
+        when(webClientCallHelper.get("/api/incidents/123", IncidentCase.class)).thenReturn(incidentCase);
 
         final var partiesOfIncident = service.getPartiesOfIncident(123L);
 
@@ -168,7 +167,7 @@ public class NomisServiceTest {
                 .parties(List.of(incidentParty))
                 .build();
 
-        when(restCallHelper.get(new URI("/incidents/123"), IncidentCase.class)).thenReturn(incidentCase);
+        when(webClientCallHelper.get("/api/incidents/123", IncidentCase.class)).thenReturn(incidentCase);
 
         final var partiesOfIncident = service.getPartiesOfIncident(123L);
 
@@ -182,7 +181,7 @@ public class NomisServiceTest {
                 .incidentType("ASSAULTS")
                 .build();
 
-        when(restCallHelper.get(new URI("/incidents/123"), IncidentCase.class)).thenReturn(incidentCase);
+        when(webClientCallHelper.get("/api/incidents/123", IncidentCase.class)).thenReturn(incidentCase);
 
         final var partiesOfIncident = service.getPartiesOfIncident(123L);
 
@@ -191,8 +190,8 @@ public class NomisServiceTest {
 
     @Test
     public void testGetPartiesOfIncident404() throws Exception {
-        when(restCallHelper.get(new URI("/incidents/123"), IncidentCase.class)).thenThrow(
-                HttpClientErrorException.create(HttpStatus.NOT_FOUND, "test", null, null, null));
+        when(webClientCallHelper.get("/api/incidents/123", IncidentCase.class)).thenThrow(
+                WebClientResponseException.create(HttpStatus.NOT_FOUND.value(), "test", null, null, null));
 
         final var partiesOfIncident = service.getPartiesOfIncident(123L);
 

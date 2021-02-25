@@ -4,6 +4,9 @@ info:
 
 # see https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html
 spring:
+  config:
+    use-legacy-processing: true
+
   application:
     name: offender-risk-profiler-api
 
@@ -60,6 +63,21 @@ spring:
       connectionTimeout: 1000
       validationTimeout:  500
 
+  security:
+    oauth2:
+      client:
+        registration:
+          api:
+            client-id: ${risk.profiler.client.id}
+            client-secret: ${risk.profiler.client.secret}
+            authorization-grant-type: client_credentials
+        provider:
+          api:
+            token-uri: ${nomis.auth.url}/oauth/token
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${nomis.auth.url}/.well-known/jwks.json
+
 server:
   port: 8080
   servlet:
@@ -93,12 +111,3 @@ management:
     info:
       cache:
         time-to-live: 2000ms
-
-elite2api:
-  client:
-    clientId: ${risk.profiler.client.id}
-    clientSecret: ${risk.profiler.client.secret}
-    accessTokenUri: ${nomis.auth.url}
-    tokenName: elite2_token
-    authenticationScheme: header
-    clientAuthenticationScheme: header

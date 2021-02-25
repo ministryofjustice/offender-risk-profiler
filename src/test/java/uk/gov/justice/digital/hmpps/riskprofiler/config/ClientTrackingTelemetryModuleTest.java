@@ -7,31 +7,29 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthenticationHelper;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthenticationHelper.JwtParameters;
 
 @RunWith(SpringRunner.class)
-@Import({JwtAuthenticationHelper.class, ClientTrackingTelemetryModule.class})
-@ContextConfiguration(initializers = {ConfigFileApplicationContextInitializer.class})
+@Import({JwtAuthenticationHelper.class, ClientTrackingTelemetryModule.class, JwtConfig.class})
 @ActiveProfiles("test")
 public class ClientTrackingTelemetryModuleTest {
 
     @Autowired
     private ClientTrackingTelemetryModule clientTrackingTelemetryModule;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private JwtAuthenticationHelper jwtAuthenticationHelper;
 
@@ -61,7 +59,6 @@ public class ClientTrackingTelemetryModuleTest {
         assertThat(insightTelemetry).hasSize(2);
         assertThat(insightTelemetry.get("username")).isEqualTo("bob");
         assertThat(insightTelemetry.get("clientId")).isEqualTo("elite2apiclient");
-
     }
 
     @Test
@@ -77,9 +74,9 @@ public class ClientTrackingTelemetryModuleTest {
 
         final var insightTelemetry = ThreadContext.getRequestTelemetryContext().getHttpRequestTelemetry().getProperties();
 
-        assertThat(insightTelemetry).hasSize(1);
+        assertThat(insightTelemetry).hasSize(2);
+        assertThat(insightTelemetry.get("username")).isEqualTo("null");
         assertThat(insightTelemetry.get("clientId")).isEqualTo("elite2apiclient");
-
     }
 
     @Test
@@ -95,16 +92,13 @@ public class ClientTrackingTelemetryModuleTest {
 
         final var insightTelemetry = ThreadContext.getRequestTelemetryContext().getHttpRequestTelemetry().getProperties();
 
-        assertThat(insightTelemetry).isEmpty();
+        assertThat(insightTelemetry).hasSize(2);
+        assertThat(insightTelemetry.get("username")).isEqualTo("Fred");
+        assertThat(insightTelemetry.get("clientId")).isEqualTo("elite2apiclient");
     }
 
     private String createJwt(final String user, final List<String> roles, Long duration) {
-        return jwtAuthenticationHelper.createJwt(JwtParameters.builder()
-                .username(user)
-                .roles(roles)
-                .scope(List.of("read", "write"))
-                .expiryTime(Duration.ofDays(duration))
-                .build());
+        return jwtAuthenticationHelper.createJwt(user,
+                List.of("read", "write"), roles, Duration.ofHours(duration), UUID.randomUUID().toString());
     }
-
 }

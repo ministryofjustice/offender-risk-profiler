@@ -3,51 +3,41 @@ package uk.gov.justice.digital.hmpps.riskprofiler.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.util.UriTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder;
 
-import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Slf4j
 public class PathfinderService {
-    private final OAuth2RestTemplate restTemplate;
+    private final WebClient webClient;
 
     @Autowired
-    public PathfinderService(@Qualifier("pathfinderSystemRestTemplate") final OAuth2RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public PathfinderService(@Qualifier("pathfinderSystemWebClient") final WebClient webClient) {
+        this.webClient = webClient;
     }
 
-    protected <T> T get(final URI uri, final Class<T> responseType) {
-        final ResponseEntity<T> exchange = restTemplate.exchange(
-                uri.toString(),
-                HttpMethod.GET,
-                new HttpEntity<>(null, RestCallHelper.CONTENT_TYPE_APPLICATION_JSON),
-                responseType);
-        return exchange.getBody();
+    protected <T> T get(final String uri, final Class<T> responseType) {
+        return webClient.get().uri(uri).retrieve().toEntity(responseType).block().getBody();
     }
 
     public Optional<PathFinder> getBand(final String nomsId) {
 
         log.debug("Getting noms id {} from pathfinder api", nomsId);
-        final var uri = new UriTemplate("/pathfinder/offender/{nomsId}").expand(nomsId);
+        final var uri = String.format("/pathfinder/offender/%s", nomsId);
         try {
             final var map = get(uri, Map.class);
 
             return Optional.of(PathFinder.builder()
-                    .nomisId((String) map.get("nomsId"))
-                    .pathFinderBanding((Integer) map.get("band"))
-                    .build());
+                .nomisId((String) map.get("nomsId"))
+                .pathFinderBanding((Integer) map.get("band"))
+                .build());
 
-        } catch (final HttpClientErrorException.NotFound e) {
+        } catch (final WebClientResponseException.NotFound e) {
             return Optional.empty();
         }
     }
