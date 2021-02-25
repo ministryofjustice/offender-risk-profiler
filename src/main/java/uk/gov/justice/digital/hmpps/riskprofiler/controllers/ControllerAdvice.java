@@ -7,7 +7,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
-import uk.gov.justice.digital.hmpps.riskprofiler.exception.OffenderNotFoundException;
+import org.springframework.web.reactive.function.client.WebClientException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.ErrorResponse;
 
 
@@ -17,16 +18,16 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.ErrorResponse;
 @Slf4j
 public class ControllerAdvice {
 
-    @ExceptionHandler(RestClientResponseException.class)
-    public ResponseEntity<byte[]> handleException(RestClientResponseException e) {
+    @ExceptionHandler(WebClientResponseException.class)
+    public ResponseEntity<byte[]> handleException(WebClientResponseException e) {
         log.error("Unexpected exception", e);
         return ResponseEntity
                 .status(e.getRawStatusCode())
                 .body(e.getResponseBodyAsByteArray());
     }
 
-    @ExceptionHandler(RestClientException.class)
-    public ResponseEntity<ErrorResponse> handleException(RestClientException e) {
+    @ExceptionHandler(WebClientException.class)
+    public ResponseEntity<ErrorResponse> handleException(WebClientException e) {
         log.error("Unexpected exception", e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -56,17 +57,6 @@ public class ControllerAdvice {
                 .body(ErrorResponse
                         .builder()
                         .status(HttpStatus.BAD_REQUEST.value())
-                        .developerMessage(e.getMessage())
-                        .build());
-    }
-
-    @ExceptionHandler(OffenderNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(Exception e) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ErrorResponse
-                        .builder()
-                        .status(HttpStatus.NOT_FOUND.value())
                         .developerMessage(e.getMessage())
                         .build());
     }

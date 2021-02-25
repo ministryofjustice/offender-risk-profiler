@@ -12,14 +12,14 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.PagingAndSortingDto;
  * Helper class that takes care of setting up rest template with base API url and request headers.
  */
 @Component
-public class RestCallHelper {
+public class WebClientCallHelper {
 
     public static final HttpHeaders CONTENT_TYPE_APPLICATION_JSON = httpContentTypeHeaders();
 
     private final WebClient webClient;
 
     @Autowired
-    public RestCallHelper(@Qualifier("elite2SystemWebClient") final WebClient webClient) {
+    public WebClientCallHelper(@Qualifier("elite2SystemWebClient") final WebClient webClient) {
         this.webClient = webClient;
     }
 

@@ -24,7 +24,7 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class RestTemplateConfiguration {
+public class WebClientConfiguration {
 
     @Value("${elite2api.endpoint.url}")
     private String elite2apiRootUri;
@@ -35,7 +35,7 @@ public class RestTemplateConfiguration {
     private final ClientHttpConnector connector;
 
     @Autowired
-    public RestTemplateConfiguration(
+    public WebClientConfiguration(
             @Value("${api.health-timeout:1s}") final Duration healthTimeout) {
         final HttpClient httpClient = HttpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) healthTimeout.toMillis())
@@ -46,12 +46,12 @@ public class RestTemplateConfiguration {
         connector = new ReactorClientHttpConnector(httpClient);
     }
 
-    @Bean//(name = "pathfinderApiHealthWebClient")
+    @Bean
     WebClient pathfinderApiHealthWebClient() {
         return WebClient.builder().baseUrl(pathfinderApiRootUri).clientConnector(connector).build();
     }
 
-    @Bean//(name = "elite2ApiHealthWebClient")
+    @Bean
     WebClient elite2ApiHealthWebClient() {
         return WebClient.builder().baseUrl(elite2apiRootUri).clientConnector(connector).build();
     }
@@ -71,7 +71,7 @@ public class RestTemplateConfiguration {
         return authorizedClientManager;
     }
 
-    @Bean//(name = "elite2SystemRestTemplate")
+    @Bean
     WebClient elite2SystemWebClient(final OAuth2AuthorizedClientManager authorizedClientManager) {
         final ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
@@ -85,7 +85,7 @@ public class RestTemplateConfiguration {
                 .build();
     }
 
-    @Bean //(name = "pathfinderSystemRestTemplate")
+    @Bean
     WebClient pathfinderSystemWebClient(final OAuth2AuthorizedClientManager authorizedClientManager) {
         final ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
