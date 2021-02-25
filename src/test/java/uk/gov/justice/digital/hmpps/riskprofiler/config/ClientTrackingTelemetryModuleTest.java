@@ -59,7 +59,6 @@ public class ClientTrackingTelemetryModuleTest {
         assertThat(insightTelemetry).hasSize(2);
         assertThat(insightTelemetry.get("username")).isEqualTo("bob");
         assertThat(insightTelemetry.get("clientId")).isEqualTo("elite2apiclient");
-
     }
 
     @Test
@@ -102,5 +101,4 @@ public class ClientTrackingTelemetryModuleTest {
         return jwtAuthenticationHelper.createJwt(user,
                 List.of("read", "write"), roles, Duration.ofHours(duration), UUID.randomUUID().toString());
     }
-
 }
