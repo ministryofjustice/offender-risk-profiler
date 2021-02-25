@@ -1,32 +1,30 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.security;
 
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.client.RootUriTemplateHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsAccessTokenProvider;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
-import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthInterceptor;
+import org.springframework.http.client.reactive.ClientHttpConnector;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class RestTemplateConfiguration {
-
-    private final OAuth2ClientContext oauth2ClientContext;
-    private final ClientCredentialsResourceDetails elite2apiDetails;
-
-    @Value("${elite2.api.uri.root}")
-    private String apiRootUri;
 
     @Value("${elite2api.endpoint.url}")
     private String elite2apiRootUri;
@@ -34,66 +32,67 @@ public class RestTemplateConfiguration {
     @Value("${pathfinderapi.endpoint.url}")
     private String pathfinderApiRootUri;
 
-    private final Duration healthTimeout;
+    private final ClientHttpConnector connector;
 
     @Autowired
     public RestTemplateConfiguration(
-            OAuth2ClientContext oauth2ClientContext,
-            ClientCredentialsResourceDetails elite2apiDetails,
-            @Value("${api.health-timeout:1s}") Duration healthTimeout) {
-        this.oauth2ClientContext = oauth2ClientContext;
-        this.elite2apiDetails = elite2apiDetails;
-        this.healthTimeout = healthTimeout;
+            @Value("${api.health-timeout:1s}") final Duration healthTimeout) {
+        final HttpClient httpClient = HttpClient.create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) healthTimeout.toMillis())
+                .doOnConnected(conn -> conn
+                        .addHandlerLast(new ReadTimeoutHandler(healthTimeout.toSeconds(), TimeUnit.SECONDS))
+                        .addHandlerLast(new WriteTimeoutHandler(healthTimeout.toSeconds(), TimeUnit.SECONDS))
+                );
+        connector = new ReactorClientHttpConnector(httpClient);
     }
 
-    @Bean(name = "pathfinderApiHealthRestTemplate")
-    public RestTemplate pathfinderApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder
-                .rootUri(pathfinderApiRootUri)
-                .setConnectTimeout(healthTimeout)
-                .setReadTimeout(healthTimeout)
+    @Bean//(name = "pathfinderApiHealthWebClient")
+    WebClient pathfinderApiHealthWebClient() {
+        return WebClient.builder().baseUrl(pathfinderApiRootUri).clientConnector(connector).build();
+    }
+
+    @Bean//(name = "elite2ApiHealthWebClient")
+    WebClient elite2ApiHealthWebClient() {
+        return WebClient.builder().baseUrl(elite2apiRootUri).clientConnector(connector).build();
+    }
+
+    @Bean
+    public OAuth2AuthorizedClientManager authorizedClientManager(
+            final ClientRegistrationRepository clientRegistrationRepository,
+            final OAuth2AuthorizedClientRepository authorizedClientRepository) {
+
+        final OAuth2AuthorizedClientProvider authorizedClientProvider =
+                OAuth2AuthorizedClientProviderBuilder.builder().clientCredentials().build();
+
+        final DefaultOAuth2AuthorizedClientManager authorizedClientManager =
+                new DefaultOAuth2AuthorizedClientManager(clientRegistrationRepository, authorizedClientRepository);
+        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        return authorizedClientManager;
+    }
+
+    @Bean//(name = "elite2SystemRestTemplate")
+    WebClient elite2SystemWebClient(final OAuth2AuthorizedClientManager authorizedClientManager) {
+        final ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
+                new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
+        oauth2Client.setDefaultClientRegistrationId("api");
+        return WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024))
+                        .build())
+                .baseUrl(elite2apiRootUri)
+                .apply(oauth2Client.oauth2Configuration())
                 .build();
     }
 
-    @Bean(name = "elite2ApiHealthRestTemplate")
-    public RestTemplate elite2ApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder
-                .rootUri(elite2apiRootUri)
-                .setConnectTimeout(healthTimeout)
-                .setReadTimeout(healthTimeout)
+    @Bean //(name = "pathfinderSystemRestTemplate")
+    WebClient pathfinderSystemWebClient(final OAuth2AuthorizedClientManager authorizedClientManager) {
+        final ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
+                new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
+        oauth2Client.setDefaultClientRegistrationId("api");
+        return WebClient.builder()
+                .baseUrl(pathfinderApiRootUri)
+                .apply(oauth2Client.oauth2Configuration())
                 .build();
-    }
-
-    @Bean(name = "elite2SystemRestTemplate")
-    public OAuth2RestTemplate elite2SystemRestTemplate(GatewayAwareAccessTokenProvider accessTokenProvider) {
-
-        OAuth2RestTemplate elite2SystemRestTemplate = new OAuth2RestTemplate(elite2apiDetails, oauth2ClientContext);
-
-        elite2SystemRestTemplate.setAccessTokenProvider(accessTokenProvider);
-
-        RootUriTemplateHandler.addTo(elite2SystemRestTemplate, this.apiRootUri);
-        return elite2SystemRestTemplate;
-    }
-
-    @Bean(name = "pathfinderSystemRestTemplate")
-    public OAuth2RestTemplate pathfinderSystemRestTemplate(GatewayAwareAccessTokenProvider accessTokenProvider) {
-
-        OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(elite2apiDetails, oauth2ClientContext);
-
-        restTemplate.setAccessTokenProvider(accessTokenProvider);
-
-        RootUriTemplateHandler.addTo(restTemplate, this.pathfinderApiRootUri);
-        return restTemplate;
-    }
-
-    /**
-     * This subclass is necessary to make OAuth2AccessTokenSupport.getRestTemplate() public
-     */
-    @Component("accessTokenProvider")
-    public class GatewayAwareAccessTokenProvider extends ClientCredentialsAccessTokenProvider {
-        @Override
-        public RestOperations getRestTemplate() {
-            return super.getRestTemplate();
-        }
     }
 }

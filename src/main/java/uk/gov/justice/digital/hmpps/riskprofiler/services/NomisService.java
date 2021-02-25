@@ -6,8 +6,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.util.UriTemplate;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
@@ -83,14 +82,13 @@ public class NomisService {
                 .map(alertType -> format("alertCode:eq:'%s'", alertType))
                 .collect(Collectors.joining(",or:"));
 
-        final var uriAlertsForOffenderByType = "/offenders/{nomsId}/alerts?query={types}&latestOnly=false";
-        final var uri = new UriTemplate(uriAlertsForOffenderByType).expand(nomsId, types);
-        return restCallHelper.getForList(uri, ALERTS).getBody();
+        final var uriAlertsForOffenderByType = format("/api/offenders/%1$s/alerts?query=%2$s&latestOnly=false",nomsId, types);
+        return restCallHelper.getForList(uriAlertsForOffenderByType, ALERTS).getBody();
     }
 
     public List<OffenderSentenceTerms> getSentencesForOffender(final Long bookingId) {
         log.info("Getting sentences for bookingId {}", bookingId);
-        final var uri = new UriTemplate("/offender-sentences/booking/{bookingId}/sentenceTerms").expand(bookingId);
+        final var uri = format("/api/offender-sentences/booking/%s/sentenceTerms", bookingId);
         return restCallHelper.getForList(uri, SENTENCE_TERMS).getBody();
     }
 
@@ -106,9 +104,8 @@ public class NomisService {
                 .map(participationRole -> format("participationRoles=%s", participationRole))
                 .collect(Collectors.joining("&"));
 
-        final var uriIncidentsForOffender = format("/offenders/%s/incidents?%s&%s", nomsId, incidentTypesStr, participationRolesStr);
-        final var uri = new UriTemplate(uriIncidentsForOffender).expand();
-        return restCallHelper.getForList(uri, INCIDENTS).getBody();
+        final var uriIncidentsForOffender = format("/api/offenders/%s/incidents?%s&%s", nomsId, incidentTypesStr, participationRolesStr);
+        return restCallHelper.getForList(uriIncidentsForOffender, INCIDENTS).getBody();
     }
 
     @CacheEvict("incident")
@@ -117,41 +114,48 @@ public class NomisService {
     }
 
     public List<String> getOffendersAtPrison(@NotNull final String prisonId) {
-        final var uri = new UriTemplate(format("/bookings?query=agencyId:eq:'%s'", prisonId)).expand();
-        final var results = restCallHelper.getWithPaging(uri, new PagingAndSortingDto(0L, (long) Integer.MAX_VALUE), MAP).getBody();
+        final var uri = format("/api/bookings?query=agencyId:eq:'%s'", prisonId);
+        final List<Map> results;
+        try {
+            results = restCallHelper.getWithPaging(uri, new PagingAndSortingDto(0L, (long) Integer.MAX_VALUE), MAP).getBody();
+        } catch (final WebClientResponseException.NotFound e) {
+            log.warn("Prison does not exist");
+            return List.of();
+        }
         return results.stream().map(m -> (String) m.get("offenderNo")).collect(Collectors.toList());
     }
 
     public List<OffenderBooking> getBookingDetails(final Long bookingId) {
         log.info("Getting details for bookingId {}", bookingId);
-        final var uri = new UriTemplate("/bookings?bookingId={bookingId}").expand(bookingId);
+        final var uri = // new UriTemplate("/bookings?bookingId={bookingId}").expand(bookingId);
+          String.format("/api/bookings?bookingId=%s", bookingId);
         return restCallHelper.getForList(uri, BOOKING_DETAILS).getBody();
     }
 
     public List<String> getMainOffences(final Long bookingId) {
-        final var uri = new UriTemplate(format("/bookings/%d/mainOffence", bookingId)).expand();
+        final var uri = format("/api/bookings/%d/mainOffence", bookingId);
         final var results = restCallHelper.getForList(uri, MAP).getBody();
         return results.stream().map(m -> (String) m.get("offenceDescription")).collect(Collectors.toList());
     }
 
     public String getOffender(@NotNull final Long bookingId) {
-        final var uri = new UriTemplate(format("/bookings/%d?basicInfo=true", bookingId)).expand();
+        final var uri = format("/api/bookings/%d?basicInfo=true", bookingId);
         final var result = restCallHelper.get(uri, BookingDetails.class);
         return result.getOffenderNo();
     }
 
     public Long getBooking(@NotNull final String nomsId) {
-        final var uri = new UriTemplate(format("/bookings/offenderNo/%s", nomsId)).expand();
+        final var uri = format("/api/bookings/offenderNo/%s", nomsId);
         final var result = restCallHelper.get(uri, BookingDetails.class);
         return result.getBookingId();
     }
 
     public List<String> getPartiesOfIncident(@NotNull final Long incidentId) {
-        final var uri = new UriTemplate(format("/incidents/%d", incidentId)).expand();
+        final var uri = format("/api/incidents/%d", incidentId);
         final IncidentCase incident;
         try {
             incident = restCallHelper.get(uri, IncidentCase.class);
-        } catch (final HttpClientErrorException.NotFound nf) {
+        } catch (final WebClientResponseException.NotFound nf) {
             // 404: incident not found, OR has no questions answered yet
             return Collections.emptyList();
         }
