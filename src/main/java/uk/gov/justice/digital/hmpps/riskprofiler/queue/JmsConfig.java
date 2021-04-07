@@ -26,7 +26,6 @@ import javax.jms.Session;
 public class JmsConfig {
 
     @Bean
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(@Qualifier("awsClientForEvents") final AmazonSQS awsSqs) {
         final var factory = new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(new SQSConnectionFactory(new ProviderConfiguration(), awsSqs));
@@ -40,8 +39,20 @@ public class JmsConfig {
     @Bean
     @ConditionalOnProperty(name = "sqs.provider", havingValue = "aws")
     public AmazonSQSAsync awsClientForEvents(@Value("${sqs.events.aws.access.key.id}") final String accessKey,
-                                         @Value("${sqs.events.aws.secret.access.key}") final String secretKey,
-                                         @Value("${cloud.aws.region.static}") final String region) {
+                                             @Value("${sqs.events.aws.secret.access.key}") final String secretKey,
+                                             @Value("${cloud.aws.region.static}") final String region) {
+        final var creds = new BasicAWSCredentials(accessKey, secretKey);
+        return AmazonSQSAsyncClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(creds))
+                .withRegion(region)
+                .build();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "sqs.provider", havingValue = "aws")
+    public AmazonSQSAsync awsDlqClientForEvents(@Value("${sqs.events.aws.dlq.access.key.id}") final String accessKey,
+                                                @Value("${sqs.events.aws.dlq.secret.access.key}") final String secretKey,
+                                                @Value("${cloud.aws.region.static}") final String region) {
         final var creds = new BasicAWSCredentials(accessKey, secretKey);
         return AmazonSQSAsyncClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(creds))

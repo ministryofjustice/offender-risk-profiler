@@ -12,6 +12,10 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 @Configuration
 public class ApplicationInsightsConfiguration {
 
+    public enum TelemetryEvents {
+        PURGED_EVENT_DLQ, TRANSFERRED_EVENT_DLQ,
+    }
+
     @Bean
     @Conditional(AppInsightKeyAbsentCondition.class)
     public TelemetryClient telemetryClient() {

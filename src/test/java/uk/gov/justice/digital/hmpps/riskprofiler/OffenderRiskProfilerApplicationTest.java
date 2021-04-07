@@ -7,14 +7,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@ActiveProfiles("test")
+@ActiveProfiles(profiles = {"test", "localstack-embedded"})
 @SpringBootTest
 public class OffenderRiskProfilerApplicationTest {
 
     @Test
     public void testApp() {
 
-
     }
-
 }
