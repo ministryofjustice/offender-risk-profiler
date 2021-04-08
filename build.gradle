@@ -67,4 +67,7 @@ dependencies {
     testImplementation 'io.github.http-builder-ng:http-builder-ng-apache:1.0.4'
     testImplementation 'org.apache.camel:camel-test-spring:3.8.0'
     testImplementation "org.testcontainers:localstack:1.15.2"
+    testImplementation "com.github.tomakehurst:wiremock-standalone:2.27.2"
+    testImplementation "com.google.code.gson:gson:2.8.6"
+    testImplementation "org.awaitility:awaitility-kotlin:4.0.3"
 }

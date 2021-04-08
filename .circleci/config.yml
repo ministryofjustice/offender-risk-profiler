@@ -4,6 +4,13 @@ orbs:
   hmpps: ministryofjustice/hmpps@3.0
 
 executors:
+  java-machine:
+    machine:
+      image: ubuntu-2004:202010-01
+    environment:
+      _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
+    working_directory: ~/app
+
   validator:
     docker:
       - image: circleci/openjdk:11-jdk-browsers
@@ -11,7 +18,7 @@ executors:
 
 jobs:
   validate:
-    executor: validator
+    executor: java-machine
     steps:
       - checkout
       - restore_cache:
@@ -27,6 +34,11 @@ jobs:
           path: build/test-results
       - store_artifacts:
           path: build/reports/tests
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build/libs
+            - build.gradle
 
 workflows:
   version: 2
@@ -36,6 +48,8 @@ workflows:
           filters:
             tags:
               ignore: /.*/
+      - hmpps/helm_lint:
+          name: helm_lint
       - hmpps/build_docker:
           name: build_docker
           filters:
@@ -47,13 +61,14 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
-          context:
-            - hmpps-common-vars
+          context: hmpps-common-vars
           filters:
             branches:
               only:
                 - main
           requires:
+            - validate
+            - helm_lint
             - build_docker
       - request-preprod-approval:
           type: approval

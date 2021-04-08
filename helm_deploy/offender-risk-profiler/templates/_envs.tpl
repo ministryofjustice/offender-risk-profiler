@@ -124,6 +124,24 @@ env:
         name: oc-events-sqs-instance-output
         key: secret_access_key
 
+  - name: SQS_EVENTS_DLQ_QUEUE_NAME
+    valueFrom:
+      secretKeyRef:
+        name: oc-events-sqs-dl-instance-output
+        key: sqs_oce_name
+
+  - name: SQS_EVENTS_AWS_DLQ_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: oc-events-sqs-dl-instance-output
+        key: access_key_id
+
+  - name: SQS_EVENTS_AWS_DLQ_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: oc-events-sqs-dl-instance-output
+        key: secret_access_key
+
   - name: CACHE_TYPE
     value: "elasticache"
 

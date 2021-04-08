@@ -27,7 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @RunWith(SpringRunner.class)
-@ActiveProfiles(value = "test")
+@ActiveProfiles(profiles = {"test", "localstack"})
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public abstract class ResourceTest {
 
