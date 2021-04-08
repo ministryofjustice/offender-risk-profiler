@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@ActiveProfiles(profiles = {"test", "localstack-embedded"})
+@ActiveProfiles(profiles = {"test", "localstack"})
 @Transactional
 public class PreviousProfileRepositoryTest {
 
