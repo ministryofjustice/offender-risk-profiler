@@ -1,5 +1,6 @@
 plugins {
-    id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.1.6"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.1.7"
+  id("org.owasp.dependencycheck") version "6.1.6"
 }
 
 configurations {
@@ -8,7 +9,7 @@ configurations {
 
 dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-    annotationProcessor('org.projectlombok:lombok:1.18.18')
+    annotationProcessor('org.projectlombok:lombok:1.18.20')
 
     runtimeOnly 'com.h2database:h2:1.4.200'
     runtimeOnly 'org.flywaydb:flyway-core:7.7.1'
@@ -58,10 +59,10 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.2")
     implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
-    compileOnly('org.projectlombok:lombok:1.18.18')
+    compileOnly('org.projectlombok:lombok:1.18.20')
 
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.18'
-    testCompileOnly 'org.projectlombok:lombok:1.18.18'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'io.github.http-builder-ng:http-builder-ng-apache:1.0.4'
@@ -69,5 +70,5 @@ dependencies {
     testImplementation "org.testcontainers:localstack:1.15.2"
     testImplementation "com.github.tomakehurst:wiremock-standalone:2.27.2"
     testImplementation "com.google.code.gson:gson:2.8.6"
-    testImplementation "org.awaitility:awaitility-kotlin:4.0.3"
+    testImplementation "org.awaitility:awaitility-kotlin:4.1.0"
 }
