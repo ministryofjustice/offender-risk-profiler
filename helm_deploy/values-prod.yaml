@@ -13,3 +13,7 @@ env:
   NOMIS_AUTH_URL: https://sign-in.hmpps.service.justice.gov.uk/auth
   ELITE2API_ENDPOINT_URL: https://api.prison.service.justice.gov.uk
   PATHFINDERAPI_ENDPOINT_URL: https://api.pathfinder.service.justice.gov.uk
+
+# determine which slack channel alerts are sent to, via the correct Alert Manager receiver
+generic-prometheus-alerts:
+  alertSeverity: digital-prison-service
