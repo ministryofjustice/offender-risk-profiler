@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.ViperRepository;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Viper;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase;
@@ -14,13 +14,12 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentResponse;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ViolenceDecisionTreeServiceTest {
 
     private static final String OFFENDER_1 = "AB1234A";
@@ -31,7 +30,7 @@ public class ViolenceDecisionTreeServiceTest {
     @Mock
     private ViperRepository viperRepo;
 
-    @Before
+    @BeforeEach
     public void setup() {
         service = new ViolenceDecisionTreeService(viperRepo, nomisService, 2, 6, new BigDecimal("2.50"));
     }
@@ -39,7 +38,7 @@ public class ViolenceDecisionTreeServiceTest {
     @Test
     public void testNotOnViperFile() {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
-        var socProfile = service.getViolenceProfile(OFFENDER_1);
+        final var socProfile = service.getViolenceProfile(OFFENDER_1);
 
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(0);
@@ -49,7 +48,7 @@ public class ViolenceDecisionTreeServiceTest {
     public void testNotOnViperFileButSeriousAssault() {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.empty());
 
-        var now = LocalDateTime.now();
+        final var now = LocalDateTime.now();
         when(nomisService.getIncidents(OFFENDER_1)).thenReturn(
                 Arrays.asList(
                         IncidentCase.builder().incidentStatus("CLOSE").reportTime(now.minusMonths(2))
@@ -61,7 +60,7 @@ public class ViolenceDecisionTreeServiceTest {
                                 )).build()
                 )
         );
-        var socProfile = service.getViolenceProfile(OFFENDER_1);
+        final var socProfile = service.getViolenceProfile(OFFENDER_1);
 
         Assertions.assertThat(socProfile.isDisplayAssaults()).isTrue();
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
@@ -75,7 +74,7 @@ public class ViolenceDecisionTreeServiceTest {
     public void testOnViperFileWithSeriousAssaults() {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Viper.builder().nomisId(OFFENDER_1).score(new BigDecimal("2.51")).build()));
 
-        var now = LocalDateTime.now();
+        final var now = LocalDateTime.now();
         when(nomisService.getIncidents(OFFENDER_1)).thenReturn(
                 Arrays.asList(
                         IncidentCase.builder().incidentStatus("CLOSE").reportTime(now.minusMonths(2))
@@ -109,7 +108,7 @@ public class ViolenceDecisionTreeServiceTest {
 
                 )
         );
-        var socProfile = service.getViolenceProfile(OFFENDER_1);
+        final var socProfile = service.getViolenceProfile(OFFENDER_1);
 
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("B");
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(3);
@@ -121,7 +120,7 @@ public class ViolenceDecisionTreeServiceTest {
     public void testOnViperFileWithOldSeriousAssaults() {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Viper.builder().nomisId(OFFENDER_1).score(new BigDecimal("2.51")).build()));
 
-        var now = LocalDateTime.now();
+        final var now = LocalDateTime.now();
         when(nomisService.getIncidents(OFFENDER_1)).thenReturn(
                 Arrays.asList(
                         IncidentCase.builder().incidentStatus("CLOSE").reportTime(now.minusMonths(7))
@@ -140,7 +139,7 @@ public class ViolenceDecisionTreeServiceTest {
                                 )).build()
                 )
         );
-        var socProfile = service.getViolenceProfile(OFFENDER_1);
+        final var socProfile = service.getViolenceProfile(OFFENDER_1);
 
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(2);
@@ -152,7 +151,7 @@ public class ViolenceDecisionTreeServiceTest {
     public void testOnViperFileWithBelowTriggerForAssaults() {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Viper.builder().nomisId(OFFENDER_1).score(new BigDecimal("2.51")).build()));
 
-        var now = LocalDateTime.now();
+        final var now = LocalDateTime.now();
         when(nomisService.getIncidents(OFFENDER_1)).thenReturn(
                 Arrays.asList(
                         IncidentCase.builder().incidentStatus("CLOSE").reportTime(now.minusMonths(3))
@@ -164,7 +163,7 @@ public class ViolenceDecisionTreeServiceTest {
                                 )).build()
                 )
         );
-        var socProfile = service.getViolenceProfile(OFFENDER_1);
+        final var socProfile = service.getViolenceProfile(OFFENDER_1);
 
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(1);
@@ -176,7 +175,7 @@ public class ViolenceDecisionTreeServiceTest {
     public void testOnViperFileWitLowViperScore() {
         when(viperRepo.getByKey(eq(OFFENDER_1))).thenReturn(Optional.of(Viper.builder().nomisId(OFFENDER_1).score(new BigDecimal("2.49")).build()));
 
-        var socProfile = service.getViolenceProfile(OFFENDER_1);
+        final var socProfile = service.getViolenceProfile(OFFENDER_1);
 
         Assertions.assertThat(socProfile.getProvisionalCategorisation()).isEqualTo("C");
         Assertions.assertThat(socProfile.getNumberOfAssaults()).isEqualTo(0);

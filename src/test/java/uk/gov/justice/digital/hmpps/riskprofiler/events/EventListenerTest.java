@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.digital.hmpps.riskprofiler.services.NomisService;
 import uk.gov.justice.digital.hmpps.riskprofiler.services.PollPrisonersService;
 
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EventListenerTest {
 
     private static final String OFFENDER_1 = "AB1234A";
@@ -33,7 +33,7 @@ public class EventListenerTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Before
+    @BeforeEach
     public void setup() {
         service = new EventListener(nomisService, pollPrisonersService, objectMapper);
     }

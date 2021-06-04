@@ -20,7 +20,6 @@ public class EscapeDecisionTreeService {
     }
 
     public EscapeProfile getEscapeProfile(@NotNull final String nomsId) {
-        log.debug("Calculating escape profile for {}", nomsId);
         final var escapeData = nomisService.getEscapeListAlertsForOffender(nomsId);
 
         final var splitLists =

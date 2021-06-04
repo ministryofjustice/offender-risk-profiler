@@ -49,8 +49,6 @@ public class ViolenceDecisionTreeService {
 
     public ViolenceProfile getViolenceProfile(@NotNull final String nomsId) {
 
-        log.debug("Calculating violence profile for {}", nomsId);
-
         // Check NOMIS Have the individuals had 5 or more assaults in custody? (remove DUPS)
         final var assaults = nomisService.getIncidents(nomsId).stream()
                 .filter(i -> !"DUP".equals(i.getIncidentStatus())).collect(Collectors.toList());
@@ -76,9 +74,8 @@ public class ViolenceDecisionTreeService {
         violenceProfile.numberOfNonSeriousAssaults(numberOfNonSeriousAssaults);
 
         viperDataRepository.getByKey(nomsId).ifPresentOrElse(viper -> {
-            log.debug("Viper score for {} is {}", nomsId, viper.getScore());
             if (viper.getScore().compareTo(viperScoreThreshold) > 0) {
-                log.debug("violence: Viper score above threshold for {}", nomsId);
+                log.debug("violence: Viper score {} above threshold for {}", viper.getScore(), nomsId);
                 violenceProfile.notifySafetyCustodyLead(true);
 
                 if (assaults.size() >= minNumAssaults) {
@@ -93,11 +90,11 @@ public class ViolenceDecisionTreeService {
                         violenceProfile.provisionalCategorisation("C");
                     }
                 } else {
-                    log.debug("violence: Viper assaults below threshold for {}", nomsId);
+                    log.debug("violence: Viper assaults below threshold {} for {}", minNumAssaults, nomsId);
                     violenceProfile.provisionalCategorisation("C");
                 }
             } else {
-                log.debug("Viper score is below threshold of {} for {}", viperScoreThreshold, nomsId);
+                log.debug("violence: Viper score {} is below threshold of {} for {}", viper.getScore(), viperScoreThreshold, nomsId);
                 violenceProfile.provisionalCategorisation(DEFAULT_CAT);
             }
         }, () -> {
