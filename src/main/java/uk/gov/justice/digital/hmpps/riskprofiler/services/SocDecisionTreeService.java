@@ -31,8 +31,6 @@ public class SocDecisionTreeService {
     }
 
     public SocProfile getSocData(@NotNull final String nomsId) {
-        log.debug("Calculating SOC profile for {}", nomsId);
-
         final var soc = buildSocProfile(nomsId);
 
         final var prasData = repositoryFactory.getRepository(Pras.class).getByKey(nomsId);
@@ -42,14 +40,13 @@ public class SocDecisionTreeService {
             soc.transferToSecurity(true);
             soc.provisionalCategorisation("C");
         } else {
-
             repositoryFactory.getRepository(OcgmList.class).getByKey(nomsId)
                     .ifPresentOrElse(
                             ocgmSet -> {
                                 log.debug("SOC: {} present in OGCM list", nomsId);
                                 ocgmSet.getData()
                                         .stream().map(ocgm -> {
-                                    var potentialProfile = buildSocProfile(nomsId);
+                                    final var potentialProfile = buildSocProfile(nomsId);
                                     repositoryFactory.getRepository(Ocg.class).getByKey(ocgm.getOcgId())
                                             .ifPresentOrElse(ocg -> checkBand(nomsId, potentialProfile, ocgm, ocg),
                                                     () -> checkAlerts(nomsId, potentialProfile, DEFAULT_CAT));

@@ -21,7 +21,7 @@ public class EventListener {
     private final PollPrisonersService pollPrisonersService;
     private final ObjectMapper objectMapper;
 
-    public EventListener(NomisService nomisService, final PollPrisonersService pollPrisonersService, final ObjectMapper objectMapper) {
+    public EventListener(final NomisService nomisService, final PollPrisonersService pollPrisonersService, final ObjectMapper objectMapper) {
         this.nomisService = nomisService;
         this.pollPrisonersService = pollPrisonersService;
         this.objectMapper = objectMapper;
@@ -29,7 +29,6 @@ public class EventListener {
 
     @JmsListener(destination = "${sqs.events.queue.name}")
     public void eventListener(final String requestJson) {
-        log.info(requestJson);
         final var event = getOffenderEvent(requestJson);
         if (event != null) {
             switch (event.getEventType()) {
@@ -38,7 +37,8 @@ public class EventListener {
                 case "ALERT-DELETED":
                     final var isEscape = NomisService.ESCAPE_LIST_ALERT_TYPES.contains(event.getAlertCode());
                     final var isSoc = NomisService.SOC_ALERT_TYPES.contains(event.getAlertCode());
-                    if (isEscape || isSoc) {
+                    if ((isEscape || isSoc) && event.getBookingId() != null) {
+                        // booking id can be null for ALERT-DELETED. In this case ignore, as it is unlikely it will trigger need to change to cat B
                         final var nomsId = nomisService.getOffender(event.getBookingId());
                         if (isEscape) {
                             nomisService.evictEscapeListAlertsCache(nomsId);
@@ -67,10 +67,13 @@ public class EventListener {
         OffenderEvent event = null;
         try {
             final Map<String, String> message = objectMapper.readValue(requestJson, Map.class);
-            if (message != null && message.get("Message") != null) {
+            if (message == null || message.get("Message") == null) {
+                log.warn(requestJson);
+            } else {
+                log.debug(message.get("Message")); // do not log an excessive amount of data
                 event = objectMapper.readValue(message.get("Message"), OffenderEvent.class);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             log.error("Failed to Parse Message {}", requestJson);
         }
         return event;

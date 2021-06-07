@@ -1,18 +1,18 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert;
 
 import java.util.List;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EscapeDecisionTreeServiceTest {
 
     private static final String OFFENDER_1 = "AB1234A";
@@ -26,7 +26,7 @@ public class EscapeDecisionTreeServiceTest {
     @Mock
     private NomisService nomisService;
 
-    @Before
+    @BeforeEach
     public void setup() {
         service = new EscapeDecisionTreeService(nomisService);
     }
@@ -36,7 +36,7 @@ public class EscapeDecisionTreeServiceTest {
 
         when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(activeListAlert, activeRiskAlert, inactiveListAlert, inactiveRiskAlert));
 
-        var escapeProfile = service.getEscapeProfile(OFFENDER_1);
+        final var escapeProfile = service.getEscapeProfile(OFFENDER_1);
         Assertions.assertThat(escapeProfile.getEscapeListAlerts()).hasSize(1);
         Assertions.assertThat(escapeProfile.getEscapeRiskAlerts()).hasSize(1);
         Assertions.assertThat(escapeProfile.isActiveEscapeList()).isTrue();
@@ -48,7 +48,7 @@ public class EscapeDecisionTreeServiceTest {
 
         when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(activeListAlert, activeListAlert));
 
-        var escapeProfile = service.getEscapeProfile(OFFENDER_1);
+        final var escapeProfile = service.getEscapeProfile(OFFENDER_1);
         Assertions.assertThat(escapeProfile.getEscapeListAlerts()).hasSize(2);
         Assertions.assertThat(escapeProfile.getEscapeRiskAlerts()).hasSize(0);
         Assertions.assertThat(escapeProfile.isActiveEscapeList()).isTrue();
@@ -60,7 +60,7 @@ public class EscapeDecisionTreeServiceTest {
 
         when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(activeRiskAlert, activeRiskAlert));
 
-        var escapeProfile = service.getEscapeProfile(OFFENDER_1);
+        final var escapeProfile = service.getEscapeProfile(OFFENDER_1);
         Assertions.assertThat(escapeProfile.getEscapeListAlerts()).hasSize(0);
         Assertions.assertThat(escapeProfile.getEscapeRiskAlerts()).hasSize(2);
         Assertions.assertThat(escapeProfile.isActiveEscapeList()).isFalse();
@@ -71,7 +71,7 @@ public class EscapeDecisionTreeServiceTest {
     public void testNoAlertsResponse() {
         when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of());
 
-        var escapeProfile = service.getEscapeProfile(OFFENDER_1);
+        final var escapeProfile = service.getEscapeProfile(OFFENDER_1);
         Assertions.assertThat(escapeProfile.isActiveEscapeList()).isFalse();
         Assertions.assertThat(escapeProfile.isActiveEscapeRisk()).isFalse();
         Assertions.assertThat(escapeProfile.getEscapeListAlerts()).hasSize(0);
@@ -82,7 +82,7 @@ public class EscapeDecisionTreeServiceTest {
     public void testInactiveOnlyAlertsResponse() {
         when(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(List.of(inactiveListAlert, inactiveRiskAlert));
 
-        var escapeProfile = service.getEscapeProfile(OFFENDER_1);
+        final var escapeProfile = service.getEscapeProfile(OFFENDER_1);
         Assertions.assertThat(escapeProfile.isActiveEscapeList()).isFalse();
         Assertions.assertThat(escapeProfile.isActiveEscapeRisk()).isFalse();
         Assertions.assertThat(escapeProfile.getEscapeListAlerts()).hasSize(0);

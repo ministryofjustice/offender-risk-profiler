@@ -20,7 +20,6 @@ public class ExtremismDecisionTreeService {
     }
 
     public ExtremismProfile getExtremismProfile(@NotNull final String nomsId, final Boolean previousOffences) {
-        log.debug("Calculating extremism profile for {}", nomsId);
         final var pathFinder = repository.getBand(nomsId);
         return decisionProcess(nomsId, Boolean.TRUE.equals(previousOffences), pathFinder);
     }

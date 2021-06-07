@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.*;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocg;
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocgm;
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.digital.hmpps.riskprofiler.services.SocDecisionTreeService.PRINCIPAL_SUBJECT;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SocDecisionTreeServiceTest {
 
     private static final String OFFENDER_1 = "AB1234A";
@@ -38,7 +38,7 @@ public class SocDecisionTreeServiceTest {
     @Mock
     private ViperRepository viperRepo;
 
-    @Before
+    @BeforeEach
     public void setup() {
         final var factory = new DataRepositoryFactory(ocgmRepo, ocgRepo, prasRepo, viperRepo);
         service = new SocDecisionTreeService(factory, nomisService);
