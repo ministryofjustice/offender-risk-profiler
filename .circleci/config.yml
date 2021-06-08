@@ -23,14 +23,9 @@ jobs:
           keys:
             - gradle-{{ checksum "build.gradle" }}
             - gradle-
-#      - run:
-#          name: Wait for SQS to be ready
-#          command: curl -4 --connect-timeout 30 --retry-connrefused --retry 20 --retry-delay 5 http://localhost:4576
-#      - run:
-#          name: Set up queues
-#          command: src/test/resources/localstack/setup-sns.sh
       - run:
           command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
+          background: true
       - run:
           command: ./gradlew check
       - save_cache:
