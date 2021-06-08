@@ -24,7 +24,7 @@ public class PrisonSupportedRepositoryTest {
     private PrisonSupportedRepository repository;
 
     @Test
-    public void givenATransientWhenPersistedItShoudBeRetrievableById() {
+    public void givenATransientWhenPersistedItShouldBeRetrievableById() {
 
         final var transientEntity = transientEntity();
 

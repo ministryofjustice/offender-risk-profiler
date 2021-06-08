@@ -8,6 +8,7 @@ import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
 
 @ActiveProfiles(profiles = ["test", "localstack"])
 abstract class QueueIntegrationTest : IntegrationTest() {
@@ -32,7 +33,7 @@ abstract class QueueIntegrationTest : IntegrationTest() {
     return queueAttributes.attributes["ApproximateNumberOfMessages"]?.toInt()
   }
 
-  fun prisonRequestCountFor(url: String) = prisonMockServer.findAll(getRequestedFor(urlEqualTo(url))).count()
+  fun prisonRequestCountFor(url: String) = PrisonMockServer.prisonMockServer.findAll(getRequestedFor(urlEqualTo(url))).count()
 
   fun getNumberOfMessagesCurrentlyOnDLQueue(): Int? {
     val queueAttributes = awsDlqClientForEvents.getQueueAttributes(dlqUrl, listOf("ApproximateNumberOfMessages"))
