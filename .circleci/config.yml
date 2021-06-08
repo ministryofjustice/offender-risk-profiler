@@ -10,7 +10,7 @@ executors:
 #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
       image: ubuntu-2004:202104-01
     environment:
-      _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
+      _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
     working_directory: ~/app
 
 jobs:
@@ -29,6 +29,8 @@ jobs:
 #      - run:
 #          name: Set up queues
 #          command: src/test/resources/localstack/setup-sns.sh
+      - run:
+          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
       - run:
           command: ./gradlew check
       - save_cache:
