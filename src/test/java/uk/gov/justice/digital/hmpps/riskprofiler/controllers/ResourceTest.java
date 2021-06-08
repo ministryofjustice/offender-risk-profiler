@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.controllers;
 
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JsonContent;
@@ -10,7 +10,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer;
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer;
+import uk.gov.justice.digital.hmpps.riskprofiler.services.NomisService;
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthenticationHelper;
 
 import java.time.Duration;
@@ -25,54 +27,66 @@ import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = {"test", "localstack"})
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public abstract class ResourceTest {
 
-  @Autowired
-  protected TestRestTemplate testRestTemplate;
+    @Autowired
+    protected TestRestTemplate testRestTemplate;
 
-  @Autowired
-  protected JwtAuthenticationHelper jwtAuthHelper;
+    @Autowired
+    protected JwtAuthenticationHelper jwtAuthHelper;
 
-  HttpEntity<?> createHttpEntityWithBearerAuthorisation(final String user, final List<String> roles) {
-    final var jwt = createJwt(user, roles);
-    return createHttpEntity(jwt, null);
-  }
+    @Autowired
+    protected NomisService nomisService;
 
-  HttpEntity<?> createHttpEntity(final String bearerToken, final Object body) {
-    final var headers = new HttpHeaders();
-    headers.add(AUTHORIZATION, "Bearer " + bearerToken);
-    headers.add(ACCEPT, APPLICATION_JSON_VALUE);
-    if (body != null) {
-      headers.add(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
+    HttpEntity<?> createHttpEntityWithBearerAuthorisation(final String user, final List<String> roles) {
+        final var jwt = createJwt(user, roles);
+        return createHttpEntity(jwt, null);
     }
-    return new HttpEntity<>(body, headers);
-  }
 
-  void assertThatStatus(final ResponseEntity<String> response, final int status) {
-    assertThat(response.getStatusCodeValue()).withFailMessage("Expecting status code value <%s> to be equal to <%s> but it was not.\nBody was\n%s", response.getStatusCodeValue(), status, response.getBody()).isEqualTo(status);
-  }
+    @BeforeEach
+    void resetStubs() {
+        nomisService.evictSocListAlertsCache("A1234AB");
+        nomisService.evictSocListAlertsCache("A1234AE");
+        nomisService.evictSocListAlertsCache("A5015DY");
+        PrisonMockServer.getPrisonMockServer().resetAll();
+        OAuthMockServer.getOauthMockServer().resetAll();
+        OAuthMockServer.getOauthMockServer().stubGrantToken();
+        PrisonMockServer.getPrisonMockServer().stubAlerts();
+    }
 
-  void assertThatJsonFileAndStatus(final ResponseEntity<String> response, final int status, final String jsonFile) {
-    assertThatStatus(response, status);
-    assertThat(getBodyAsJsonContent(response)).isEqualToJson(jsonFile);
-  }
+    HttpEntity<?> createHttpEntity(final String bearerToken, final Object body) {
+        final var headers = new HttpHeaders();
+        headers.add(AUTHORIZATION, "Bearer " + bearerToken);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        if (body != null) {
+            headers.add(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        }
+        return new HttpEntity<>(body, headers);
+    }
 
-  private <T> JsonContent<T> getBodyAsJsonContent(final ResponseEntity<String> response) {
-    return new JsonContent<>(getClass(), forType(String.class), Objects.requireNonNull(response.getBody()));
-  }
+    void assertThatStatus(final ResponseEntity<String> response, final int status) {
+        assertThat(response.getStatusCodeValue()).withFailMessage("Expecting status code value <%s> to be equal to <%s> but it was not.\nBody was\n%s", response.getStatusCodeValue(), status, response.getBody()).isEqualTo(status);
+    }
 
-  String createJwt(final String user, final List<String> roles) {
-    return jwtAuthHelper.createJwt(
-        user,
-        List.of("read", "write"),
-        roles,
-        Duration.ofHours(1),
-        UUID.randomUUID().toString()
-    );
-  }
+    void assertThatJsonFileAndStatus(final ResponseEntity<String> response, final int status, final String jsonFile) {
+        assertThatStatus(response, status);
+        assertThat(getBodyAsJsonContent(response)).isEqualToJson(jsonFile);
+    }
+
+    private <T> JsonContent<T> getBodyAsJsonContent(final ResponseEntity<String> response) {
+        return new JsonContent<>(getClass(), forType(String.class), Objects.requireNonNull(response.getBody()));
+    }
+
+    String createJwt(final String user, final List<String> roles) {
+        return jwtAuthHelper.createJwt(
+                user,
+                List.of("read", "write"),
+                roles,
+                Duration.ofHours(1),
+                UUID.randomUUID().toString()
+        );
+    }
 }
 

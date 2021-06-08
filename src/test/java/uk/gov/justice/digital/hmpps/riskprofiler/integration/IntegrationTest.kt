@@ -2,8 +2,6 @@ package uk.gov.justice.digital.hmpps.riskprofiler.integration
 
 import com.amazonaws.services.sqs.AmazonSQS
 import com.google.gson.Gson
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -13,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
@@ -23,7 +20,6 @@ import java.time.Duration
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ComponentScan
-@ActiveProfiles(profiles = ["test"])
 abstract class IntegrationTest {
 
   @SpyBean
@@ -39,25 +35,6 @@ abstract class IntegrationTest {
   @Autowired
   internal lateinit var jwtHelper: JwtAuthenticationHelper
 
-  companion object {
-    internal val prisonMockServer = PrisonMockServer()
-    internal val oauthMockServer = OAuthMockServer()
-
-    @BeforeAll
-    @JvmStatic
-    fun startMocks() {
-      prisonMockServer.start()
-      oauthMockServer.start()
-    }
-
-    @AfterAll
-    @JvmStatic
-    fun stopMocks() {
-      prisonMockServer.stop()
-      oauthMockServer.stop()
-    }
-  }
-
   init {
     SecurityContextHolder.getContext().authentication = TestingAuthenticationToken("user", "pw")
     // Resolves an issue where Wiremock keeps previous sockets open from other tests causing connection resets
@@ -66,15 +43,18 @@ abstract class IntegrationTest {
 
   @BeforeEach
   fun resetStubs() {
-    prisonMockServer.resetAll()
-    oauthMockServer.resetAll()
-    oauthMockServer.stubGrantToken()
-    prisonMockServer.stubIncidents()
+    PrisonMockServer.prisonMockServer.resetAll()
+    OAuthMockServer.oauthMockServer.resetAll()
+    OAuthMockServer.oauthMockServer.stubGrantToken()
+    PrisonMockServer.prisonMockServer.stubIncidents()
   }
 
   internal fun Any.asJson() = gson.toJson(this)
 
-  internal fun setAuthorisation(user: String = "prisoner-search-client", roles: List<String> = listOf()): (HttpHeaders) -> Unit {
+  protected fun setAuthorisation(
+    user: String = "prisoner-search-client",
+    roles: List<String> = listOf()
+  ): (HttpHeaders) -> Unit {
     val token = jwtHelper.createJwt(
       subject = user,
       scope = listOf("read"),

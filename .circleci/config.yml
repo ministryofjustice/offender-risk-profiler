@@ -6,14 +6,11 @@ orbs:
 executors:
   java-machine:
     machine:
+#      TODO: this should be upgraded as soon as a java 16 machine image is available,
+#        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
       image: ubuntu-2004:202104-01
     environment:
       _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
-    working_directory: ~/app
-
-  validator:
-    docker:
-      - image: circleci/openjdk:11-jdk-browsers
     working_directory: ~/app
 
 jobs:
@@ -21,11 +18,16 @@ jobs:
     executor: java-machine
     steps:
       - checkout
+      - hmpps/install_aws_cli
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle" }}
             - gradle-
-      - run: ./gradlew test
+      - run:
+          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
+          background: true
+      - run:
+          command: ./gradlew check
       - save_cache:
           paths:
             - ~/.gradle
@@ -112,4 +114,3 @@ workflows:
           context:
             - veracode-credentials
             - hmpps-common-vars
-

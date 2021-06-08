@@ -103,7 +103,7 @@ open class JmsEmbeddedLocalStackConfig {
       CreateQueueRequest(queueName).withAttributes(
         mapOf(
           QueueAttributeName.RedrivePolicy.toString() to
-              """{"deadLetterTargetArn":"${dlqArn.attributes["QueueArn"]}","maxReceiveCount":"5"}"""
+            """{"deadLetterTargetArn":"${dlqArn.attributes["QueueArn"]}","maxReceiveCount":"5"}"""
         )
       )
     )
