@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder
 import uk.gov.justice.digital.hmpps.riskprofiler.model.ExtremismProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile
-import java.util.*
+import java.util.Optional
 import javax.validation.constraints.NotNull
 
 @Service

@@ -4,7 +4,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.riskprofiler.model.EscapeProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile
-import uk.gov.justice.digital.hmpps.riskprofiler.services.EscapeDecisionTreeService
 import java.util.stream.Collectors
 import javax.validation.constraints.NotNull
 

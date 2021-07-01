@@ -23,7 +23,7 @@ class PreviousProfileRepositoryTest {
   @Test
   fun givenATransientWhenPersistedItShoudBeRetrievableById() {
     val transientEntity = transientEntity()
-    val (offenderNo, escape, soc, violence, executeDateTime) = repository.save(transientEntity)
+    repository.save(transientEntity)
     TestTransaction.flagForCommit()
     TestTransaction.end()
     TestTransaction.start()

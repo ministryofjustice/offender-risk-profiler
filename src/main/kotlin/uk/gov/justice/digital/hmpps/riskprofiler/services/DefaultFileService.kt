@@ -45,8 +45,10 @@ class DefaultFileService : FileService {
     val listOfFiles = folder.listFiles()
     if (listOfFiles != null) {
       log.info("Housekeeping- found {} files in {}", listOfFiles.size, fileLocation)
-      Arrays.stream(listOfFiles).sorted(Comparator.comparing { obj: File -> obj.lastModified() }
-        .reversed()).skip(2).forEach { file: File ->
+      Arrays.stream(listOfFiles).sorted(
+        Comparator.comparing { obj: File -> obj.lastModified() }
+          .reversed()
+      ).skip(2).forEach { file: File ->
         file.delete()
         log.info("Deleted file {} ", fileLocation + "/" + file.name)
       }

@@ -48,7 +48,8 @@ class WebClientCallHelper @Autowired constructor(@param:Qualifier("elite2SystemW
   }
 
   fun <T> getWithPaging(
-    uri: String, pagingAndSorting: PagingAndSortingDto,
+    uri: String,
+    pagingAndSorting: PagingAndSortingDto,
     responseType: ParameterizedTypeReference<T>
   ): ResponseEntity<T> {
     return webClient.get()

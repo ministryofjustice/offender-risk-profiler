@@ -57,9 +57,11 @@ class WebClientConfiguration @Autowired constructor(
     val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
     oauth2Client.setDefaultClientRegistrationId("api")
     return WebClient.builder()
-      .exchangeStrategies(ExchangeStrategies.builder()
-        .codecs { configurer: ClientCodecConfigurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024) }
-        .build())
+      .exchangeStrategies(
+        ExchangeStrategies.builder()
+          .codecs { configurer: ClientCodecConfigurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024) }
+          .build()
+      )
       .baseUrl(elite2apiRootUri)
       .apply(oauth2Client.oauth2Configuration())
       .build()
