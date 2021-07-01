@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.riskprofiler.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.annotations.ApiModel
-import java.io.Serial
 import java.io.Serializable
 import java.time.LocalDate
 
@@ -30,9 +29,4 @@ data class Alert(
 ) : Serializable {
 
   constructor(active: Boolean, code: String) : this(active = active, alertCode = code)
-
-  companion object {
-    @Serial
-    private val serialVersionUID = 1L
-  }
 }
