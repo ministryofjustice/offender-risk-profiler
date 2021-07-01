@@ -21,7 +21,7 @@ jobs:
       - hmpps/install_aws_cli
       - restore_cache:
           keys:
-            - gradle-{{ checksum "build.gradle" }}
+            - gradle-{{ checksum "build.gradle.kt" }}
             - gradle-
       - run:
           command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
@@ -31,7 +31,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: gradle-{{ checksum "build.gradle" }}
+          key: gradle-{{ checksum "build.gradle.kt" }}
       - store_test_results:
           path: build/test-results
       - store_artifacts:
@@ -40,7 +40,7 @@ jobs:
           root: .
           paths:
             - build/libs
-            - build.gradle
+            - build.gradle.kt
 
 workflows:
   version: 2
