@@ -6,7 +6,6 @@ API for Providing Risk Profile Information on Offenders
 - Install jdk 16
 - Enable Gradle using jdk 16
 - set jdk in project structure
-- enable the lombok plugin and restart if necessary
 - Enable Annotation Processors at "Settings > Build > Compiler > Annotation Processors"
 
 #### Health
@@ -23,3 +22,7 @@ There is a `localstack` profile for running locally with the sqs resource provid
 localstack, which can be run as a docker container. See https://github.com/localstack/localstack. In the case it is up to you to create the required queues.
 
 Also for tests the 'localstack-embedded' profile is used which runs localstack in a thread and configures it with the necessary queues.
+
+#### Tests
+
+Note that **Redis** needs to be running for the unit / integration tests.
