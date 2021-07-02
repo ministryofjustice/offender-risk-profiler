@@ -6,7 +6,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
 
 @Component
-// @DependsOn("dataRepositoryFactory")
 class CsvProcessorRoute(private val dataService: DataService, private val fileService: FileService) : RouteBuilder() {
   override fun configure() {
     context.isStreamCaching = true
