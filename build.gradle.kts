@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.2"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.3"
   id("org.owasp.dependencycheck") version "6.2.2"
   kotlin("plugin.spring") version "1.5.20"
   kotlin("plugin.jpa") version "1.5.20"
@@ -23,7 +23,7 @@ dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   runtimeOnly("com.h2database:h2:1.4.200")
-  runtimeOnly("org.flywaydb:flyway-core:7.10.0")
+  runtimeOnly("org.flywaydb:flyway-core:7.11.0")
   runtimeOnly("org.postgresql:postgresql:42.2.22")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -42,12 +42,13 @@ dependencies {
   implementation("org.springframework:spring-jms:5.3.8")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
-  implementation("org.apache.camel.springboot:camel-spring-boot:3.8.0")
-  implementation("org.apache.camel:camel-csv:3.8.0")
-  implementation("org.apache.camel:camel-aws-s3:3.8.0")
-  implementation("org.apache.camel:camel-aws-sqs:3.8.0")
-  implementation("org.apache.camel:camel-xml-jaxp:3.8.0")
-  implementation("org.apache.camel:camel-timer:3.8.0")
+  implementation("org.apache.camel.springboot:camel-spring-boot:3.11.0")
+  implementation("org.apache.camel:camel-bean:3.11.0")
+  implementation("org.apache.camel:camel-csv:3.11.0")
+  implementation("org.apache.camel:camel-aws-s3:3.11.0")
+  implementation("org.apache.camel:camel-aws-sqs:3.11.0")
+  implementation("org.apache.camel:camel-xml-jaxp:3.11.0")
+  implementation("org.apache.camel:camel-timer:3.11.0")
 
   implementation("net.javacrumbs.shedlock:shedlock-spring:4.24.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.24.0")
@@ -73,7 +74,7 @@ dependencies {
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
-  testImplementation("org.apache.camel:camel-test-spring:3.8.0")
+  testImplementation("org.apache.camel:camel-test-spring:3.11.0")
   testImplementation("org.testcontainers:localstack:1.15.3")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("com.google.code.gson:gson:2.8.7")

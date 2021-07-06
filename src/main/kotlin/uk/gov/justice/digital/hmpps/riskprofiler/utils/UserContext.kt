@@ -7,7 +7,7 @@ object UserContext {
   private val authToken_ = ThreadLocal<String>()
 
   @JvmStatic
-  var authToken: String
+  var authToken: String?
     get() = authToken_.get()
     set(aToken) {
       authToken_.set(aToken)
