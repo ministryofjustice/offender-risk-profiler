@@ -45,8 +45,8 @@ dependencies {
   implementation("org.apache.camel.springboot:camel-spring-boot:3.11.0")
   implementation("org.apache.camel:camel-bean:3.11.0")
   implementation("org.apache.camel:camel-csv:3.11.0")
-  implementation("org.apache.camel:camel-aws-s3:3.11.0")
-  implementation("org.apache.camel:camel-aws-sqs:3.11.0")
+  implementation("org.apache.camel:camel-aws2-s3:3.11.0")
+  implementation("org.apache.camel:camel-aws2-sqs:3.11.0")
   implementation("org.apache.camel:camel-xml-jaxp:3.11.0")
   implementation("org.apache.camel:camel-timer:3.11.0")
 
