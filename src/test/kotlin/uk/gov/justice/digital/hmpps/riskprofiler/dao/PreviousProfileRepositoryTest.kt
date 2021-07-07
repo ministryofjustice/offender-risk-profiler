@@ -48,7 +48,7 @@ class PreviousProfileRepositoryTest {
 
   private fun transientEntity(): PreviousProfile {
     return PreviousProfile(
-      "A1234AA", null, null, null,
+      "A1234AA", "", "", "",
       LocalDateTime.of(2020, 3, 30, 14, 40)
     )
   }

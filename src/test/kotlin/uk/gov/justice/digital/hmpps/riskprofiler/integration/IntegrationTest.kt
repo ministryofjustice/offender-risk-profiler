@@ -13,6 +13,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthenticationHelper
 import java.time.Duration
@@ -45,6 +46,7 @@ abstract class IntegrationTest {
   fun resetStubs() {
     PrisonMockServer.prisonMockServer.resetAll()
     OAuthMockServer.oauthMockServer.resetAll()
+    PathfinderMockServer.pathfinderMockServer.resetAll()
     OAuthMockServer.oauthMockServer.stubGrantToken()
     PrisonMockServer.prisonMockServer.stubIncidents()
   }

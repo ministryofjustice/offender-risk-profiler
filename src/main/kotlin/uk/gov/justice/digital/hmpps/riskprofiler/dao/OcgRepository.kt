@@ -41,10 +41,7 @@ class OcgRepository : DataRepository<Ocg>() {
           data.linesError.incrementAndGet()
         }
       }
-    log.info(
-      "Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.index.get(),
-      data.linesProcessed.get(), data.linesDup.get(), data.linesInvalid.get(), data.linesError.get()
-    )
+    log.info("Lines total ${data.index.get()}, processed ${data.linesProcessed.get()}, dups ${data.linesDup.get()}, invalid ${data.linesInvalid.get()}, errors ${data.linesError.get()}")
   }
 
   companion object {
