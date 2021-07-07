@@ -126,4 +126,37 @@ class PrisonMockServer : WireMockServer(8080) {
         )
     )
   }
+
+  fun stubPing() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/ping"))
+        .willReturn(
+          WireMock.aResponse()
+            // .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody("pong")
+        )
+    )
+  }
+}
+
+class PathfinderMockServer : WireMockServer(8083) {
+
+  companion object {
+    @JvmStatic
+    val pathfinderMockServer = PathfinderMockServer()
+    val dum = pathfinderMockServer.start()
+  }
+
+  private val gson = GsonBuilder().create()
+
+  fun stubPing() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/ping"))
+        .willReturn(
+          WireMock.aResponse()
+            // .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody("pong")
+        )
+    )
+  }
 }

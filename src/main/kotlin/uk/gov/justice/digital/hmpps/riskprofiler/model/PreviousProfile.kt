@@ -12,10 +12,8 @@ import javax.validation.constraints.NotNull
 data class PreviousProfile(
   @Id
   val offenderNo: @Length(max = 10) String,
-
-  var escape: String? = null,
-  // val extremism: String? = null,
-  var soc: String? = null,
-  var violence: String? = null,
-  var executeDateTime: @NotNull LocalDateTime? = null,
+  var escape: String,
+  var soc: String,
+  var violence: String,
+  var executeDateTime: @NotNull LocalDateTime,
 )

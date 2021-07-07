@@ -25,22 +25,23 @@ class PollPrisonersServiceTest {
   private lateinit var service: PollPrisonersService
 
   @Mock
-  private val socDecisionTreeService: SocDecisionTreeService? = null
+  private lateinit var socDecisionTreeService: SocDecisionTreeService
 
   @Mock
-  private val violenceDecisionTreeService: ViolenceDecisionTreeService? = null
+  private lateinit var violenceDecisionTreeService: ViolenceDecisionTreeService
 
   @Mock
-  private val escapeDecisionTreeService: EscapeDecisionTreeService? = null
+  private lateinit var escapeDecisionTreeService: EscapeDecisionTreeService
 
   @Mock
-  private val previousProfileRepository: PreviousProfileRepository? = null
+  private lateinit var previousProfileRepository: PreviousProfileRepository
 
   @Mock
-  private val telemetryClient: TelemetryClient? = null
+  private lateinit var telemetryClient: TelemetryClient
 
   @Mock
-  private val sqsService: SQSService? = null
+  private lateinit var sqsService: SQSService
+
   private val SOC_1 = SocProfile(OFFENDER_1, "C", false)
   private val VIOLENCE_1 = ViolenceProfile(OFFENDER_1, "C", false, false, false, 0, 0, 0)
   private val ESCAPE_1 = EscapeProfile(OFFENDER_1, "C", false, false, null, null)
@@ -55,21 +56,21 @@ class PollPrisonersServiceTest {
   @Before
   fun setup() {
     service = PollPrisonersService(
-      socDecisionTreeService!!,
-      violenceDecisionTreeService!!,
-      escapeDecisionTreeService!!,
-      previousProfileRepository!!,
-      telemetryClient!!,
-      sqsService!!
+      socDecisionTreeService,
+      violenceDecisionTreeService,
+      escapeDecisionTreeService,
+      previousProfileRepository,
+      telemetryClient,
+      sqsService
     )
   }
 
   @Test
   fun testChangeSoc() {
-    Mockito.`when`(socDecisionTreeService!!.getSocData(OFFENDER_1)).thenReturn(SocProfile(OFFENDER_1, "C", true))
-    Mockito.`when`(violenceDecisionTreeService!!.getViolenceProfile(OFFENDER_1)).thenReturn(VIOLENCE_1)
-    Mockito.`when`(escapeDecisionTreeService!!.getEscapeProfile(OFFENDER_1)).thenReturn(ESCAPE_1)
-    Mockito.`when`(previousProfileRepository!!.findById(OFFENDER_1)).thenReturn(Optional.of(PROFILE_1))
+    Mockito.`when`(socDecisionTreeService.getSocData(OFFENDER_1)).thenReturn(SocProfile(OFFENDER_1, "C", true))
+    Mockito.`when`(violenceDecisionTreeService.getViolenceProfile(OFFENDER_1)).thenReturn(VIOLENCE_1)
+    Mockito.`when`(escapeDecisionTreeService.getEscapeProfile(OFFENDER_1)).thenReturn(ESCAPE_1)
+    Mockito.`when`(previousProfileRepository.findById(OFFENDER_1)).thenReturn(Optional.of(PROFILE_1))
     service.pollPrisoner(OFFENDER_1)
     val rpc = RiskProfileChange(
       ProfileMessagePayload(ESCAPE_1, SOC_1, VIOLENCE_1),
@@ -77,32 +78,32 @@ class PollPrisonersServiceTest {
       OFFENDER_1,
       LocalDateTime.now()
     )
-    Mockito.verify(sqsService!!).sendRiskProfileChangeMessage(eqRiskProfileChange(rpc))
+    Mockito.verify(sqsService).sendRiskProfileChangeMessage(eqRiskProfileChange(rpc))
     Mockito.verify(previousProfileRepository, Mockito.never()).save(ArgumentMatchers.any())
   }
 
   @Test
   fun testNoChange() {
-    Mockito.`when`(socDecisionTreeService!!.getSocData(OFFENDER_1)).thenReturn(SOC_1)
-    Mockito.`when`(violenceDecisionTreeService!!.getViolenceProfile(OFFENDER_1)).thenReturn(VIOLENCE_1)
-    Mockito.`when`(escapeDecisionTreeService!!.getEscapeProfile(OFFENDER_1)).thenReturn(ESCAPE_1)
-    Mockito.`when`(previousProfileRepository!!.findById(OFFENDER_1)).thenReturn(Optional.of(PROFILE_1))
+    Mockito.`when`(socDecisionTreeService.getSocData(OFFENDER_1)).thenReturn(SOC_1)
+    Mockito.`when`(violenceDecisionTreeService.getViolenceProfile(OFFENDER_1)).thenReturn(VIOLENCE_1)
+    Mockito.`when`(escapeDecisionTreeService.getEscapeProfile(OFFENDER_1)).thenReturn(ESCAPE_1)
+    Mockito.`when`(previousProfileRepository.findById(OFFENDER_1)).thenReturn(Optional.of(PROFILE_1))
     service.pollPrisoner(OFFENDER_1)
-    Mockito.verify(sqsService!!, Mockito.never()).sendRiskProfileChangeMessage(ArgumentMatchers.any())
+    Mockito.verify(sqsService, Mockito.never()).sendRiskProfileChangeMessage(ArgumentMatchers.isA(RiskProfileChange::class.java))
     Mockito.verify(previousProfileRepository, Mockito.never()).save(ArgumentMatchers.any())
   }
 
   @Test
   fun testNewData() {
-    Mockito.`when`(socDecisionTreeService!!.getSocData(OFFENDER_1)).thenReturn(SOC_1)
-    Mockito.`when`(violenceDecisionTreeService!!.getViolenceProfile(OFFENDER_1)).thenReturn(VIOLENCE_1)
-    Mockito.`when`(escapeDecisionTreeService!!.getEscapeProfile(OFFENDER_1)).thenReturn(ESCAPE_1)
-    Mockito.`when`(previousProfileRepository!!.findById(OFFENDER_1)).thenReturn(Optional.empty())
+    Mockito.`when`(socDecisionTreeService.getSocData(OFFENDER_1)).thenReturn(SOC_1)
+    Mockito.`when`(violenceDecisionTreeService.getViolenceProfile(OFFENDER_1)).thenReturn(VIOLENCE_1)
+    Mockito.`when`(escapeDecisionTreeService.getEscapeProfile(OFFENDER_1)).thenReturn(ESCAPE_1)
+    Mockito.`when`(previousProfileRepository.findById(OFFENDER_1)).thenReturn(Optional.empty())
     service.pollPrisoner(OFFENDER_1)
     Mockito.verify(socDecisionTreeService).getSocData(OFFENDER_1)
     Mockito.verify(previousProfileRepository).save(ArgumentMatchers.any())
     Mockito.verify(previousProfileRepository).save(eqProfiles(PROFILE_1))
-    Mockito.verify(sqsService!!, Mockito.never()).sendRiskProfileChangeMessage(ArgumentMatchers.any())
+    Mockito.verify(sqsService, Mockito.never()).sendRiskProfileChangeMessage(ArgumentMatchers.isA(RiskProfileChange::class.java))
   }
 
   companion object {

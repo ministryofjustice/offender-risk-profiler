@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.controllers
 
 import org.assertj.core.api.Assertions
+import org.awaitility.kotlin.await
+import org.awaitility.kotlin.until
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,7 +15,10 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.reactive.server.WebTestClient
+import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepositoryFactory
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer.Companion.oauthMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PathfinderMockServer.Companion.pathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer.Companion.prisonMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.services.NomisService
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthenticationHelper
@@ -24,9 +29,15 @@ import java.util.UUID
 @ActiveProfiles(profiles = ["test", "localstack"])
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 abstract class ResourceTest {
-  // @JvmField
+
+  @Autowired
+  protected lateinit var dataRepositoryFactory: DataRepositoryFactory
+
   @Autowired
   protected lateinit var testRestTemplate: TestRestTemplate
+
+  @Autowired
+  protected lateinit var webTestClient: WebTestClient
 
   @Autowired
   protected lateinit var jwtAuthHelper: JwtAuthenticationHelper
@@ -39,6 +50,10 @@ abstract class ResourceTest {
     return createHttpEntity(jwt, null)
   }
 
+  private fun allFilesLoaded(): Boolean {
+    return dataRepositoryFactory.getRepositories().stream().allMatch { it.dataAvailable() }
+  }
+
   @BeforeEach
   fun resetStubs() {
     nomisService.evictSocListAlertsCache("A1234AB")
@@ -46,8 +61,8 @@ abstract class ResourceTest {
     nomisService.evictSocListAlertsCache("A5015DY")
     prisonMockServer.resetAll()
     oauthMockServer.resetAll()
-    oauthMockServer.stubGrantToken()
-    prisonMockServer.stubAlerts()
+    pathfinderMockServer.resetAll()
+    await until { allFilesLoaded() }
   }
 
   fun createHttpEntity(bearerToken: String, body: Any?): HttpEntity<*> {

@@ -45,9 +45,9 @@ class PollPrisonersService(
       // Check if in db
       val previousProfile = previousProfileRepository.findById(offenderNo)
       previousProfile.ifPresentOrElse(
-        { existing: PreviousProfile? ->
+        { existing: PreviousProfile ->
           // Compare with existing stored values
-          if (!(existing!!.soc == soc && existing.violence == violence && existing.escape == escape)) {
+          if (!(existing.soc == soc && existing.violence == violence && existing.escape == escape)) {
             // Update db with new data:
             log.info("Change detected for {}", offenderNo)
             buildAndSendRiskProfilePayload(offenderNo, socObject, violenceObject, escapeObject, existing)
@@ -78,13 +78,13 @@ class PollPrisonersService(
     socObject: SocProfile,
     violenceObject: ViolenceProfile,
     escapeObject: EscapeProfile,
-    existing: PreviousProfile?
+    existing: PreviousProfile
   ) {
     val newProfile = ProfileMessagePayload(escapeObject, socObject, violenceObject)
     val oldProfile: ProfileMessagePayload
     try {
       oldProfile = ProfileMessagePayload(
-        jacksonMapper.readValue(existing!!.escape, EscapeProfile::class.java),
+        jacksonMapper.readValue(existing.escape, EscapeProfile::class.java),
         jacksonMapper.readValue(existing.soc, SocProfile::class.java),
         jacksonMapper.readValue(existing.violence, ViolenceProfile::class.java)
       )

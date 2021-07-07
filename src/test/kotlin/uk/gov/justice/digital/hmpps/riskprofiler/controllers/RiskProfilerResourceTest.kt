@@ -1,27 +1,19 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.controllers
 
 import org.assertj.core.api.Assertions
-import org.awaitility.kotlin.await
-import org.awaitility.kotlin.until
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepositoryFactory
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
 
 class RiskProfilerResourceTest : ResourceTest() {
-  @Autowired
-  protected lateinit var dataRepositoryFactory: DataRepositoryFactory
-
-  private fun allFilesLoaded(): Boolean {
-    return this::dataRepositoryFactory.isInitialized && dataRepositoryFactory.getRepositories().stream()
-      .allMatch { it.dataAvailable() }
-  }
 
   @BeforeEach
-  fun fileCheck() {
-    await until { allFilesLoaded() }
+  fun init() {
+    OAuthMockServer.oauthMockServer.stubGrantToken()
+    PrisonMockServer.prisonMockServer.stubAlerts()
   }
 
   @Test
