@@ -29,4 +29,8 @@ data class Alert(
 ) : Serializable {
 
   constructor(active: Boolean, code: String) : this(active = active, alertCode = code)
+
+  companion object {
+    private const val serialVersionUID: Long = 1
+  }
 }

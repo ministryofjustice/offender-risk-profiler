@@ -13,4 +13,8 @@ data class IncidentParty(
   val outcomeCode: String? = null,
   val commentText: String? = null,
   val incidentCaseId: Long? = null,
-) : Serializable
+) : Serializable {
+  companion object {
+    private const val serialVersionUID: Long = 1
+  }
+}

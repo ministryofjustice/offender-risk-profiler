@@ -1,7 +1,7 @@
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.4"
-  kotlin("plugin.spring") version "1.5.20"
-  kotlin("plugin.jpa") version "1.5.20"
+  kotlin("plugin.spring") version "1.5.21"
+  kotlin("plugin.jpa") version "1.5.21"
   idea
 }
 
@@ -35,10 +35,10 @@ dependencies {
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
   implementation("org.springframework.data:spring-data-redis")
-  implementation("redis.clients:jedis:3.6.1")
+  implementation("redis.clients:jedis:3.6.2")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.8")
+  implementation("org.springframework:spring-jms:5.3.9")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:3.11.0")
@@ -49,8 +49,8 @@ dependencies {
   implementation("org.apache.camel:camel-xml-jaxp:3.11.0")
   implementation("org.apache.camel:camel-timer:3.11.0")
 
-  implementation("net.javacrumbs.shedlock:shedlock-spring:4.24.0")
-  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.24.0")
+  implementation("net.javacrumbs.shedlock:shedlock-spring:4.25.0")
+  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.25.0")
 
   implementation("javax.annotation:javax.annotation-api:1.3.2")
   implementation("javax.xml.bind:jaxb-api:2.3.1")
@@ -67,7 +67,7 @@ dependencies {
   implementation("net.sf.ehcache:ehcache:2.10.9.2")
   implementation("org.apache.commons:commons-lang3:3.12.0")
   implementation("org.apache.commons:commons-text:1.9")
-  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3")
+  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.4")
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
   testImplementation("junit:junit:4.13.2")

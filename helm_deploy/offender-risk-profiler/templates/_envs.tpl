@@ -10,7 +10,7 @@ env:
   - name: SPRING_PROFILES_ACTIVE
     value: "s3,postgres,sqs"
 
-  - name: APPLICATION_INSIGHTS_IKEY
+  - name: APPINSIGHTS_INSTRUMENTATIONKEY
     valueFrom:
       secretKeyRef:
         name: {{ template "app.name" . }}
