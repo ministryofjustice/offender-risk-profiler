@@ -21,4 +21,8 @@ class IncidentResponse(
   val responseDate: LocalDateTime? = null
   val responseCommentText: String? = null
   val recordStaffId: Long? = null
+
+  companion object {
+    private const val serialVersionUID: Long = 1
+  }
 }

@@ -27,4 +27,8 @@ data class IncidentCase(val incidentCaseId: Long? = null) : Serializable {
   val responseLockedFlag: Boolean? = null
   var responses: List<IncidentResponse>? = null
   var parties: List<IncidentParty>? = null
+
+  companion object {
+    private const val serialVersionUID: Long = 1
+  }
 }
