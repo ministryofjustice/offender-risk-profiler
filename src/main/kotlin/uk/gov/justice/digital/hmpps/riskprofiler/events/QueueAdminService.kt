@@ -9,19 +9,22 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.riskprofiler.security.ApplicationInsightsConfiguration.TelemetryEvents
 
 @Service
 class QueueAdminService(
   @Qualifier("awsClientForEvents") private val eventAwsSqsClient: AmazonSQS,
   @Qualifier("awsDlqClientForEvents") private val eventAwsSqsDlqClient: AmazonSQS,
-  private val telemetryClient: TelemetryClient,
+  private val telemetryClient: TelemetryClient?,
   @Value("\${sqs.events.queue.name}") private val eventQueueName: String,
   @Value("\${sqs.events.dlq.queue.name}") private val eventDlqName: String,
 ) {
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
+
+  enum class TelemetryEvents {
+    PURGED_EVENT_DLQ, TRANSFERRED_EVENT_DLQ
   }
 
   private val eventQueueUrl: String by lazy { eventAwsSqsClient.getQueueUrl(eventQueueName).queueUrl }
@@ -39,7 +42,7 @@ class QueueAdminService(
               log.info("Transferred message from Event DLQ: $msg")
             }
         }
-        telemetryClient.trackEvent(
+        telemetryClient?.trackEvent(
           TelemetryEvents.TRANSFERRED_EVENT_DLQ.name,
           mapOf("messages-on-queue" to total.toString()),
           null

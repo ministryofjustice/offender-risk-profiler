@@ -14,7 +14,7 @@ class PollPrisonersScheduler(
   private val nomisService: NomisService,
   private val pollPrisonersService: PollPrisonersService,
   private val prisonService: PrisonService,
-  private val telemetryClient: TelemetryClient
+  private val telemetryClient: TelemetryClient?
 ) {
   @Scheduled(cron = "0 15 2 * * MON-SAT")
   @SchedulerLock(name = "pollPrisonersLock")
@@ -25,7 +25,7 @@ class PollPrisonersScheduler(
       log.info("Complete: Poll of all prisoners")
     } catch (e: Exception) {
       log.error("pollPrisoners: Global exception handler", e)
-      telemetryClient.trackException(e)
+      telemetryClient?.trackException(e)
     }
   }
 
