@@ -24,7 +24,7 @@ class PollPrisonersService(
   private val violenceDecisionTreeService: ViolenceDecisionTreeService,
   private val escapeDecisionTreeService: EscapeDecisionTreeService,
   private val previousProfileRepository: PreviousProfileRepository,
-  private val telemetryClient: TelemetryClient,
+  private val telemetryClient: TelemetryClient?,
   private val sqsService: SQSService
 ) {
   private val jacksonMapper = ObjectMapper()
@@ -100,7 +100,7 @@ class PollPrisonersService(
     log.error("pollPrisoner: Exception thrown for $offenderNo", e)
     val logMap = HashMap<String, String>()
     logMap["offenderNo"] = offenderNo
-    telemetryClient.trackException(e, logMap, null)
+    telemetryClient?.trackException(e, logMap, null)
   }
 
   companion object {

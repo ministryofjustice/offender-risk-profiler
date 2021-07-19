@@ -8,7 +8,6 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.jsonwebtoken.ExpiredJwtException
 import org.apache.commons.lang3.StringUtils
-import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
 import java.text.ParseException
@@ -47,8 +46,4 @@ class ClientTrackingTelemetryModule : WebTelemetryModule, TelemetryModule {
 
   override fun onEndRequest(req: ServletRequest, res: ServletResponse) {}
   override fun initialize(configuration: TelemetryConfiguration) {}
-
-  companion object {
-    private val log = LoggerFactory.getLogger(ClientTrackingTelemetryModule::class.java)
-  }
 }

@@ -4,9 +4,7 @@ import com.amazonaws.services.sqs.AmazonSQS
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.google.gson.Gson
-import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
 
@@ -24,9 +22,6 @@ abstract class QueueIntegrationTest : IntegrationTest() {
 
   @Autowired
   lateinit var gson: Gson
-
-  @SpyBean
-  lateinit var telemetryClient: TelemetryClient
 
   fun getNumberOfMessagesCurrentlyOnQueue(): Int? {
     val queueAttributes = awsSqsClient.getQueueAttributes(queueUrl, listOf("ApproximateNumberOfMessages"))
