@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.controllers
 
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.core.ParameterizedTypeReference
@@ -13,7 +13,12 @@ class RiskProfilerResourceTest : ResourceTest() {
   @BeforeEach
   fun init() {
     OAuthMockServer.oauthMockServer.stubGrantToken()
+    PrisonMockServer.prisonMockServer.stubBookingDetails(12)
+    PrisonMockServer.prisonMockServer.stubOffender("A1234AB")
     PrisonMockServer.prisonMockServer.stubAlerts()
+    PrisonMockServer.prisonMockServer.stubIncidents()
+    PrisonMockServer.prisonMockServer.stubSentences(12)
+    PrisonMockServer.prisonMockServer.stubMainOffence(12)
   }
 
   @Test
@@ -25,7 +30,9 @@ class RiskProfilerResourceTest : ResourceTest() {
       object : ParameterizedTypeReference<String?>() {
       }
     )
-    assertThatJsonFileAndStatus(response, 200, "testGetSoc.json")
+    assertThatStatus(response, 200)
+    assertThat(response.body)
+      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"C","transferToSecurity":false,"riskType":"SOC"}""")
   }
 
   @Test
@@ -50,8 +57,112 @@ class RiskProfilerResourceTest : ResourceTest() {
       }
     )
     assertThatStatus(response, 200)
-    Assertions.assertThat(response.body)
-      .isEqualTo("{\"nomsId\":\"A5015DY\",\"provisionalCategorisation\":\"C\",\"transferToSecurity\":true,\"riskType\":\"SOC\"}")
+    assertThat(response.body)
+      .isEqualTo("""{"nomsId":"A5015DY","provisionalCategorisation":"C","transferToSecurity":true,"riskType":"SOC"}""")
+  }
+
+  @Test
+  fun testGetEscape() {
+    val response = testRestTemplate.exchange(
+      "/risk-profile/escape/A1234AB",
+      HttpMethod.GET,
+      createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
+      object : ParameterizedTypeReference<String?>() {
+      }
+    )
+    assertThatStatus(response, 200)
+    assertThat(response.body)
+      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"C","activeEscapeList":false,"activeEscapeRisk":true,"escapeListAlerts":[],"escapeRiskAlerts":[{"alertCode":"DUM","dateCreated":"2021-07-11","expired":false,"active":true},{"alertCode":"DUM","dateCreated":"2021-07-11","expired":false,"active":true}],"riskType":"ESCAPE"}""")
+  }
+
+  @Test
+  fun testGetEscapeNoAuth() {
+    val response = testRestTemplate.exchange(
+      "/risk-profile/escape/A1234AC",
+      HttpMethod.GET,
+      createHttpEntityWithBearerAuthorisation("API_TEST_USER-invalid", emptyList()),
+      object : ParameterizedTypeReference<String?>() {
+      }
+    )
+    assertThatStatus(response, 403)
+  }
+
+  @Test
+  fun testGetViolence() {
+    val response = testRestTemplate.exchange(
+      "/risk-profile/violence/A1234AB",
+      HttpMethod.GET,
+      createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
+      object : ParameterizedTypeReference<String?>() {
+      }
+    )
+    assertThatStatus(response, 200)
+    assertThat(response.body)
+      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"C","veryHighRiskViolentOffender":false,"notifySafetyCustodyLead":false,"displayAssaults":true,"numberOfAssaults":1,"numberOfSeriousAssaults":0,"numberOfNonSeriousAssaults":0,"riskType":"VIOLENCE"}""")
+  }
+
+  @Test
+  fun testGetViolenceNoAuth() {
+    val response = testRestTemplate.exchange(
+      "/risk-profile/violence/A1234AC",
+      HttpMethod.GET,
+      createHttpEntityWithBearerAuthorisation("API_TEST_USER-invalid", emptyList()),
+      object : ParameterizedTypeReference<String?>() {
+      }
+    )
+    assertThatStatus(response, 403)
+  }
+
+  @Test
+  fun testGetExtremism() {
+    val response = testRestTemplate.exchange(
+      "/risk-profile/extremism/A1234AB?previousOffences=true",
+      HttpMethod.GET,
+      createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
+      object : ParameterizedTypeReference<String?>() {
+      }
+    )
+    assertThatStatus(response, 200)
+    assertThat(response.body)
+      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"C","notifyRegionalCTLead":false,"increasedRiskOfExtremism":false,"riskType":"EXTREMISM"}""")
+  }
+
+  @Test
+  fun testGetExtremismNoAuth() {
+    val response = testRestTemplate.exchange(
+      "/risk-profile/extremism/A1234AC",
+      HttpMethod.GET,
+      createHttpEntityWithBearerAuthorisation("API_TEST_USER-invalid", emptyList()),
+      object : ParameterizedTypeReference<String?>() {
+      }
+    )
+    assertThatStatus(response, 403)
+  }
+
+  @Test
+  fun testGetLife() {
+    val response = testRestTemplate.exchange(
+      "/risk-profile/life/A1234AB",
+      HttpMethod.GET,
+      createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
+      object : ParameterizedTypeReference<String?>() {
+      }
+    )
+    assertThatStatus(response, 200)
+    assertThat(response.body)
+      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"B","life":true,"riskType":"LIFE"}""")
+  }
+
+  @Test
+  fun testGetLifeNoAuth() {
+    val response = testRestTemplate.exchange(
+      "/risk-profile/life/A1234AC",
+      HttpMethod.GET,
+      createHttpEntityWithBearerAuthorisation("API_TEST_USER-invalid", emptyList()),
+      object : ParameterizedTypeReference<String?>() {
+      }
+    )
+    assertThatStatus(response, 403)
   }
 
   companion object {

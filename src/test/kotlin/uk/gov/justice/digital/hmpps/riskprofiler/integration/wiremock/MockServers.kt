@@ -58,16 +58,18 @@ class PrisonMockServer : WireMockServer(8080) {
 
   fun stubIncidents() {
     stubFor(
-      WireMock.get(WireMock.urlMatching("/api/incidents/.+"))
+      WireMock.get(WireMock.urlMatching("/api/offenders/A1234AB/incidents.+"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody(
               gson.toJson(
-                mapOf(
-                  "parties" to listOf(
-                    mapOf("bookingId" to 1241232, "outcomeCode" to "POR"),
-                    "incidentTitle" to "Assault on staff member"
+                listOf(
+                  mapOf(
+                    "parties" to listOf(
+                      mapOf("bookingId" to 1241232, "outcomeCode" to "POR"),
+                      "incidentTitle" to "Assault on staff member"
+                    )
                   )
                 )
               )
@@ -123,6 +125,84 @@ class PrisonMockServer : WireMockServer(8080) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody(gson.toJson(listOf(alert1, alert2)))
+        )
+    )
+  }
+
+  fun stubBookingDetails(bookingId: Int) {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/api/bookings?bookingId=$bookingId"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              gson.toJson(
+                listOf(
+                  mapOf(
+                    "bookingId" to bookingId,
+                    "imprisonmentStatus" to "OTHER"
+                  )
+                )
+              )
+            )
+        )
+    )
+  }
+
+  fun stubOffender(offenderNo: String) {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/api/bookings/offenderNo/$offenderNo"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              gson.toJson(
+                mapOf(
+                  "bookingId" to 12,
+                  "offenderNo" to offenderNo
+                )
+              )
+            )
+        )
+    )
+  }
+
+  fun stubSentences(bookingId: Int) {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/api/offender-sentences/booking/$bookingId/sentenceTerms"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              gson.toJson(
+                listOf(
+                  mapOf(
+                    "bookingId" to bookingId,
+                    "lifeSentence" to false
+                  )
+                )
+              )
+            )
+        )
+    )
+  }
+
+  fun stubMainOffence(bookingId: Int) {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/api/bookings/$bookingId/mainOffence"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              gson.toJson(
+                listOf(
+                  mapOf(
+                    "bookingId" to bookingId,
+                    "offenceDescription" to "MURDER"
+                  )
+                )
+              )
+            )
         )
     )
   }

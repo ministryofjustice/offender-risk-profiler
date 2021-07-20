@@ -18,7 +18,7 @@ class IncidentResponseTest {
     model.question = "hi"
     model.answer = "there"
     model.questionSeq = 34
-    model.responseDate = LocalDateTime.of(2021,Month.APRIL,23,13,1)
+    model.responseDate = LocalDateTime.of(2021, Month.APRIL, 23, 13, 1)
     model.responseCommentText = "people"
     model.recordStaffId = 5L
 
