@@ -29,6 +29,12 @@ class ViolenceDecisionTreeService(
   private val viperDataRepository: DataRepository<Viper>
   private val nomisService: NomisService
 
+  private fun recentAssaults(assault: IncidentCase): Boolean {
+    return assault.reportTime != null && assault.reportTime!!.compareTo(
+      LocalDateTime.now().minusMonths(months.toLong())
+    ) >= 0
+  }
+
   fun getViolenceProfile(nomsId: @NotNull String?): ViolenceProfile {
 
     // Check NOMIS Have the individuals had 5 or more assaults in custody? (remove DUPS)
@@ -37,11 +43,7 @@ class ViolenceDecisionTreeService(
 
     // Check NOMIS: Have they had a serious assault in custody in past 12 months
     val numberOfSeriousAssaults = assaults.stream()
-      .filter { assault: IncidentCase ->
-        assault.reportTime!!.compareTo(
-          LocalDateTime.now().minusMonths(months.toLong())
-        ) >= 0
-      }
+      .filter(this::recentAssaults)
       .filter { assault: IncidentCase ->
         assault.responses!!.stream()
           .anyMatch { response: IncidentResponse ->
@@ -50,11 +52,7 @@ class ViolenceDecisionTreeService(
       }
       .count()
     val numberOfNonSeriousAssaults = assaults.stream()
-      .filter { assault: IncidentCase ->
-        assault.reportTime!!.compareTo(
-          LocalDateTime.now().minusMonths(months.toLong())
-        ) >= 0
-      }
+      .filter(this::recentAssaults)
       .count() - numberOfSeriousAssaults
     val violenceProfile = ViolenceProfile(
       nomsId!!,

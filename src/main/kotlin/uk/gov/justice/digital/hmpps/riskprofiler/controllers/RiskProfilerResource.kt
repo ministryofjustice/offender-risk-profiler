@@ -171,7 +171,7 @@ class RiskProfilerResource(
       example = "false"
     ) @RequestParam(value = "previousOffences", required = false) previousOffences: Boolean?
   ): ExtremismProfile {
-    return extremismDecisionTreeService.getExtremismProfile(nomsId!!, previousOffences!!)
+    return extremismDecisionTreeService.getExtremismProfile(nomsId!!, previousOffences)
   }
 
   @ApiOperation(

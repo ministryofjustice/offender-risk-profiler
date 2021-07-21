@@ -57,8 +57,14 @@ abstract class ResourceTest {
   @BeforeEach
   fun resetStubs() {
     nomisService.evictSocListAlertsCache("A1234AB")
+    nomisService.evictSocListAlertsCache("A1234AC")
     nomisService.evictSocListAlertsCache("A1234AE")
     nomisService.evictSocListAlertsCache("A5015DY")
+    nomisService.evictIncidentsCache("A1234AB")
+    nomisService.evictIncidentsCache("A1234AC")
+    nomisService.evictEscapeListAlertsCache("A1234AB")
+    nomisService.evictEscapeListAlertsCache("A1234AC")
+
     prisonMockServer.resetAll()
     oauthMockServer.resetAll()
     pathfinderMockServer.resetAll()

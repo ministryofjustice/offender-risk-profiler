@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull
 
 @Service
 class ExtremismDecisionTreeService(private val repository: PathfinderService) {
-  fun getExtremismProfile(nomsId: @NotNull String, previousOffences: Boolean): ExtremismProfile {
+  fun getExtremismProfile(nomsId: @NotNull String, previousOffences: Boolean?): ExtremismProfile {
     val pathFinder = repository.getBand(nomsId)
     return decisionProcess(nomsId, java.lang.Boolean.TRUE == previousOffences, pathFinder)
   }
@@ -24,18 +24,14 @@ class ExtremismDecisionTreeService(private val repository: PathfinderService) {
     val extremism = ExtremismProfile(nomsId = nomsId, provisionalCategorisation = RiskProfile.DEFAULT_CAT)
     pathFinder.ifPresent { pf: PathFinder ->
       val banding = pf.pathFinderBanding
-      ExtremismDecisionTreeService.log.info(
-        "extremism: {} in pathfinder on {}, increased Risk of Extremism",
-        nomsId,
-        banding
-      )
+      log.info("extremism: {} in pathfinder on {}, increased Risk of Extremism", nomsId, banding)
       if (banding == null) {
         extremism.provisionalCategorisation = "C"
       } else if (banding == 1 || banding == 2) {
         extremism.increasedRiskOfExtremism = true
         extremism.notifyRegionalCTLead = true
         if (previousOffences) {
-          ExtremismDecisionTreeService.log.info("extremism: {} has previous offences", nomsId)
+          log.info("extremism: {} has previous offences", nomsId)
           extremism.provisionalCategorisation = "B"
         } else {
           extremism.provisionalCategorisation = "C"
