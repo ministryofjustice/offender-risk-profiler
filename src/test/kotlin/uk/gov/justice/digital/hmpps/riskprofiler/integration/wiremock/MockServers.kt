@@ -80,7 +80,7 @@ class PrisonMockServer : WireMockServer(8080) {
 
   // Warning: will be cached by REDIS !
   fun stubAlerts() {
-    val recent = LocalDate.now().minusDays(10)
+    val recent = LocalDate.of(2021, 6, 14)
     val alert1 = Alert(
       1234,
       12,
