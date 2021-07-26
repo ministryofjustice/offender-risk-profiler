@@ -23,7 +23,7 @@ dependencies {
 
   runtimeOnly("com.h2database:h2")
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.2.22")
+  runtimeOnly("org.postgresql:postgresql:42.2.23")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -35,7 +35,7 @@ dependencies {
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
   implementation("org.springframework.data:spring-data-redis")
-  implementation("redis.clients:jedis:3.6.2")
+  implementation("redis.clients:jedis:3.6.3")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
   implementation("org.springframework:spring-jms:5.3.9")
@@ -74,7 +74,7 @@ dependencies {
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:3.11.0")
-  testImplementation("org.testcontainers:localstack:1.15.3")
+  testImplementation("org.testcontainers:localstack:1.16.0")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("com.google.code.gson:gson:2.8.7")
   testImplementation("com.nhaarman:mockito-kotlin-kt1.1:1.6.0")

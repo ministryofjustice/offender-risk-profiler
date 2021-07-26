@@ -16,9 +16,10 @@ data class EscapeProfile(
     example = "true",
   ) val activeEscapeRisk: Boolean,
 
-  @field:ApiModelProperty(value = "Active escape list alerts") val escapeListAlerts: List<Alert>?,
+  @field:ApiModelProperty(value = "Active escape risk alerts") val escapeRiskAlerts: List<Alert>?,
 
-  @field:ApiModelProperty(value = "Active escape risk alerts") val escapeRiskAlerts: List<Alert>?
+  @field:ApiModelProperty(value = "Active escape list alerts") val escapeListAlerts: List<Alert>?
+
 ) : RiskProfile(nomsId, provisionalCategorisation) {
 
   constructor() : this("", "", false, false, null, null)

@@ -26,8 +26,8 @@ class EscapeDecisionTreeService(private val nomisService: NomisService) {
       RiskProfile.DEFAULT_CAT,
       !escapeListAlerts.isEmpty(),
       !escapeRiskAlerts.isEmpty(),
-      escapeListAlerts,
-      escapeRiskAlerts
+      escapeRiskAlerts,
+      escapeListAlerts
     )
   }
 

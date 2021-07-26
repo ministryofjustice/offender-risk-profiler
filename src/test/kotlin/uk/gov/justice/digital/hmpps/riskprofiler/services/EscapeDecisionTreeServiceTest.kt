@@ -15,6 +15,7 @@ class EscapeDecisionTreeServiceTest {
 
   @Mock
   private val nomisService: NomisService? = null
+
   @BeforeEach
   fun setup() {
     service = EscapeDecisionTreeService(nomisService!!)
@@ -24,15 +25,11 @@ class EscapeDecisionTreeServiceTest {
   fun testMixedResponse() {
     Mockito.`when`(nomisService!!.getEscapeListAlertsForOffender(OFFENDER_1))
       .thenReturn(listOf(activeListAlert, activeRiskAlert, inactiveListAlert, inactiveRiskAlert))
-    val (_, _, activeEscapeList, activeEscapeRisk, escapeListAlerts, escapeRiskAlerts) = service!!.getEscapeProfile(
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service!!.getEscapeProfile(
       OFFENDER_1
     )
-    Assertions.assertThat(
-      escapeListAlerts
-    ).hasSize(1)
-    Assertions.assertThat(
-      escapeRiskAlerts
-    ).hasSize(1)
+    Assertions.assertThat(escapeListAlerts).hasSize(1)
+    Assertions.assertThat(escapeRiskAlerts).hasSize(1)
     Assertions.assertThat(activeEscapeList).isTrue
     Assertions.assertThat(activeEscapeRisk).isTrue
   }
@@ -41,15 +38,11 @@ class EscapeDecisionTreeServiceTest {
   fun testListResponse() {
     Mockito.`when`(nomisService!!.getEscapeListAlertsForOffender(OFFENDER_1))
       .thenReturn(listOf(activeListAlert, activeListAlert))
-    val (_, _, activeEscapeList, activeEscapeRisk, escapeListAlerts, escapeRiskAlerts) = service!!.getEscapeProfile(
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service!!.getEscapeProfile(
       OFFENDER_1
     )
-    Assertions.assertThat(
-      escapeListAlerts
-    ).hasSize(2)
-    Assertions.assertThat(
-      escapeRiskAlerts
-    ).hasSize(0)
+    Assertions.assertThat(escapeListAlerts).hasSize(2)
+    Assertions.assertThat(escapeRiskAlerts).hasSize(0)
     Assertions.assertThat(activeEscapeList).isTrue
     Assertions.assertThat(activeEscapeRisk).isFalse
   }
@@ -58,15 +51,11 @@ class EscapeDecisionTreeServiceTest {
   fun testRiskResponse() {
     Mockito.`when`(nomisService!!.getEscapeListAlertsForOffender(OFFENDER_1))
       .thenReturn(listOf(activeRiskAlert, activeRiskAlert))
-    val (_, _, activeEscapeList, activeEscapeRisk, escapeListAlerts, escapeRiskAlerts) = service!!.getEscapeProfile(
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service!!.getEscapeProfile(
       OFFENDER_1
     )
-    Assertions.assertThat(
-      escapeListAlerts
-    ).hasSize(0)
-    Assertions.assertThat(
-      escapeRiskAlerts
-    ).hasSize(2)
+    Assertions.assertThat(escapeListAlerts).hasSize(0)
+    Assertions.assertThat(escapeRiskAlerts).hasSize(2)
     Assertions.assertThat(activeEscapeList).isFalse
     Assertions.assertThat(activeEscapeRisk).isTrue
   }
@@ -74,34 +63,26 @@ class EscapeDecisionTreeServiceTest {
   @Test
   fun testNoAlertsResponse() {
     Mockito.`when`(nomisService!!.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(listOf())
-    val (_, _, activeEscapeList, activeEscapeRisk, escapeListAlerts, escapeRiskAlerts) = service!!.getEscapeProfile(
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service!!.getEscapeProfile(
       OFFENDER_1
     )
     Assertions.assertThat(activeEscapeList).isFalse
     Assertions.assertThat(activeEscapeRisk).isFalse
-    Assertions.assertThat(
-      escapeListAlerts
-    ).hasSize(0)
-    Assertions.assertThat(
-      escapeRiskAlerts
-    ).hasSize(0)
+    Assertions.assertThat(escapeListAlerts).hasSize(0)
+    Assertions.assertThat(escapeListAlerts).hasSize(0)
   }
 
   @Test
   fun testInactiveOnlyAlertsResponse() {
     Mockito.`when`(nomisService!!.getEscapeListAlertsForOffender(OFFENDER_1))
       .thenReturn(listOf(inactiveListAlert, inactiveRiskAlert))
-    val (_, _, activeEscapeList, activeEscapeRisk, escapeListAlerts, escapeRiskAlerts) = service!!.getEscapeProfile(
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service!!.getEscapeProfile(
       OFFENDER_1
     )
     Assertions.assertThat(activeEscapeList).isFalse
     Assertions.assertThat(activeEscapeRisk).isFalse
-    Assertions.assertThat(
-      escapeListAlerts
-    ).hasSize(0)
-    Assertions.assertThat(
-      escapeRiskAlerts
-    ).hasSize(0)
+    Assertions.assertThat(escapeListAlerts).hasSize(0)
+    Assertions.assertThat(escapeRiskAlerts).hasSize(0)
   }
 
   companion object {

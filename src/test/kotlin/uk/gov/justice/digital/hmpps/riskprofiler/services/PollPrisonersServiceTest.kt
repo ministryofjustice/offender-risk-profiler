@@ -47,9 +47,9 @@ class PollPrisonersServiceTest {
   private val ESCAPE_1 = EscapeProfile(OFFENDER_1, "C", false, false, null, null)
   private val PROFILE_1 = PreviousProfile(
     OFFENDER_1,
-    "{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"activeEscapeList\":false,\"activeEscapeRisk\":false,\"riskType\":\"ESCAPE\"}",
-    "{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"transferToSecurity\":false,\"riskType\":\"SOC\"}",
-    "{\"nomsId\":\"" + OFFENDER_1 + "\",\"provisionalCategorisation\":\"C\",\"veryHighRiskViolentOffender\":false,\"notifySafetyCustodyLead\":false,\"displayAssaults\":false,\"numberOfAssaults\":0,\"numberOfSeriousAssaults\":0,\"numberOfNonSeriousAssaults\":0,\"riskType\":\"VIOLENCE\"}",
+    """{"nomsId":"$OFFENDER_1","provisionalCategorisation":"C","activeEscapeList":false,"activeEscapeRisk":false,"riskType":"ESCAPE"}""",
+    """{"nomsId":"$OFFENDER_1","provisionalCategorisation":"C","transferToSecurity":false,"riskType":"SOC"}""",
+    """{"nomsId":"$OFFENDER_1","provisionalCategorisation":"C","veryHighRiskViolentOffender":false,"notifySafetyCustodyLead":false,"displayAssaults":false,"numberOfAssaults":0,"numberOfSeriousAssaults":0,"numberOfNonSeriousAssaults":0,"riskType":"VIOLENCE"}""",
     LocalDateTime.now()
   )
 
