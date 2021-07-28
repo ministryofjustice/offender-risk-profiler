@@ -10,7 +10,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Pras
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.SocProfile
 import java.time.LocalDate
-import java.util.Set
 import javax.validation.constraints.NotNull
 
 @Service
@@ -18,7 +17,8 @@ class SocDecisionTreeService(
   private val repositoryFactory: DataRepositoryFactory,
   private val nomisService: NomisService
 ) {
-  private val OCGM_BANDS = Set.of("1a", "1b", "1c", "2a", "2b", "2c", "3a", "3b", "3c")
+  private val OCGM_BANDS = setOf("1a", "1b", "1c", "2a", "2b", "2c", "3a", "3b", "3c")
+
   fun getSocData(nomsId: @NotNull String?): SocProfile {
     val soc = buildSocProfile(nomsId)
     val prasData = repositoryFactory.getRepository(Pras::class.java).getByKey(nomsId)
@@ -89,7 +89,7 @@ class SocDecisionTreeService(
 
   private fun isHasActiveSocAlerts(nomsId: String?): Boolean {
     return nomisService.getSocListAlertsForOffender(nomsId).stream()
-      .anyMatch { alert -> alert.active!! && alert.dateCreated!!.isAfter(LocalDate.now().minusYears(1)) }
+      .anyMatch { alert -> alert.active!! && !alert.expired!! && alert.dateCreated!!.isAfter(LocalDate.now().minusYears(1)) }
   }
 
   companion object {

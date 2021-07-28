@@ -28,7 +28,7 @@ data class Alert(
   private val ranking: Int? = 0,
 ) : Serializable {
 
-  constructor(active: Boolean, code: String) : this(active = active, alertCode = code)
+  constructor(active: Boolean, expired: Boolean, code: String) : this(active = active, expired = expired, alertCode = code)
 
   companion object {
     private const val serialVersionUID: Long = 1

@@ -50,9 +50,9 @@ class SocDecisionTreeServiceTest {
 
   @Test
   fun testNotOnPrasFileAndBandNotInList() {
-    val xfo = Alert(true, "XFO")
+    val xfo = Alert(true, false, "XFO")
     xfo.dateCreated = LocalDate.now().minusMonths(11)
-    val xd = Alert(false, "XD")
+    val xd = Alert(false, false, "XD")
     xd.dateExpires = LocalDate.now().minusYears(2)
     Mockito.`when`(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())
@@ -127,9 +127,9 @@ class SocDecisionTreeServiceTest {
   @Test
   fun testNotOnPrasFileAndBandNotInListWithOldAlerts() {
     val now = LocalDate.now()
-    val xfo = Alert(true, "XFO")
+    val xfo = Alert(true, false, "XFO")
     xfo.dateCreated = now.minusMonths(13)
-    val xd = Alert(false, "XD")
+    val xd = Alert(false, false, "XD")
     xd.dateExpires = now.minusMonths(16)
     xd.expired = true
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
@@ -155,9 +155,9 @@ class SocDecisionTreeServiceTest {
   @Test
   fun testNotOnPrasFileAndNoOcgmWithActiveAlerts() {
     val now = LocalDate.now()
-    val xfo = Alert(true, "XFO")
+    val xfo = Alert(true, false, "XFO")
     xfo.dateCreated = now.minusMonths(11)
-    val xd = Alert(false, "XD")
+    val xd = Alert(false, false, "XD")
     xd.dateExpires = now.minusYears(2)
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())
@@ -174,9 +174,9 @@ class SocDecisionTreeServiceTest {
   @Test
   fun testNotOnPrasFileAndNoOcgmWithOldAlerts() {
     val now = LocalDate.now()
-    val xfo = Alert(true, "XFO")
+    val xfo = Alert(true, false, "XFO")
     xfo.dateCreated = now.minusMonths(13)
-    val xd = Alert(false, "XD")
+    val xd = Alert(false, false, "XD")
     xd.dateExpires = now.minusMonths(16)
     xd.expired = true
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
@@ -194,9 +194,9 @@ class SocDecisionTreeServiceTest {
   @Test
   fun testNotOnPrasFileAndHasOcgmNotNoOcgWithOldAlerts() {
     val now = LocalDate.now()
-    val xfo = Alert(true, "XFO")
+    val xfo = Alert(true, false, "XFO")
     xfo.dateCreated = now.minusMonths(13)
-    val xd = Alert(false, "XD")
+    val xd = Alert(false, false, "XD")
     xd.dateExpires = now.minusMonths(16)
     xd.expired = true
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))

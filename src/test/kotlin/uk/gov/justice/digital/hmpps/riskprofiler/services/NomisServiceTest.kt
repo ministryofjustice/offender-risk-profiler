@@ -35,7 +35,7 @@ class NomisServiceTest {
   @Test
   @Throws(Exception::class)
   fun testAlertCall() {
-    val body = listOf(Alert(false, "SOC"))
+    val body = listOf(Alert(false, false, "SOC"))
     val response = ResponseEntity(body, HttpStatus.OK)
     Mockito.`when`(
       webClientCallHelper.getForList(
@@ -56,7 +56,7 @@ class NomisServiceTest {
   @Test
   @Throws(Exception::class)
   fun testEscapeListCall() {
-    val body = listOf(Alert(false, "XER"), Alert(false, "XEL"))
+    val body = listOf(Alert(false, false, "XER"), Alert(false, false, "XEL"))
     val response = ResponseEntity(body, HttpStatus.OK)
     Mockito.`when`(
       webClientCallHelper.getForList(

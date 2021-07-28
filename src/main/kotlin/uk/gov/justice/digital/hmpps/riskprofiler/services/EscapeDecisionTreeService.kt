@@ -11,21 +11,16 @@ import javax.validation.constraints.NotNull
 class EscapeDecisionTreeService(private val nomisService: NomisService) {
   fun getEscapeProfile(nomsId: @NotNull String?): EscapeProfile {
     val escapeData = nomisService.getEscapeListAlertsForOffender(nomsId)
-    val splitLists = escapeData.stream().filter { alert -> alert.active!! }
+    val splitLists = escapeData.stream().filter { alert -> alert.active!! && !alert.expired!! }
       .collect(Collectors.partitioningBy { alert -> alert.alertCode == "XEL" })
     val escapeListAlerts = splitLists[true]!!
     val escapeRiskAlerts = splitLists[false]!!
-    log.debug(
-      "Escape profile for {}: {} list alerts, {} risk alerts",
-      nomsId,
-      escapeListAlerts.size,
-      escapeRiskAlerts.size
-    )
+    log.debug("Escape profile for $nomsId: ${escapeListAlerts.size} list alerts, ${escapeRiskAlerts.size} risk alerts")
     return EscapeProfile(
       nomsId!!,
       RiskProfile.DEFAULT_CAT,
-      !escapeListAlerts.isEmpty(),
-      !escapeRiskAlerts.isEmpty(),
+      escapeListAlerts.isNotEmpty(),
+      escapeRiskAlerts.isNotEmpty(),
       escapeRiskAlerts,
       escapeListAlerts
     )
