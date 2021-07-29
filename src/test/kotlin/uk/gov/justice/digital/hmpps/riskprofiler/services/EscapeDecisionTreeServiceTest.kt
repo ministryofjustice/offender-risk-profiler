@@ -11,21 +11,21 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
 
 @ExtendWith(MockitoExtension::class)
 class EscapeDecisionTreeServiceTest {
-  private var service: EscapeDecisionTreeService? = null
+  private lateinit var service: EscapeDecisionTreeService
 
   @Mock
-  private val nomisService: NomisService? = null
+  private lateinit var nomisService: NomisService
 
   @BeforeEach
   fun setup() {
-    service = EscapeDecisionTreeService(nomisService!!)
+    service = EscapeDecisionTreeService(nomisService)
   }
 
   @Test
   fun testMixedResponse() {
-    Mockito.`when`(nomisService!!.getEscapeListAlertsForOffender(OFFENDER_1))
+    Mockito.`when`(nomisService.getEscapeListAlertsForOffender(OFFENDER_1))
       .thenReturn(listOf(activeListAlert, activeRiskAlert, inactiveListAlert, inactiveRiskAlert))
-    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service!!.getEscapeProfile(
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service.getEscapeProfile(
       OFFENDER_1
     )
     Assertions.assertThat(escapeListAlerts).hasSize(1)
@@ -36,9 +36,9 @@ class EscapeDecisionTreeServiceTest {
 
   @Test
   fun testListResponse() {
-    Mockito.`when`(nomisService!!.getEscapeListAlertsForOffender(OFFENDER_1))
+    Mockito.`when`(nomisService.getEscapeListAlertsForOffender(OFFENDER_1))
       .thenReturn(listOf(activeListAlert, activeListAlert))
-    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service!!.getEscapeProfile(
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service.getEscapeProfile(
       OFFENDER_1
     )
     Assertions.assertThat(escapeListAlerts).hasSize(2)
@@ -49,9 +49,9 @@ class EscapeDecisionTreeServiceTest {
 
   @Test
   fun testRiskResponse() {
-    Mockito.`when`(nomisService!!.getEscapeListAlertsForOffender(OFFENDER_1))
+    Mockito.`when`(nomisService.getEscapeListAlertsForOffender(OFFENDER_1))
       .thenReturn(listOf(activeRiskAlert, activeRiskAlert))
-    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service!!.getEscapeProfile(
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service.getEscapeProfile(
       OFFENDER_1
     )
     Assertions.assertThat(escapeListAlerts).hasSize(0)
@@ -62,21 +62,34 @@ class EscapeDecisionTreeServiceTest {
 
   @Test
   fun testNoAlertsResponse() {
-    Mockito.`when`(nomisService!!.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(listOf())
-    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service!!.getEscapeProfile(
+    Mockito.`when`(nomisService.getEscapeListAlertsForOffender(OFFENDER_1)).thenReturn(listOf())
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service.getEscapeProfile(
       OFFENDER_1
     )
     Assertions.assertThat(activeEscapeList).isFalse
     Assertions.assertThat(activeEscapeRisk).isFalse
     Assertions.assertThat(escapeListAlerts).hasSize(0)
-    Assertions.assertThat(escapeListAlerts).hasSize(0)
+    Assertions.assertThat(escapeRiskAlerts).hasSize(0)
   }
 
   @Test
   fun testInactiveOnlyAlertsResponse() {
-    Mockito.`when`(nomisService!!.getEscapeListAlertsForOffender(OFFENDER_1))
+    Mockito.`when`(nomisService.getEscapeListAlertsForOffender(OFFENDER_1))
       .thenReturn(listOf(inactiveListAlert, inactiveRiskAlert))
-    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service!!.getEscapeProfile(
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service.getEscapeProfile(
+      OFFENDER_1
+    )
+    Assertions.assertThat(activeEscapeList).isFalse
+    Assertions.assertThat(activeEscapeRisk).isFalse
+    Assertions.assertThat(escapeListAlerts).hasSize(0)
+    Assertions.assertThat(escapeRiskAlerts).hasSize(0)
+  }
+
+  @Test
+  fun testExpiredOnlyAlertsResponse() {
+    Mockito.`when`(nomisService.getEscapeListAlertsForOffender(OFFENDER_1))
+      .thenReturn(listOf(expiredListAlert))
+    val (_, _, activeEscapeList, activeEscapeRisk, escapeRiskAlerts, escapeListAlerts) = service.getEscapeProfile(
       OFFENDER_1
     )
     Assertions.assertThat(activeEscapeList).isFalse
@@ -87,9 +100,10 @@ class EscapeDecisionTreeServiceTest {
 
   companion object {
     private const val OFFENDER_1 = "AB1234A"
-    private val activeListAlert = Alert(true, "XEL")
-    private val activeRiskAlert = Alert(true, "XER")
-    private val inactiveRiskAlert = Alert(false, "XER")
-    private val inactiveListAlert = Alert(false, "XEL")
+    private val activeListAlert = Alert(true, false, "XEL")
+    private val activeRiskAlert = Alert(true, false, "XER")
+    private val inactiveRiskAlert = Alert(false, false, "XER")
+    private val inactiveListAlert = Alert(false, false, "XEL")
+    private val expiredListAlert = Alert(true, true, "XEL")
   }
 }

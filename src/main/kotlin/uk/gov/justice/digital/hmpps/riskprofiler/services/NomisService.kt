@@ -24,7 +24,7 @@ class NomisService(
   @param:Value("\${app.assaults.participation.roles}") private val participationRoles: List<String>
 ) {
   @Cacheable("escapeAlert")
-  fun getEscapeListAlertsForOffender(nomsId: String?): List<Alert> {
+  fun getEscapeListAlertsForOffender(nomsId: String): List<Alert> {
     log.info("Getting escape list alerts for noms id {}", nomsId)
     return getAlertsForOffender(nomsId, ESCAPE_LIST_ALERT_TYPES)
   }

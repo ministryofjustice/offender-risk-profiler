@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.ViolenceProfile
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.stream.Collectors
-import javax.validation.constraints.NotNull
 
 @Service
 class ViolenceDecisionTreeService(
@@ -35,7 +34,7 @@ class ViolenceDecisionTreeService(
     ) >= 0
   }
 
-  fun getViolenceProfile(nomsId: @NotNull String?): ViolenceProfile {
+  fun getViolenceProfile(nomsId: String): ViolenceProfile {
 
     // Check NOMIS Have the individuals had 5 or more assaults in custody? (remove DUPS)
     val assaults = nomisService.getIncidents(nomsId).stream()
@@ -55,7 +54,7 @@ class ViolenceDecisionTreeService(
       .filter(this::recentAssaults)
       .count() - numberOfSeriousAssaults
     val violenceProfile = ViolenceProfile(
-      nomsId!!,
+      nomsId,
       RiskProfile.DEFAULT_CAT, false, false, !assaults.isEmpty(),
       assaults.size.toLong(),
       numberOfSeriousAssaults,

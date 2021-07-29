@@ -24,7 +24,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.ExtremismDecisionTreeS
 import uk.gov.justice.digital.hmpps.riskprofiler.services.LifeDecisionTreeService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.SocDecisionTreeService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.ViolenceDecisionTreeService
-import javax.validation.constraints.NotNull
 
 @Api(
   tags = ["risk-profile"],
@@ -67,7 +66,7 @@ class RiskProfilerResource(
       value = "NOMS ID of the offender",
       example = "A1234AA",
       required = true
-    ) @PathVariable(value = "nomsId") nomsId: @NotNull String?
+    ) @PathVariable(value = "nomsId") nomsId: String
   ): SocProfile {
     return socDecisionTreeServiceService.getSocData(nomsId)
   }
@@ -99,7 +98,7 @@ class RiskProfilerResource(
       value = "NOMS ID of the offender",
       example = "A1234AA",
       required = true
-    ) @PathVariable("nomsId") nomsId: @NotNull String?
+    ) @PathVariable("nomsId") nomsId: String
   ): EscapeProfile {
     return escapeDecisionTreeService.getEscapeProfile(nomsId)
   }
@@ -131,7 +130,7 @@ class RiskProfilerResource(
       value = "NOMS ID of the offender",
       example = "A1234AA",
       required = true
-    ) @PathVariable("nomsId") nomsId: @NotNull String?
+    ) @PathVariable("nomsId") nomsId: String
   ): ViolenceProfile {
     return violenceDecisionTreeService.getViolenceProfile(nomsId)
   }
@@ -163,7 +162,7 @@ class RiskProfilerResource(
       value = "NOMS ID of the offender",
       example = "A1234AA",
       required = true
-    ) @PathVariable("nomsId") nomsId: @NotNull String?,
+    ) @PathVariable("nomsId") nomsId: String,
     @ApiParam(
       name = "previousOffences",
       value = "Previous Offences under Terrorism Act listed on the person's PNC record",
@@ -171,7 +170,7 @@ class RiskProfilerResource(
       example = "false"
     ) @RequestParam(value = "previousOffences", required = false) previousOffences: Boolean?
   ): ExtremismProfile {
-    return extremismDecisionTreeService.getExtremismProfile(nomsId!!, previousOffences)
+    return extremismDecisionTreeService.getExtremismProfile(nomsId, previousOffences)
   }
 
   @ApiOperation(
@@ -199,7 +198,7 @@ class RiskProfilerResource(
       value = "NOMS ID of the offender",
       example = "A1234AA",
       required = true
-    ) @PathVariable("nomsId") nomsId: @NotNull String?
+    ) @PathVariable("nomsId") nomsId: String
   ): LifeProfile {
     return lifeDecisionTreeService.getLifeProfile(nomsId)
   }
