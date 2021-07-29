@@ -7,11 +7,10 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder
 import uk.gov.justice.digital.hmpps.riskprofiler.model.ExtremismProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile
 import java.util.Optional
-import javax.validation.constraints.NotNull
 
 @Service
 class ExtremismDecisionTreeService(private val repository: PathfinderService) {
-  fun getExtremismProfile(nomsId: @NotNull String, previousOffences: Boolean?): ExtremismProfile {
+  fun getExtremismProfile(nomsId: String, previousOffences: Boolean?): ExtremismProfile {
     val pathFinder = repository.getBand(nomsId)
     return decisionProcess(nomsId, java.lang.Boolean.TRUE == previousOffences, pathFinder)
   }

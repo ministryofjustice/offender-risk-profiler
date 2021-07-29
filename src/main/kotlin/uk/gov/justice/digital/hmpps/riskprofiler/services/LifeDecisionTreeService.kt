@@ -5,11 +5,10 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.riskprofiler.model.LifeProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile
 import java.util.Locale
-import javax.validation.constraints.NotNull
 
 @Service
 class LifeDecisionTreeService(private val nomisService: NomisService) {
-  fun getLifeProfile(nomsId: @NotNull String?): LifeProfile {
+  fun getLifeProfile(nomsId: String): LifeProfile {
     val bookingId = nomisService.getBooking(nomsId)
     val lifeFlag = isLifeFlag(bookingId)
     val lifeStatus = isLifeStatus(bookingId)
@@ -17,7 +16,7 @@ class LifeDecisionTreeService(private val nomisService: NomisService) {
     val life = lifeFlag || lifeStatus || murder
     val cat = if (life) "B" else RiskProfile.DEFAULT_CAT
     log.info("Life result for {}: {} (lifeFlag={} lifeStatus={} murder={})", nomsId, life, lifeFlag, lifeStatus, murder)
-    return LifeProfile(nomsId!!, cat, life)
+    return LifeProfile(nomsId, cat, life)
   }
 
   private fun isLifeFlag(bookingId: Long): Boolean {

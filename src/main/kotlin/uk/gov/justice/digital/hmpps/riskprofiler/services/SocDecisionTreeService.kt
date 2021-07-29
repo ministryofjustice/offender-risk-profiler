@@ -19,7 +19,7 @@ class SocDecisionTreeService(
 ) {
   private val OCGM_BANDS = setOf("1a", "1b", "1c", "2a", "2b", "2c", "3a", "3b", "3c")
 
-  fun getSocData(nomsId: @NotNull String?): SocProfile {
+  fun getSocData(nomsId: String): SocProfile {
     val soc = buildSocProfile(nomsId)
     val prasData = repositoryFactory.getRepository(Pras::class.java).getByKey(nomsId)
     if (prasData.isPresent) {
@@ -50,8 +50,8 @@ class SocDecisionTreeService(
     return soc
   }
 
-  private fun buildSocProfile(nomsId: @NotNull String?): SocProfile {
-    return SocProfile(nomsId!!, RiskProfile.DEFAULT_CAT, false)
+  private fun buildSocProfile(nomsId: String): SocProfile {
+    return SocProfile(nomsId, RiskProfile.DEFAULT_CAT, false)
   }
 
   private fun checkBand(nomsId: @NotNull String?, soc: SocProfile, ocgm: Ocgm, ocg: Ocg) {
@@ -89,7 +89,7 @@ class SocDecisionTreeService(
 
   private fun isHasActiveSocAlerts(nomsId: String?): Boolean {
     return nomisService.getSocListAlertsForOffender(nomsId).stream()
-      .anyMatch { alert -> alert.active!! && !alert.expired!! && alert.dateCreated!!.isAfter(LocalDate.now().minusYears(1)) }
+      .anyMatch { alert -> alert.active && !alert.expired && alert.dateCreated.isAfter(LocalDate.now().minusYears(1)) }
   }
 
   companion object {
