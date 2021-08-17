@@ -120,7 +120,7 @@ class PrisonMockServer : WireMockServer(8080) {
       1
     )
     stubFor(
-      WireMock.get(WireMock.urlMatching("/api/offenders/.+/alerts\\?query=alertCode:eq:.+&latestOnly=false"))
+      WireMock.get(WireMock.urlMatching("/api/offenders/.+/alerts/v2\\?alertCodes=.+"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

@@ -39,7 +39,7 @@ class NomisServiceTest {
     val response = ResponseEntity(body, HttpStatus.OK)
     Mockito.`when`(
       webClientCallHelper.getForList(
-        eq("/api/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'&latestOnly=false"),
+        eq("/api/offenders/A1234AA/alerts/v2?alertCodes=SOC"),
         isA<ParameterizedTypeReference<List<Alert>>>()
       )
     )
@@ -47,7 +47,7 @@ class NomisServiceTest {
     val alertsForOffender = service.getAlertsForOffender("A1234AA", listOf("SOC"))
     Assertions.assertThat(alertsForOffender).hasSize(1)
     Mockito.verify(webClientCallHelper).getForList(
-      eq("/api/offenders/A1234AA/alerts?query=alertCode:eq:'SOC'&latestOnly=false"),
+      eq("/api/offenders/A1234AA/alerts/v2?alertCodes=SOC"),
       isA<ParameterizedTypeReference<List<Alert>>>()
     )
     Mockito.verifyNoMoreInteractions(webClientCallHelper)
@@ -60,7 +60,7 @@ class NomisServiceTest {
     val response = ResponseEntity(body, HttpStatus.OK)
     Mockito.`when`(
       webClientCallHelper.getForList(
-        eq("/api/offenders/A1234AA/alerts?query=alertCode:eq:'XER',or:alertCode:eq:'XEL'&latestOnly=false"),
+        eq("/api/offenders/A1234AA/alerts/v2?alertCodes=XER,XEL"),
         isA<ParameterizedTypeReference<List<Alert>>>()
       )
     )
@@ -68,7 +68,7 @@ class NomisServiceTest {
     val alertsForOffender = service.getEscapeListAlertsForOffender("A1234AA")
     Assertions.assertThat(alertsForOffender).hasSize(2)
     Mockito.verify(webClientCallHelper).getForList(
-      eq("/api/offenders/A1234AA/alerts?query=alertCode:eq:'XER',or:alertCode:eq:'XEL'&latestOnly=false"),
+      eq("/api/offenders/A1234AA/alerts/v2?alertCodes=XER,XEL"),
       isA<ParameterizedTypeReference<List<Alert>>>()
     )
     Mockito.verifyNoMoreInteractions(webClientCallHelper)
