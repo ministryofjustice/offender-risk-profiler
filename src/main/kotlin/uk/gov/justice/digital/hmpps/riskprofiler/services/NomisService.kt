@@ -45,13 +45,12 @@ class NomisService(
     log.info("Evicting {} from socAlert cache", nomsId)
   }
 
-  fun getAlertsForOffender(nomsId: String?, alertTypes: List<String?>): List<Alert> {
-    log.info("Getting alerts for noms id {} and types {}", nomsId, alertTypes)
-    val types = alertTypes.stream()
-      .map { alertType: String? -> String.format("alertCode:eq:'%s'", alertType) }
-      .collect(Collectors.joining(",or:"))
+  fun getAlertsForOffender(nomsId: String?, alertCodeList: List<String?>): List<Alert> {
+    log.info("Getting alerts for noms id {} and codes {}", nomsId, alertCodeList)
+    val alertCodes = alertCodeList.stream()
+      .collect(Collectors.joining(","))
     val uriAlertsForOffenderByType =
-      String.format("/api/offenders/%1\$s/alerts?query=%2\$s&latestOnly=false", nomsId, types)
+      String.format("/api/offenders/$nomsId/alerts/v2?alertCodes=$alertCodes")
     return webClientCallHelper.getForList(uriAlertsForOffenderByType, ALERTS).body!!
   }
 
