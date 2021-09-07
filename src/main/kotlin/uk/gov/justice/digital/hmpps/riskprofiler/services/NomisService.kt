@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase
 import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderBooking
 import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderSentenceTerms
-import uk.gov.justice.digital.hmpps.riskprofiler.model.RestResponsePage
 import java.util.Objects
 import java.util.stream.Collectors
 import javax.validation.constraints.NotNull
@@ -85,21 +84,24 @@ class NomisService(
   }
 
   fun getOffendersAtPrison(prisonId: @NotNull String?): List<String> {
+    log.info(String.format("Getting full list of prisoners in prison %s", prisonId))
     val uri = String.format("/api/bookings/v2?prisonId=%s&size=%d", prisonId, 4000)
     val results: RestResponsePage<OffenderBooking> = try {
-      webClientCallHelper.getContentResponse(uri, CONTENT_MAP).body!!
+      webClientCallHelper.getPageRestResponse(uri, CONTENT_MAP).body!!
     } catch (e: WebClientResponseException.NotFound) {
       log.warn("Prison does not exist")
       return listOf()
     }
 
-    return results.content.stream().map { m -> m.offenderNo!! }.collect(Collectors.toList())
+    val prisonerList = results.content.stream().map { m -> m.offenderNo!! }.collect(Collectors.toList())
+    log.debug(String.format("Found %d prisoners currently in %s", prisonerList.size, prisonId))
+    return prisonerList
   }
 
   fun getBookingDetails(bookingId: Long?): List<OffenderBooking> {
     log.info("Getting details for bookingId {}", bookingId)
     val uri = String.format("/api/bookings/v2?bookingId=%s&legalInfo=true", bookingId)
-    return webClientCallHelper.getForList(uri, BOOKING_DETAILS).body!!
+    return webClientCallHelper.getPageRestResponse(uri, BOOKING_DETAILS).body!!.content
   }
 
   fun getMainOffences(bookingId: Long?): List<String> {
@@ -147,8 +149,8 @@ class NomisService(
       object : ParameterizedTypeReference<List<Map<*, *>>>() {}
     private val CONTENT_MAP: ParameterizedTypeReference<RestResponsePage<OffenderBooking>> =
       object : ParameterizedTypeReference<RestResponsePage<OffenderBooking>>() {}
-    private val BOOKING_DETAILS: ParameterizedTypeReference<List<OffenderBooking>> =
-      object : ParameterizedTypeReference<List<OffenderBooking>>() {}
+    private val BOOKING_DETAILS: ParameterizedTypeReference<RestResponsePage<OffenderBooking>> =
+      object : ParameterizedTypeReference<RestResponsePage<OffenderBooking>>() {}
     private val SENTENCE_TERMS: ParameterizedTypeReference<List<OffenderSentenceTerms>> =
       object : ParameterizedTypeReference<List<OffenderSentenceTerms>>() {}
     val ESCAPE_LIST_ALERT_TYPES = java.util.List.of("XER", "XEL")
