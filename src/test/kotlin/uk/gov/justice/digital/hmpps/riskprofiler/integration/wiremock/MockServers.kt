@@ -131,16 +131,18 @@ class PrisonMockServer : WireMockServer(8080) {
 
   fun stubBookingDetails(bookingId: Int) {
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/api/bookings?bookingId=$bookingId"))
+      WireMock.get(WireMock.urlEqualTo("/api/bookings/v2?bookingId=$bookingId&legalInfo=true"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody(
               gson.toJson(
-                listOf(
-                  mapOf(
-                    "bookingId" to bookingId,
-                    "imprisonmentStatus" to "OTHER"
+                mapOf(
+                  "content" to listOf(
+                    mapOf(
+                      "bookingId" to bookingId,
+                      "imprisonmentStatus" to "OTHER"
+                    )
                   )
                 )
               )

@@ -61,6 +61,17 @@ class WebClientCallHelper @Autowired constructor(@param:Qualifier("elite2SystemW
       .block() as ResponseEntity<T>
   }
 
+  fun <T> getContentResponse(
+    uri: String,
+    responseType: ParameterizedTypeReference<T>
+  ): ResponseEntity<T> {
+    return webClient.get()
+      .uri(uri)
+      .retrieve()
+      .toEntity(responseType)
+      .block() as ResponseEntity<T>
+  }
+
   companion object {
     val CONTENT_TYPE_APPLICATION_JSON = httpContentTypeHeaders()
     private fun httpContentTypeHeaders(): HttpHeaders {
