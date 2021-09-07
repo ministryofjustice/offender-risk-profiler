@@ -143,7 +143,10 @@ class PrisonMockServer : WireMockServer(8080) {
                       "bookingId" to bookingId,
                       "imprisonmentStatus" to "OTHER"
                     )
-                  )
+                  ),
+                  "size" to 1,
+                  "number" to 0,
+                  "totalElements" to 1
                 )
               )
             )
