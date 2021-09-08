@@ -8,7 +8,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import uk.gov.justice.digital.hmpps.riskprofiler.model.PagingAndSortingDto
 
 /**
  * Helper class that takes care of setting up rest template with base API url and request headers.
@@ -47,15 +46,12 @@ class WebClientCallHelper @Autowired constructor(@param:Qualifier("elite2SystemW
       .block()!!.body!!
   }
 
-  fun <T> getWithPaging(
+  fun <T> getPageRestResponse(
     uri: String,
-    pagingAndSorting: PagingAndSortingDto,
     responseType: ParameterizedTypeReference<T>
   ): ResponseEntity<T> {
     return webClient.get()
       .uri(uri)
-      .header(PagingAndSortingDto.HEADER_PAGE_OFFSET, pagingAndSorting.pageOffset.toString())
-      .header(PagingAndSortingDto.HEADER_PAGE_LIMIT, pagingAndSorting.pageLimit.toString())
       .retrieve()
       .toEntity(responseType)
       .block() as ResponseEntity<T>

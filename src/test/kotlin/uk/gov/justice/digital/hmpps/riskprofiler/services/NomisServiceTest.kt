@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
 import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentParty
+import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderBooking
 
 @RunWith(MockitoJUnitRunner::class)
 class NomisServiceTest {
@@ -49,6 +50,58 @@ class NomisServiceTest {
     Mockito.verify(webClientCallHelper).getForList(
       eq("/api/offenders/A1234AA/alerts/v2?alertCodes=SOC"),
       isA<ParameterizedTypeReference<List<Alert>>>()
+    )
+    Mockito.verifyNoMoreInteractions(webClientCallHelper)
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun testBookingDetail() {
+    val body = RestResponsePage<OffenderBooking>(
+      listOf(OffenderBooking(1, "G1234H", "A1234AA", "LIFE"))
+    )
+    val response = ResponseEntity(body, HttpStatus.OK)
+    Mockito.`when`(
+      webClientCallHelper.getPageRestResponse(
+        eq("/api/bookings/v2?bookingId=1&legalInfo=true"),
+        isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>()
+      )
+    )
+      .thenReturn(response)
+    val bookingDetails = service.getBookingDetails(1L)
+    Assertions.assertThat(bookingDetails).hasSize(1)
+    Mockito.verify(webClientCallHelper).getPageRestResponse(
+      eq("/api/bookings/v2?bookingId=1&legalInfo=true"),
+      isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>()
+    )
+    Mockito.verifyNoMoreInteractions(webClientCallHelper)
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun testGetOffendersInPrison() {
+    val body = RestResponsePage<OffenderBooking>(
+      listOf(
+        OffenderBooking(1, "G1234H", "A1234AA", "LIFE"),
+        OffenderBooking(2, "G1235H", "A1234AB", "LIFE"),
+        OffenderBooking(3, "G1236H", "A1234AC", "LIFE"),
+        OffenderBooking(4, "G1237H", "A1234AD", "LIFE"),
+        OffenderBooking(5, "G1238H", "A1234AE", "LIFE"),
+      )
+    )
+    val response = ResponseEntity(body, HttpStatus.OK)
+    Mockito.`when`(
+      webClientCallHelper.getPageRestResponse(
+        eq("/api/bookings/v2?prisonId=MDI&size=4000"),
+        isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>()
+      )
+    )
+      .thenReturn(response)
+    val offenderList = service.getOffendersAtPrison("MDI")
+    Assertions.assertThat(offenderList).hasSize(5)
+    Mockito.verify(webClientCallHelper).getPageRestResponse(
+      eq("/api/bookings/v2?prisonId=MDI&size=4000"),
+      isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>()
     )
     Mockito.verifyNoMoreInteractions(webClientCallHelper)
   }

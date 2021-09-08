@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase
 import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderBooking
 import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderSentenceTerms
-import uk.gov.justice.digital.hmpps.riskprofiler.model.PagingAndSortingDto
 import java.util.Objects
 import java.util.stream.Collectors
 import javax.validation.constraints.NotNull
@@ -85,22 +84,24 @@ class NomisService(
   }
 
   fun getOffendersAtPrison(prisonId: @NotNull String?): List<String> {
-    val uri = String.format("/api/bookings?query=agencyId:eq:'%s'", prisonId)
-    val results: List<Map<*, *>>
-    results = try {
-      webClientCallHelper.getWithPaging(uri, PagingAndSortingDto(0L, Int.MAX_VALUE.toLong()), MAP).body!!
+    log.info(String.format("Getting full list of prisoners in prison %s", prisonId))
+    val uri = String.format("/api/bookings/v2?prisonId=%s&size=%d", prisonId, 4000)
+    val results: RestResponsePage<OffenderBooking> = try {
+      webClientCallHelper.getPageRestResponse(uri, CONTENT_MAP).body!!
     } catch (e: WebClientResponseException.NotFound) {
       log.warn("Prison does not exist")
       return listOf()
     }
-    return results.stream().map { m: Map<*, *> -> m["offenderNo"] as String }
-      .collect(Collectors.toList())
+
+    val prisonerList = results.content.stream().map { m -> m.offenderNo!! }.collect(Collectors.toList())
+    log.debug(String.format("Found %d prisoners currently in %s", prisonerList.size, prisonId))
+    return prisonerList
   }
 
   fun getBookingDetails(bookingId: Long?): List<OffenderBooking> {
     log.info("Getting details for bookingId {}", bookingId)
-    val uri = String.format("/api/bookings?bookingId=%s", bookingId)
-    return webClientCallHelper.getForList(uri, BOOKING_DETAILS).body!!
+    val uri = String.format("/api/bookings/v2?bookingId=%s&legalInfo=true", bookingId)
+    return webClientCallHelper.getPageRestResponse(uri, BOOKING_DETAILS).body!!.content
   }
 
   fun getMainOffences(bookingId: Long?): List<String> {
@@ -146,8 +147,10 @@ class NomisService(
       object : ParameterizedTypeReference<List<IncidentCase>>() {}
     private val MAP: ParameterizedTypeReference<List<Map<*, *>>> =
       object : ParameterizedTypeReference<List<Map<*, *>>>() {}
-    private val BOOKING_DETAILS: ParameterizedTypeReference<List<OffenderBooking>> =
-      object : ParameterizedTypeReference<List<OffenderBooking>>() {}
+    private val CONTENT_MAP: ParameterizedTypeReference<RestResponsePage<OffenderBooking>> =
+      object : ParameterizedTypeReference<RestResponsePage<OffenderBooking>>() {}
+    private val BOOKING_DETAILS: ParameterizedTypeReference<RestResponsePage<OffenderBooking>> =
+      object : ParameterizedTypeReference<RestResponsePage<OffenderBooking>>() {}
     private val SENTENCE_TERMS: ParameterizedTypeReference<List<OffenderSentenceTerms>> =
       object : ParameterizedTypeReference<List<OffenderSentenceTerms>>() {}
     val ESCAPE_LIST_ALERT_TYPES = java.util.List.of("XER", "XEL")

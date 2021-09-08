@@ -47,8 +47,7 @@ class RiskProfilerResourceTest : ResourceTest() {
     assertThatStatus(response, 403)
   }
 
-  @Test
-  fun testGetSocSecurity() {
+  @Test fun testGetSocSecurity() {
     val response = testRestTemplate.exchange(
       "/risk-profile/soc/A5015DY",
       HttpMethod.GET,
