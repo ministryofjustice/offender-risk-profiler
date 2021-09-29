@@ -10,6 +10,7 @@ FROM openjdk:16-slim
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 RUN apt-get update && \
+    apt-get -y upgrade && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
