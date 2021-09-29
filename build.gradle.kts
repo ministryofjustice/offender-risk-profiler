@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.6"
-  kotlin("plugin.spring") version "1.5.21"
-  kotlin("plugin.jpa") version "1.5.21"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.9"
+  kotlin("plugin.spring") version "1.5.31"
+  kotlin("plugin.jpa") version "1.5.31"
 }
 
 allOpen {
@@ -22,7 +22,7 @@ dependencies {
 
   runtimeOnly("com.h2database:h2")
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.2.23")
+  runtimeOnly("org.postgresql:postgresql")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -34,27 +34,27 @@ dependencies {
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
   implementation("org.springframework.data:spring-data-redis")
-  implementation("redis.clients:jedis:3.6.3")
+  implementation("redis.clients:jedis:3.7.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.9")
+  implementation("org.springframework:spring-jms:5.3.10")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
-  implementation("org.apache.camel.springboot:camel-spring-boot:3.11.0")
-  implementation("org.apache.camel:camel-bean:3.11.0")
-  implementation("org.apache.camel:camel-csv:3.11.0")
-  implementation("org.apache.camel:camel-aws2-s3:3.11.0")
-  implementation("org.apache.camel:camel-aws2-sqs:3.11.0")
-  implementation("org.apache.camel:camel-xml-jaxp:3.11.0")
-  implementation("org.apache.camel:camel-timer:3.11.0")
+  implementation("org.apache.camel.springboot:camel-spring-boot:3.11.2")
+  implementation("org.apache.camel:camel-bean:3.11.2")
+  implementation("org.apache.camel:camel-csv:3.11.2")
+  implementation("org.apache.camel:camel-aws2-s3:3.11.2")
+  implementation("org.apache.camel:camel-aws2-sqs:3.11.2")
+  implementation("org.apache.camel:camel-xml-jaxp:3.11.2")
+  implementation("org.apache.camel:camel-timer:3.11.2")
 
-  implementation("net.javacrumbs.shedlock:shedlock-spring:4.25.0")
-  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.25.0")
+  implementation("net.javacrumbs.shedlock:shedlock-spring:4.27.0")
+  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.27.0")
 
   implementation("javax.annotation:javax.annotation-api:1.3.2")
   implementation("javax.xml.bind:jaxb-api:2.3.1")
-  implementation("com.sun.xml.bind:jaxb-impl:2.3.3")
-  implementation("com.sun.xml.bind:jaxb-core:2.3.0.1")
+  implementation("com.sun.xml.bind:jaxb-impl:3.0.1")
+  implementation("com.sun.xml.bind:jaxb-core:3.0.1")
   implementation("javax.activation:activation:1.1.1")
   implementation("javax.transaction:javax.transaction-api:1.3")
 
@@ -66,22 +66,23 @@ dependencies {
   implementation("net.sf.ehcache:ehcache:2.10.9.2")
   implementation("org.apache.commons:commons-lang3:3.12.0")
   implementation("org.apache.commons:commons-text:1.9")
-  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.4")
+  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5")
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
-  testImplementation("org.apache.camel:camel-test-spring:3.11.0")
+  testImplementation("org.apache.camel:camel-test-spring:3.11.2")
   testImplementation("org.testcontainers:localstack:1.16.0")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
-  testImplementation("com.google.code.gson:gson:2.8.7")
+  testImplementation("com.google.code.gson:gson:2.8.8")
   testImplementation("com.nhaarman:mockito-kotlin-kt1.1:1.6.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.1.0")
 }
 
 tasks {
   compileKotlin {
+    // See machine executor in config.yml
     // kotlinOptions.jvmTarget = "16"
   }
 }
