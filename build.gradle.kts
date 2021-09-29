@@ -82,6 +82,7 @@ dependencies {
 
 tasks {
   compileKotlin {
-    kotlinOptions.jvmTarget = "16"
+    // See machine executor in config.yml
+    // kotlinOptions.jvmTarget = "16"
   }
 }
