@@ -17,6 +17,10 @@ configurations {
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
 }
 
+dependencyCheck {
+  suppressionFiles.add("suppressions.xml")
+}
+
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
