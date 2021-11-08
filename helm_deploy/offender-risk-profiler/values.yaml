@@ -1,5 +1,73 @@
 ---
-# Values here are the same across all environments
+generic-service:
+  nameOverride: offender-risk-profiler
+
+  image:
+    repository: quay.io/hmpps/offender-risk-profiler
+    tag: latest
+    pullPolicy: IfNotPresent
+    port: 8080
+
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http
+    periodSeconds: 30
+    initialDelaySeconds: 90
+    timeoutSeconds: 20
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: http
+    periodSeconds: 20
+    initialDelaySeconds: 60
+    timeoutSeconds: 30
+    failureThreshold: 15
+
+  env:
+    SPRING_PROFILES_ACTIVE: "s3,postgres,sqs"
+    CACHE_TYPE: "elasticache"
+    SPRING_REDIS_SSL: "true"
+    AWS_REGION: "eu-west-2"
+
+  namespace_secrets:
+    dps-rds-instance-output:
+      DATABASE_NAME: "database_name"
+      DATABASE_ENDPOINT: "rds_instance_endpoint"
+      DATABASE_PASSWORD: "risk_profiler_password"
+      SUPERUSER_USERNAME: "database_username"
+      SUPERUSER_PASSWORD: "database_password"
+
+    offender-risk-profiler:
+      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
+      RISK_PROFILER_CLIENT_ID: "RISK_PROFILER_CLIENT_ID"
+      RISK_PROFILER_CLIENT_SECRET: "RISK_PROFILER_CLIENT_SECRET"
+
+    risk-profiler-s3-bucket-output:
+      AWS_ACCESS_KEY_ID: "access_key_id"
+      AWS_SECRET_ACCESS_KEY: "secret_access_key"
+      S3_BUCKET_DEFAULT: "bucket_name"
+
+    rp-sqs-instance-output:
+      SQS_AWS_ACCESS_KEY_ID: "access_key_id"
+      SQS_AWS_SECRET_ACCESS_KEY: "secret_access_key"
+      SQS_RPC_QUEUE_URL: "sqs_rpc_url"
+
+    oc-events-sqs-instance-output:
+      SQS_EVENTS_AWS_ACCESS_KEY_ID: "access_key_id"
+      SQS_EVENTS_AWS_SECRET_ACCESS_KEY: "secret_access_key"
+      SQS_EVENTS_QUEUE_NAME: "sqs_oce_name"
+
+    oc-events-sqs-dl-instance-output:
+      SQS_EVENTS_AWS_DLQ_ACCESS_KEY_ID: "access_key_id"
+      SQS_EVENTS_AWS_DLQ_SECRET_ACCESS_KEY: "secret_access_key"
+      SQS_EVENTS_DLQ_QUEUE_NAME: "sqs_oce_name"
+
+    oc-elasticache-redis:
+      SPRING_REDIS_HOST: "primary_endpoint_address"
+      SPRING_REDIS_PASSWORD: "auth_token"
+
 
 generic-prometheus-alerts:
   targetApplication: offender-risk-profiler
