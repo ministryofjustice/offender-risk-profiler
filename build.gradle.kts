@@ -41,7 +41,7 @@ dependencies {
   implementation("redis.clients:jedis:3.7.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.12")
+  implementation("org.springframework:spring-jms:5.3.13")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:3.12.0")
