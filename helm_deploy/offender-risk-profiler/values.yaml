@@ -26,7 +26,7 @@ generic-service:
     failureThreshold: 15
 
   env:
-    JAVA_OPTS: "-Xmx800m -Xlog:gc"
+    JAVA_OPTS: "-Xms512m -Xmx512m -Xlog:gc"
     SPRING_PROFILES_ACTIVE: "s3,postgres,sqs"
     CACHE_TYPE: "elasticache"
     SPRING_REDIS_SSL: "true"
