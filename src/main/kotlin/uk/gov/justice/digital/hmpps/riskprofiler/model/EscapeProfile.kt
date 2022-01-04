@@ -1,24 +1,24 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model
 
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import javax.validation.constraints.NotBlank
 
 data class EscapeProfile(
   val nomsId: @NotBlank String,
   var provisionalCategorisation: @NotBlank String,
-  @field:ApiModelProperty(
-    value = "Indicates offender is on the escape list",
+  @field:Schema(
+    title = "Indicates offender is on the escape list",
     example = "true",
   ) val activeEscapeList: Boolean,
 
-  @field:ApiModelProperty(
-    value = "Indicates offender is an escape risk",
+  @field:Schema(
+    title = "Indicates offender is an escape risk",
     example = "true",
   ) val activeEscapeRisk: Boolean,
 
-  @field:ApiModelProperty(value = "Active escape risk alerts") val escapeRiskAlerts: List<Alert>?,
+  @field:Schema(title = "Active escape risk alerts") val escapeRiskAlerts: List<Alert>?,
 
-  @field:ApiModelProperty(value = "Active escape list alerts") val escapeListAlerts: List<Alert>?
+  @field:Schema(title = "Active escape list alerts") val escapeListAlerts: List<Alert>?
 
 ) : RiskProfile(nomsId, provisionalCategorisation) {
 

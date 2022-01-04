@@ -1,7 +1,7 @@
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.0"
-  kotlin("plugin.spring") version "1.6.0"
-  kotlin("plugin.jpa") version "1.6.0"
+  kotlin("plugin.spring") version "1.6.10"
+  kotlin("plugin.jpa") version "1.6.10"
 }
 
 allOpen {
@@ -43,7 +43,7 @@ dependencies {
   implementation("redis.clients:jedis:3.7.1")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.13")
+  implementation("org.springframework:spring-jms:5.3.14")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
@@ -64,8 +64,10 @@ dependencies {
   implementation("javax.activation:activation:1.1.1")
   implementation("javax.transaction:javax.transaction-api:1.3")
 
-  implementation("io.springfox:springfox-swagger2:2.9.2")
-  implementation("io.springfox:springfox-swagger-ui:2.9.2")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.3")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.3")
+  implementation("org.springdoc:springdoc-openapi-security:1.6.3")
+  // implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
 

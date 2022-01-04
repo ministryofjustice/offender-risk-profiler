@@ -1,26 +1,22 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import javax.validation.constraints.NotBlank
 
-@ApiModel(description = "RiskProfile")
+@Schema(description = "RiskProfile")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 abstract class RiskProfile(
-  @ApiModelProperty(required = true, value = "Identifies the offender by NOMS ID.", example = "ZWE123A")
+  @Schema(required = true, title = "Identifies the offender by NOMS ID.", example = "ZWE123A")
   private var nomsId: @NotBlank String = "",
 
-  @ApiModelProperty(required = true, value = "Provisional Categorisation", example = "C")
+  @Schema(required = true, title = "Provisional Categorisation", example = "C")
   private var provisionalCategorisation: @NotBlank String = "C"
-
 ) {
-
-  @ApiModelProperty(
+  @Schema(
     required = true,
-    value = "Risk Type, VIOLENCE, SOC, EXTREMISM, ESCAPE;",
+    title = "Risk Type, VIOLENCE, SOC, EXTREMISM, ESCAPE, LIFE;",
     example = "EXTREMISM",
-    position = 1
   )
   abstract fun getRiskType(): RiskType
 

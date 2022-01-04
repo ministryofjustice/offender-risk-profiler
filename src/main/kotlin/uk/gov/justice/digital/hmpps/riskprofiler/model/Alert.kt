@@ -1,11 +1,9 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import io.swagger.annotations.ApiModel
 import java.io.Serializable
 import java.time.LocalDate
 
-@ApiModel(description = "Alert")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Alert(
 

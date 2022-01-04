@@ -1,13 +1,13 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model
 
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import javax.validation.constraints.NotBlank
 
 data class LifeProfile(
   val nomsId: @NotBlank String,
   var provisionalCategorisation: @NotBlank String,
-  @field:ApiModelProperty(
-    value = "Indicates offender has a court-issued life sentence",
+  @field:Schema(
+    title = "Indicates offender has a court-issued life sentence",
     example = "true"
   )
   val life: Boolean

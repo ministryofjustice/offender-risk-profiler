@@ -1,25 +1,26 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(name = "Error")
 data class ErrorResponse(
-  @ApiModelProperty(required = true, value = "Status of Error Code", example = "400")
+  @Schema(required = true, title = "Status of Error Code", example = "400")
   val status: Int,
 
-  @ApiModelProperty(required = false, value = "Develop Information message", example = "System is down")
+  @Schema(required = false, title = "Develop Information message", example = "System is down")
   val developerMessage: String? = null
 ) {
-  @ApiModelProperty(required = true, value = "Internal Error Code", example = "20012")
+  @Schema(required = true, title = "Internal Error Code", example = "20012")
   private val errorCode: Int? = null
 
-  @ApiModelProperty(required = true, value = "Error message information", example = "Offender Not Found")
+  @Schema(required = true, title = "Error message information", example = "Offender Not Found")
   private val userMessage: String? = null
 
-  @ApiModelProperty(
+  @Schema(
     required = false,
-    value = "Additional information about the error",
+    title = "Additional information about the error",
     example = "Hard disk failure"
   )
   private val moreInfo: String? = null
