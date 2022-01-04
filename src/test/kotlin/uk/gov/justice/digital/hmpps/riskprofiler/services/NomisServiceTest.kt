@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services
 
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.isA
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Test
@@ -10,6 +8,8 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.isA
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

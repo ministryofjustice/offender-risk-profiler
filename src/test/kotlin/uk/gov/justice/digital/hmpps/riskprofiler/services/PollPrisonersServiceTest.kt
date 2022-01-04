@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services
 
 import com.microsoft.applicationinsights.TelemetryClient
-import com.nhaarman.mockitokotlin2.argThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -9,6 +8,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.argThat
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.PreviousProfileRepository
 import uk.gov.justice.digital.hmpps.riskprofiler.model.EscapeProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.PreviousProfile

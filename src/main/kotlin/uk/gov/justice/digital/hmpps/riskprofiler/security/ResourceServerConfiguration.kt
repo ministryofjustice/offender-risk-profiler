@@ -22,6 +22,8 @@ import springfox.documentation.builders.PathSelectors
 import springfox.documentation.builders.RequestHandlerSelectors
 import springfox.documentation.service.ApiInfo
 import springfox.documentation.service.Contact
+import springfox.documentation.service.StringVendorExtension
+import springfox.documentation.service.VendorExtension
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket
 import springfox.documentation.swagger2.annotations.EnableSwagger2
@@ -39,7 +41,7 @@ import javax.sql.DataSource
 @EnableSchedulerLock(defaultLockAtLeastFor = "PT10S", defaultLockAtMostFor = "PT12H")
 class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
   @Autowired(required = false)
-  private val buildProperties: BuildProperties? = null
+  private lateinit var buildProperties: BuildProperties
 
   @Throws(Exception::class)
   public override fun configure(http: HttpSecurity) {
@@ -66,11 +68,18 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
   }
 
   @Bean
-  fun api(): Docket {
+  fun api(): Docket? {
+    val vendorExtension = StringVendorExtension("", "")
+    val vendorExtensions: MutableCollection<VendorExtension<*>> = ArrayList()
     val apiInfo = ApiInfo(
       "Offender Risk Profiler API Documentation",
       "API for accessing the Risk Profiles of Offenders.",
-      version, "", contactInfo(), "", "", emptyList()
+      version,
+      "https://gateway.nomis-api.service.justice.gov.uk/auth/terms",
+      contactInfo(),
+      "Open Government Licence v3.0",
+      "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      emptyList() // vendorExtensions
     )
     val docket = Docket(DocumentationType.SWAGGER_2)
       .useDefaultResponseMessages(false)
