@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model
 
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import org.apache.commons.lang3.builder.CompareToBuilder
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
@@ -9,8 +9,8 @@ data class SocProfile(
   val nomsId: @NotBlank String,
   var provisionalCategorisation: @NotBlank String,
 
-  @field:ApiModelProperty(
-    value = "Indicates the offender must be transferred to security",
+  @field:Schema(
+    title = "Indicates the offender must be transferred to security",
     example = "true",
   )
   var transferToSecurity: Boolean

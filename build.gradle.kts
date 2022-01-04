@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.16"
-  kotlin("plugin.spring") version "1.6.0"
-  kotlin("plugin.jpa") version "1.6.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.0"
+  kotlin("plugin.spring") version "1.6.10"
+  kotlin("plugin.jpa") version "1.6.10"
 }
 
 allOpen {
@@ -21,6 +21,8 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
+val camelVersion = "3.14.0"
+
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -38,22 +40,22 @@ dependencies {
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
   implementation("org.springframework.data:spring-data-redis")
-  implementation("redis.clients:jedis:3.7.0")
+  implementation("redis.clients:jedis:3.7.1")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.13")
+  implementation("org.springframework:spring-jms:5.3.14")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
-  implementation("org.apache.camel.springboot:camel-spring-boot:3.12.0")
-  implementation("org.apache.camel:camel-bean:3.12.0")
-  implementation("org.apache.camel:camel-csv:3.12.0")
-  implementation("org.apache.camel:camel-aws2-s3:3.12.0")
-  implementation("org.apache.camel:camel-aws2-sqs:3.12.0")
-  implementation("org.apache.camel:camel-xml-jaxp:3.12.0")
-  implementation("org.apache.camel:camel-timer:3.12.0")
+  implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
+  implementation("org.apache.camel:camel-bean:$camelVersion")
+  implementation("org.apache.camel:camel-csv:$camelVersion")
+  implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
+  implementation("org.apache.camel:camel-aws2-sqs:$camelVersion")
+  implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
+  implementation("org.apache.camel:camel-timer:$camelVersion")
 
-  implementation("net.javacrumbs.shedlock:shedlock-spring:4.29.0")
-  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.29.0")
+  implementation("net.javacrumbs.shedlock:shedlock-spring:4.30.0")
+  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.30.0")
 
   implementation("javax.annotation:javax.annotation-api:1.3.2")
   implementation("javax.xml.bind:jaxb-api:2.3.1")
@@ -62,8 +64,10 @@ dependencies {
   implementation("javax.activation:activation:1.1.1")
   implementation("javax.transaction:javax.transaction-api:1.3")
 
-  implementation("io.springfox:springfox-swagger2:2.9.2")
-  implementation("io.springfox:springfox-swagger-ui:2.9.2")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.3")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.3")
+  implementation("org.springdoc:springdoc-openapi-security:1.6.3")
+  // implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
 
@@ -75,13 +79,17 @@ dependencies {
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
-  testImplementation("org.apache.camel:camel-test-spring:3.12.0")
+  testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
   testImplementation("org.testcontainers:localstack:1.16.2")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
-  testImplementation("com.google.code.gson:gson:2.8.8")
-  testImplementation("com.nhaarman:mockito-kotlin-kt1.1:1.6.0")
+  testImplementation("com.google.code.gson:gson:2.8.9")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.1.1")
+  // testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.0.28")
 }
+// repositories {
+//   mavenCentral()
+// }
 
 tasks {
   compileKotlin {

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services
 
-import com.nhaarman.mockitokotlin2.mock
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.mock
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepositoryFactory
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.OcgRepository
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.OcgmRepository

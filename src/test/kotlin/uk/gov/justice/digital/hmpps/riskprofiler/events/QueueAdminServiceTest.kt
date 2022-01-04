@@ -7,17 +7,16 @@ import com.amazonaws.services.sqs.model.Message
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest
 import com.amazonaws.services.sqs.model.ReceiveMessageResult
 import com.microsoft.applicationinsights.TelemetryClient
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.check
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
-import com.nhaarman.mockitokotlin2.whenever
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 
 internal class QueueAdminServiceTest {
 
@@ -53,11 +52,7 @@ internal class QueueAdminServiceTest {
 
       queueAdminService.transferEventMessages()
 
-      verify(eventAwsSqsDlqClient).receiveMessage(
-        check<ReceiveMessageRequest> {
-          assertThat(it.queueUrl).isEqualTo(eventDlqUrl)
-        }
-      )
+      verify(eventAwsSqsClient).sendMessage(eq("arn:eu-west-1:event-queue"), any())
     }
 
     @Test
@@ -70,11 +65,7 @@ internal class QueueAdminServiceTest {
 
       queueAdminService.transferEventMessages()
 
-      verify(eventAwsSqsDlqClient, times(3)).receiveMessage(
-        check<ReceiveMessageRequest> {
-          assertThat(it.queueUrl).isEqualTo(eventDlqUrl)
-        }
-      )
+      verify(eventAwsSqsClient, times(3)).sendMessage(eq("arn:eu-west-1:event-queue"), any())
     }
 
     @Test
@@ -120,7 +111,7 @@ internal class QueueAdminServiceTest {
 
       queueAdminService.transferEventMessages()
 
-      verifyZeroInteractions(telemetryClient)
+      verifyNoMoreInteractions(telemetryClient)
     }
 
     private fun stubDlqMessageCount(count: Int) =
