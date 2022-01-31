@@ -6,21 +6,21 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.toEntity
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder
 import java.util.Optional
 
 @Service
 class PathfinderService @Autowired constructor(@param:Qualifier("pathfinderSystemWebClient") private val webClient: WebClient) {
-  protected operator fun <T> get(uri: String?, responseType: Class<T>?): T {
-    return webClient.get().uri(uri).retrieve().toEntity(responseType).block().body
+  protected operator fun get(uri: String): Optional<PathFinder> {
+    return webClient.get().uri(uri).retrieve().toEntity<PathFinder>().blockOptional().map { it.body }
   }
 
-  fun getBand(nomsId: String?): Optional<PathFinder> {
+  fun getBand(nomsId: String): Optional<PathFinder> {
     log.debug("Getting noms id {} from pathfinder api", nomsId)
     val uri = String.format("/pathfinder/offender/%s", nomsId)
     return try {
-      val map = get<Map<*, *>>(uri, Map::class.java)
-      Optional.of(PathFinder((map["nomsId"] as String?)!!, map["band"] as Int?))
+      get(uri)
     } catch (e: WebClientResponseException.NotFound) {
       Optional.empty()
     }

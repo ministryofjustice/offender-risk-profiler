@@ -25,8 +25,5 @@ class UserSecurityUtils : AuthenticationFacade {
       return username
     }
   private val userPrincipal: Any?
-    get() {
-      val auth = authentication
-      return if (auth != null) auth.principal else null
-    }
+    get() = authentication.principal
 }

@@ -12,7 +12,7 @@ class MessageIntegrationTest : QueueIntegrationTest() {
   @Test
   fun `will transfer message from DLQ`() {
 
-    val message = "/messages/incident.json".readResourceAsText()
+    val message = javaClass.getResource("/messages/incident.json")?.readText()
 
     awsDlqClientForEvents.sendMessage(dlqUrl, message)
 
@@ -28,8 +28,4 @@ class MessageIntegrationTest : QueueIntegrationTest() {
     // message should arrive on normal Q and be processed
     await untilCallTo { PrisonMockServer.prisonMockServer.findAll(WireMock.getRequestedFor(WireMock.urlEqualTo("/api/incidents/3661338"))) } matches { it != null && it.isNotEmpty() }
   }
-}
-
-private fun String.readResourceAsText(): String {
-  return MessageIntegrationTest::class.java.getResource(this).readText()
 }
