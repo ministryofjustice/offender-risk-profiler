@@ -10,12 +10,14 @@ import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.argThat
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.PreviousProfileRepository
+import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
 import uk.gov.justice.digital.hmpps.riskprofiler.model.EscapeProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.PreviousProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.ProfileMessagePayload
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfileChange
 import uk.gov.justice.digital.hmpps.riskprofiler.model.SocProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.ViolenceProfile
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.Optional
@@ -44,10 +46,15 @@ class PollPrisonersServiceTest {
 
   private val SOC_1 = SocProfile(OFFENDER_1, "C", false)
   private val VIOLENCE_1 = ViolenceProfile(OFFENDER_1, "C", false, false, false, 0, 0, 0)
-  private val ESCAPE_1 = EscapeProfile(OFFENDER_1, "C", false, false, null, null)
+  private val ESCAPE_1 = EscapeProfile(
+    OFFENDER_1, "C", false,
+    true,
+    listOf(Alert(alertCode = "XER", dateCreated = LocalDate.parse("2016-01-13"), active = true, expired = false)),
+    null
+  )
   private val PROFILE_1 = PreviousProfile(
     OFFENDER_1,
-    """{"nomsId":"$OFFENDER_1","provisionalCategorisation":"C","activeEscapeList":false,"activeEscapeRisk":false,"riskType":"ESCAPE"}""",
+    """{"nomsId":"$OFFENDER_1","provisionalCategorisation":"C","activeEscapeList":false,"activeEscapeRisk":true,"escapeRiskAlerts":[{"alertCode":"XER","dateCreated":"2016-01-13","expired":false,"active":true}],"riskType":"ESCAPE"}""",
     """{"nomsId":"$OFFENDER_1","provisionalCategorisation":"C","transferToSecurity":false,"riskType":"SOC"}""",
     """{"nomsId":"$OFFENDER_1","provisionalCategorisation":"C","veryHighRiskViolentOffender":false,"notifySafetyCustodyLead":false,"displayAssaults":false,"numberOfAssaults":0,"numberOfSeriousAssaults":0,"numberOfNonSeriousAssaults":0,"riskType":"VIOLENCE"}""",
     LocalDateTime.now()
@@ -88,8 +95,11 @@ class PollPrisonersServiceTest {
     Mockito.`when`(violenceDecisionTreeService.getViolenceProfile(OFFENDER_1)).thenReturn(VIOLENCE_1)
     Mockito.`when`(escapeDecisionTreeService.getEscapeProfile(OFFENDER_1)).thenReturn(ESCAPE_1)
     Mockito.`when`(previousProfileRepository.findById(OFFENDER_1)).thenReturn(Optional.of(PROFILE_1))
+
     service.pollPrisoner(OFFENDER_1)
-    Mockito.verify(sqsService, Mockito.never()).sendRiskProfileChangeMessage(ArgumentMatchers.isA(RiskProfileChange::class.java))
+
+    Mockito.verify(sqsService, Mockito.never())
+      .sendRiskProfileChangeMessage(ArgumentMatchers.isA(RiskProfileChange::class.java))
     Mockito.verify(previousProfileRepository, Mockito.never()).save(ArgumentMatchers.any())
   }
 
@@ -103,7 +113,8 @@ class PollPrisonersServiceTest {
     Mockito.verify(socDecisionTreeService).getSocData(OFFENDER_1)
     Mockito.verify(previousProfileRepository).save(ArgumentMatchers.any())
     Mockito.verify(previousProfileRepository).save(eqProfiles(PROFILE_1))
-    Mockito.verify(sqsService, Mockito.never()).sendRiskProfileChangeMessage(ArgumentMatchers.isA(RiskProfileChange::class.java))
+    Mockito.verify(sqsService, Mockito.never())
+      .sendRiskProfileChangeMessage(ArgumentMatchers.isA(RiskProfileChange::class.java))
   }
 
   companion object {

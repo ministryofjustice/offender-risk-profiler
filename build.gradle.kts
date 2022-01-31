@@ -1,15 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.2"
   kotlin("plugin.spring") version "1.6.10"
   kotlin("plugin.jpa") version "1.6.10"
-}
-
-allOpen {
-  annotations(
-    "javax.persistence.Entity",
-    "javax.persistence.MappedSuperclass",
-    "javax.persistence.Embeddable"
-  )
 }
 
 configurations {
@@ -21,7 +13,7 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.14.0"
+val camelVersion = "3.14.1"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -54,8 +46,8 @@ dependencies {
   implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
   implementation("org.apache.camel:camel-timer:$camelVersion")
 
-  implementation("net.javacrumbs.shedlock:shedlock-spring:4.30.0")
-  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.30.0")
+  implementation("net.javacrumbs.shedlock:shedlock-spring:4.32.0")
+  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.32.0")
 
   implementation("javax.annotation:javax.annotation-api:1.3.2")
   implementation("javax.xml.bind:jaxb-api:2.3.1")
@@ -64,10 +56,10 @@ dependencies {
   implementation("javax.activation:activation:1.1.1")
   implementation("javax.transaction:javax.transaction-api:1.3")
 
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.3")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.5")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.3")
   implementation("org.springdoc:springdoc-openapi-security:1.6.3")
-  // implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
 
@@ -80,16 +72,12 @@ dependencies {
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
-  testImplementation("org.testcontainers:localstack:1.16.2")
+  testImplementation("org.testcontainers:localstack:1.16.3")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("com.google.code.gson:gson:2.8.9")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.1.1")
-  // testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.0.28")
 }
-// repositories {
-//   mavenCentral()
-// }
 
 tasks {
   compileKotlin {

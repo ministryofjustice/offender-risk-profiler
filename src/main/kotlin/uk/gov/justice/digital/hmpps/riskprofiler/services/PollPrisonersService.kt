@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.microsoft.applicationinsights.TelemetryClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -27,8 +29,7 @@ class PollPrisonersService(
   private val telemetryClient: TelemetryClient?,
   private val sqsService: SQSService
 ) {
-  private val jacksonMapper = ObjectMapper()
-  // private val defaultFromDateTime = LocalDateTime.of(2019, 10, 25, 0, 0)
+  private val jacksonMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
 
   @Transactional
   fun pollPrisoner(offenderNo: String) {
@@ -84,9 +85,9 @@ class PollPrisonersService(
     val oldProfile: ProfileMessagePayload
     try {
       oldProfile = ProfileMessagePayload(
-        jacksonMapper.readValue(existing.escape, EscapeProfile::class.java),
-        jacksonMapper.readValue(existing.soc, SocProfile::class.java),
-        jacksonMapper.readValue(existing.violence, ViolenceProfile::class.java)
+        jacksonMapper.readValue(existing.escape),
+        jacksonMapper.readValue(existing.soc),
+        jacksonMapper.readValue(existing.violence)
       )
       val payload = RiskProfileChange(oldProfile, newProfile, offenderNo, existing.executeDateTime)
       log.info("Reporting risk change to queue for offender {}", offenderNo)
