@@ -19,7 +19,7 @@ class PrasRepository : DataRepository<Pras>() {
     data.fileName = filename
     data.fileType = FileType.PRAS
     data.reset()
-    csvData.stream().filter { p: List<String>? -> data.index.getAndIncrement() > 0 }
+    csvData.stream().filter { data.index.getAndIncrement() > 0 }
       .forEach { p: List<String> ->
         try {
           val key = p[Pras.NOMIS_ID_POSITION]

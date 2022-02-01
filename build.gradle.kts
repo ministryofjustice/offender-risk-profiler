@@ -18,8 +18,8 @@ val camelVersion = "3.14.1"
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-  runtimeOnly("com.h2database:h2")
-  runtimeOnly("org.flywaydb:flyway-core")
+  runtimeOnly("com.h2database:h2:2.1.210")
+  runtimeOnly("org.flywaydb:flyway-core:8.4.3")
   runtimeOnly("org.postgresql:postgresql")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -32,10 +32,10 @@ dependencies {
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
   implementation("org.springframework.data:spring-data-redis")
-  implementation("redis.clients:jedis:3.7.1")
+  implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.14")
+  implementation("org.springframework:spring-jms:5.3.15")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
@@ -46,8 +46,8 @@ dependencies {
   implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
   implementation("org.apache.camel:camel-timer:$camelVersion")
 
-  implementation("net.javacrumbs.shedlock:shedlock-spring:4.32.0")
-  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.32.0")
+  implementation("net.javacrumbs.shedlock:shedlock-spring:4.33.0")
+  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.33.0")
 
   implementation("javax.annotation:javax.annotation-api:1.3.2")
   implementation("javax.xml.bind:jaxb-api:2.3.1")
@@ -57,8 +57,8 @@ dependencies {
   implementation("javax.transaction:javax.transaction-api:1.3")
 
   implementation("org.springdoc:springdoc-openapi-ui:1.6.5")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.3")
-  implementation("org.springdoc:springdoc-openapi-security:1.6.3")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.5")
+  implementation("org.springdoc:springdoc-openapi-security:1.6.5")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")

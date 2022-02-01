@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.events
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.jms.annotation.JmsListener
@@ -51,15 +52,16 @@ class EventListener(
   private fun getOffenderEvent(requestJson: String): OffenderEvent? {
     var event: OffenderEvent? = null
     try {
-      val message: Map<String, String?> = objectMapper.readValue(requestJson, Map::class.java) as Map<String, String?>
-      if (message == null || message["Message"] == null) {
+      val message: Map<String, Any?> = objectMapper.readValue(requestJson)
+      if (message["Message"] == null) {
         log.warn(requestJson)
       } else {
-        log.debug(message["Message"]) // do not log an excessive amount of data
-        event = objectMapper.readValue(message["Message"], OffenderEvent::class.java)
+        val body = message["Message"] as String
+        log.debug(body) // do not log an excessive amount of data
+        event = objectMapper.readValue(body)
       }
     } catch (e: IOException) {
-      log.error("Failed to Parse Message {}", requestJson)
+      log.error("Failed to Parse Message {} {}", requestJson, e)
     }
     return event
   }

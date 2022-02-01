@@ -20,7 +20,7 @@ class OcgmRepository : DataRepository<OcgmList>() {
     data.fileName = filename
     data.fileType = FileType.OCGM
     data.reset()
-    csvData.stream().filter { p: List<String>? -> data.index.getAndIncrement() > 0 }
+    csvData.stream().filter { data.index.getAndIncrement() > 0 }
       .forEach { p ->
         try {
           val key = p[Ocgm.NOMIS_ID_POSITION]

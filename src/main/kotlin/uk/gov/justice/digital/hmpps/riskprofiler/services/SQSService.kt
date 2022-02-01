@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.aws.core.env.ResourceIdResolver
@@ -22,12 +23,12 @@ class SQSService(
   private val queueTemplate: QueueMessagingTemplate
   private val amazonSqs: AmazonSQSAsync
   private val queueUrl: String
-  fun sendRiskProfileChangeMessage(payload: RiskProfileChange?) {
+  fun sendRiskProfileChangeMessage(payload: RiskProfileChange) {
     queueTemplate.convertAndSend(QueueMessageChannel(amazonSqs, queueUrl), payload)
   }
 
   init {
-    val mapper = ObjectMapper()
+    val mapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
     mapper.dateFormat = StdDateFormat()
     mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     mapper.registerModule(JavaTimeModule())
