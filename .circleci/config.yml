@@ -6,10 +6,10 @@ orbs:
 executors:
   java-machine:
     machine:
-#      TODO: this should be upgraded as soon as a java 16 machine image is available,
+#      TODO: this should be upgraded as soon as a java 16+ machine image is available,
 #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
 #      When it is, the kotlinOptions.jvmTarget setting in build.gradle.kts can then be uncommented
-      image: ubuntu-2004:202111-01
+      image: ubuntu-2004:202111-02
     environment:
       _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
     working_directory: ~/app
