@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.2"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.3"
   kotlin("plugin.spring") version "1.6.10"
   kotlin("plugin.jpa") version "1.6.10"
 }
@@ -13,14 +13,14 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.14.1"
+val camelVersion = "3.15.0"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   runtimeOnly("com.h2database:h2:2.1.210")
-  runtimeOnly("org.flywaydb:flyway-core:8.4.3")
-  runtimeOnly("org.postgresql:postgresql")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.0")
+  runtimeOnly("org.postgresql:postgresql:42.3.3")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -32,10 +32,11 @@ dependencies {
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
   implementation("org.springframework.data:spring-data-redis")
+  // Note spring-data-redis 2.6.2 does not support Jedis 4.x
   implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.15")
+  implementation("org.springframework:spring-jms:5.3.16")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
@@ -49,16 +50,9 @@ dependencies {
   implementation("net.javacrumbs.shedlock:shedlock-spring:4.33.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.33.0")
 
-  implementation("javax.annotation:javax.annotation-api:1.3.2")
-  implementation("javax.xml.bind:jaxb-api:2.3.1")
-  implementation("com.sun.xml.bind:jaxb-impl:3.0.2")
-  implementation("com.sun.xml.bind:jaxb-core:3.0.2")
-  implementation("javax.activation:activation:1.1.1")
-  implementation("javax.transaction:javax.transaction-api:1.3")
-
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.5")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.5")
-  implementation("org.springdoc:springdoc-openapi-security:1.6.5")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.6")
+  implementation("org.springdoc:springdoc-openapi-security:1.6.6")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
@@ -74,7 +68,7 @@ dependencies {
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
   testImplementation("org.testcontainers:localstack:1.16.3")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
-  testImplementation("com.google.code.gson:gson:2.8.9")
+  testImplementation("com.google.code.gson:gson:2.9.0")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.1.1")
 }
