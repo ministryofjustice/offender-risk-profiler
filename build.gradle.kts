@@ -18,8 +18,8 @@ val camelVersion = "3.15.0"
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-  testRuntimeOnly("com.h2database:h2:2.1.210")
-  testRuntimeOnly("org.flywaydb:flyway-core:8.5.0")
+  runtimeOnly("com.h2database:h2:2.1.210")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.0")
   runtimeOnly("org.postgresql:postgresql:42.3.3")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
