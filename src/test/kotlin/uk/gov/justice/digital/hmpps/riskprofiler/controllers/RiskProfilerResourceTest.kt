@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
 
 class RiskProfilerResourceTest : ResourceTest() {
@@ -124,6 +125,22 @@ class RiskProfilerResourceTest : ResourceTest() {
     assertThatStatus(response, 200)
     assertThat(response.body)
       .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"C","notifyRegionalCTLead":false,"increasedRiskOfExtremism":false,"riskType":"EXTREMISM"}""")
+  }
+
+  @Test
+  fun testGetExtremismIsNominal() {
+    PathfinderMockServer.pathfinderMockServer.stubPathfinder("A1234AB")
+
+    val response = testRestTemplate.exchange(
+      "/risk-profile/extremism/A1234AB?previousOffences=true",
+      HttpMethod.GET,
+      createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
+      object : ParameterizedTypeReference<String?>() {
+      }
+    )
+    assertThatStatus(response, 200)
+    assertThat(response.body)
+      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"B","notifyRegionalCTLead":true,"increasedRiskOfExtremism":true,"riskType":"EXTREMISM"}""")
   }
 
   @Test

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder
 import uk.gov.justice.digital.hmpps.riskprofiler.model.ExtremismProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile
-import java.util.Optional
 
 @Service
 class ExtremismDecisionTreeService(private val repository: PathfinderService) {
@@ -18,11 +17,11 @@ class ExtremismDecisionTreeService(private val repository: PathfinderService) {
   private fun decisionProcess(
     nomsId: String,
     previousOffences: Boolean,
-    pathFinder: Optional<PathFinder>
+    pathFinder: PathFinder?
   ): ExtremismProfile {
     val extremism = ExtremismProfile(nomsId = nomsId, provisionalCategorisation = RiskProfile.DEFAULT_CAT)
-    pathFinder.ifPresent { pf: PathFinder ->
-      val banding = pf.pathFinderBanding
+    if (pathFinder != null) {
+      val banding = pathFinder.band
       log.info("extremism: {} in pathfinder on {}, increased Risk of Extremism", nomsId, banding)
       if (banding == null) {
         extremism.provisionalCategorisation = "C"
