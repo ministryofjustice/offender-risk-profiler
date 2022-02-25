@@ -9,7 +9,6 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.PathFinder
-import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 class ExtremismDecisionTreeServiceTest {
@@ -25,7 +24,7 @@ class ExtremismDecisionTreeServiceTest {
   @Test
   fun testWhenPathfinderOnFileWithBand1NoPreviousOffences() {
     val pathFinder = PathFinder(OFFENDER_1, 1)
-    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder))
+    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(pathFinder)
 
     val (_, provisionalCategorisation, notifyRegionalCTLead, increasedRiskOfExtremism) = service.getExtremismProfile(
       OFFENDER_1, false
@@ -39,7 +38,7 @@ class ExtremismDecisionTreeServiceTest {
   @Test
   fun testWhenPathfinderOnFileWithBand2WithPreviousOffences() {
     val pathFinder = PathFinder(OFFENDER_1, 2)
-    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder))
+    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(pathFinder)
 
     val (_, provisionalCategorisation, notifyRegionalCTLead, increasedRiskOfExtremism) = service.getExtremismProfile(
       OFFENDER_1, true
@@ -53,7 +52,7 @@ class ExtremismDecisionTreeServiceTest {
   @Test
   fun testWhenPathfinderOnFileWithBand3() {
     val pathFinder = PathFinder(OFFENDER_1, 3)
-    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder))
+    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(pathFinder)
 
     val (_, provisionalCategorisation, notifyRegionalCTLead, increasedRiskOfExtremism) = service.getExtremismProfile(
       OFFENDER_1, false
@@ -67,7 +66,7 @@ class ExtremismDecisionTreeServiceTest {
   @Test
   fun testWhenPathfinderOnFileWithBand4() {
     val pathFinder = PathFinder(OFFENDER_1, 4)
-    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder))
+    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(pathFinder)
 
     val (_, provisionalCategorisation, notifyRegionalCTLead, increasedRiskOfExtremism) = service.getExtremismProfile(
       OFFENDER_1, false
@@ -81,7 +80,7 @@ class ExtremismDecisionTreeServiceTest {
   @Test
   fun testWhenPathfinderOnFileWithNoBand() {
     val pathFinder = PathFinder(OFFENDER_1, null)
-    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.of(pathFinder))
+    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(pathFinder)
 
     val (_, provisionalCategorisation, notifyRegionalCTLead, increasedRiskOfExtremism) = service.getExtremismProfile(
       OFFENDER_1, false
@@ -94,7 +93,7 @@ class ExtremismDecisionTreeServiceTest {
 
   @Test
   fun testWhenPathfinderNotOnFile() {
-    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(Optional.empty())
+    whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(null)
 
     val (_, provisionalCategorisation, notifyRegionalCTLead, increasedRiskOfExtremism) = service.getExtremismProfile(
       OFFENDER_1, false

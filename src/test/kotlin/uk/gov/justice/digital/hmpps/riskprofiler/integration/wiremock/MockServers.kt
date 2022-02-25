@@ -17,8 +17,7 @@ class OAuthMockServer : WireMockServer(9090) {
 
   companion object {
     @JvmStatic
-    val oauthMockServer = OAuthMockServer()
-    val dum = oauthMockServer.start()
+    val oauthMockServer = OAuthMockServer().apply { start() }
   }
 
   private val gson = GsonBuilder().create()
@@ -40,8 +39,7 @@ class PrisonMockServer : WireMockServer(8080) {
 
   companion object {
     @JvmStatic
-    val prisonMockServer = PrisonMockServer()
-    val dum = prisonMockServer.start()
+    val prisonMockServer = PrisonMockServer().apply { start() }
   }
 
   class LocalDateTypeAdapter : TypeAdapter<LocalDate>() {
@@ -217,7 +215,6 @@ class PrisonMockServer : WireMockServer(8080) {
       WireMock.get(WireMock.urlEqualTo("/ping"))
         .willReturn(
           WireMock.aResponse()
-            // .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody("pong")
         )
     )
@@ -228,19 +225,34 @@ class PathfinderMockServer : WireMockServer(8083) {
 
   companion object {
     @JvmStatic
-    val pathfinderMockServer = PathfinderMockServer()
-    val dum = pathfinderMockServer.start()
+    val pathfinderMockServer = PathfinderMockServer().apply { start() }
   }
-
-  private val gson = GsonBuilder().create()
 
   fun stubPing() {
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/ping"))
         .willReturn(
           WireMock.aResponse()
-            // .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody("pong")
+        )
+    )
+  }
+
+  fun stubPathfinder(nomsId: String) {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/pathfinder/offender/$nomsId"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              """
+  {
+    "id": 123456,
+    "nomsId": "$nomsId",
+    "band": 2
+  }
+              """.trimIndent()
+            )
         )
     )
   }

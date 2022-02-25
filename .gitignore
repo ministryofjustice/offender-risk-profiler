@@ -30,3 +30,4 @@ build/
 out
 /dps-gradle-spring-boot-suppressions.xml
 /sonar-project.properties
+/.editorconfig
