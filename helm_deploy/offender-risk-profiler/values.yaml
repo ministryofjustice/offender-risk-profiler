@@ -26,7 +26,7 @@ generic-service:
     failureThreshold: 15
 
   env:
-    JAVA_OPTS: "-Xms512m -Xmx512m"
+    JAVA_OPTS: "-Xmx750m"
     SPRING_PROFILES_ACTIVE: "s3,postgres,sqs"
     CACHE_TYPE: "elasticache"
     SPRING_REDIS_SSL: "true"
@@ -69,6 +69,13 @@ generic-service:
       SPRING_REDIS_HOST: "primary_endpoint_address"
       SPRING_REDIS_PASSWORD: "auth_token"
 
+  resources:
+    requests:
+      cpu: 10m
+      memory: 1000Mi
+    limits:
+      cpu: 2000m
+      memory: 2000Mi
 
 generic-prometheus-alerts:
   targetApplication: offender-risk-profiler

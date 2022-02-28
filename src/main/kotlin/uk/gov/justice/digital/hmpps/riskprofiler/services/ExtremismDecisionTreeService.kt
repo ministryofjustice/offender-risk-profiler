@@ -20,7 +20,7 @@ class ExtremismDecisionTreeService(private val repository: PathfinderService) {
     pathFinder: PathFinder?
   ): ExtremismProfile {
     val extremism = ExtremismProfile(nomsId = nomsId, provisionalCategorisation = RiskProfile.DEFAULT_CAT)
-    if (pathFinder != null) {
+    pathFinder?.also {
       val banding = pathFinder.band
       log.info("extremism: {} in pathfinder on {}, increased Risk of Extremism", nomsId, banding)
       if (banding == null) {
