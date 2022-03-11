@@ -27,7 +27,7 @@ class JmsConfig {
     val factory = DefaultJmsListenerContainerFactory()
     factory.setConnectionFactory(SQSConnectionFactory(ProviderConfiguration(), awsSqs))
     factory.setDestinationResolver(DynamicDestinationResolver())
-    factory.setConcurrency("2-10")
+    factory.setConcurrency("1-1")
     factory.setSessionAcknowledgeMode(Session.CLIENT_ACKNOWLEDGE)
     factory.setErrorHandler { t: Throwable? -> log.error("JMS error occurred", t) }
     return factory
