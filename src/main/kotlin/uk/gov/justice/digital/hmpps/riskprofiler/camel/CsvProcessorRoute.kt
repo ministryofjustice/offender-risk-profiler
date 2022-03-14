@@ -1,12 +1,20 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.camel
 
 import org.apache.camel.builder.RouteBuilder
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
 
 @Component
 class CsvProcessorRoute(private val dataService: DataService, private val fileService: FileService) : RouteBuilder() {
+
+  @Value("\${ocgm.delay}")
+  private val ocgmDelay: Long = 0
+
+  @Value("\${ocg.delay}")
+  private val ocgDelay: Long = 0
+
   override fun configure() {
     context.isStreamCaching = true
     from("timer://pras-schedule?fixedRate=true&period={{pras.period}}")
@@ -20,7 +28,7 @@ class CsvProcessorRoute(private val dataService: DataService, private val fileSe
       .bean(dataService, "process")
       .endChoice()
     from("timer://ocgm-schedule?fixedRate=true&period={{ocgm.period}}")
-      .delay(30000)
+      .delay(ocgmDelay)
       .bean(fileService, "getLatestFile('{{s3.path.ocgm}}')")
       .choice()
       .`when`().simple("\${body} != null")
@@ -31,7 +39,7 @@ class CsvProcessorRoute(private val dataService: DataService, private val fileSe
       .bean(dataService, "process")
       .endChoice()
     from("timer://ocg-schedule?fixedRate=true&period={{ocg.period}}")
-      .delay(60000)
+      .delay(ocgDelay)
       .bean(fileService, "getLatestFile('{{s3.path.ocg}}')")
       .choice()
       .`when`().simple("\${body} != null")
