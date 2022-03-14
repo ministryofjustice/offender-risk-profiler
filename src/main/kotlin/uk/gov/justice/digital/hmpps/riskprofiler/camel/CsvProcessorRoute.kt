@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.camel
 
 import org.apache.camel.builder.RouteBuilder
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
