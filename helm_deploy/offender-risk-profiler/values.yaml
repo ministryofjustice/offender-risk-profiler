@@ -75,7 +75,7 @@ generic-service:
       memory: 1000Mi
     limits:
       cpu: 2000m
-      memory: 4000Mi
+      memory: 1000Mi
 
 generic-prometheus-alerts:
   targetApplication: offender-risk-profiler
