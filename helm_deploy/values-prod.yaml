@@ -4,9 +4,18 @@ generic-service:
   replicaCount: 4
 
   env:
+    JAVA_OPTS: "-Xmx3072m"
     NOMIS_AUTH_URL: https://sign-in.hmpps.service.justice.gov.uk/auth
     ELITE2API_ENDPOINT_URL: https://api.prison.service.justice.gov.uk
     PATHFINDERAPI_ENDPOINT_URL: https://api.pathfinder.service.justice.gov.uk
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 1000Mi
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
 
 # determine which slack channel alerts are sent to, via the correct Alert Manager receiver
 generic-prometheus-alerts:

@@ -4,7 +4,15 @@ generic-service:
   replicaCount: 4
 
   env:
+    JAVA_OPTS: "-Xmx3072m"
     NOMIS_AUTH_URL: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth
     ELITE2API_ENDPOINT_URL: https://api-preprod.prison.service.justice.gov.uk
     PATHFINDERAPI_ENDPOINT_URL: https://preprod-api.pathfinder.service.justice.gov.uk
 
+  resources:
+    requests:
+      cpu: 10m
+      memory: 1000Mi
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
