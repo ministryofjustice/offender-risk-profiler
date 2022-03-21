@@ -29,9 +29,7 @@ class S3FileServiceTest {
   @Before
   fun setup() {
     service = S3FileService(
-      amazonS3Client,
-      amazonS3ViperClient,
-      ImmutableList.of("risk-profiler|s3Client", "viper-risk-profiler|viperS3Client")
+      amazonS3Client
     )
   }
 

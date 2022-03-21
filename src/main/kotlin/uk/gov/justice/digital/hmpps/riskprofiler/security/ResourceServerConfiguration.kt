@@ -95,25 +95,11 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
     get() = if (buildProperties == null) "version not available" else buildProperties.version
 
   @Bean
-  @ConditionalOnProperty(name = ["file.process.type"], havingValue = "s3")
+  @ConditionalOnProperty(name = ["s3.provider"], havingValue = "aws")
   fun s3Client(
-    @Value("\${aws.access.key.id}") accessKey: String?,
-    @Value("\${aws.secret.access.key}") secretKey: String?,
-    @Value("\${aws.region}") region: String?
-  ): AmazonS3 {
-    val creds = BasicAWSCredentials(accessKey, secretKey)
-    return AmazonS3ClientBuilder.standard()
-      .withRegion(region)
-      .withCredentials(AWSStaticCredentialsProvider(creds))
-      .build()
-  }
-
-  @Bean
-  @ConditionalOnProperty(name = ["file.process.type"], havingValue = "s3")
-  fun viperS3Client(
-    @Value("\${viper.aws.access.key.id}") accessKey: String?,
-    @Value("\${viper.aws.secret.access.key}") secretKey: String?,
-    @Value("\${viper.aws.region}") region: String?
+    @Value("\${s3.aws.access.key.id}") accessKey: String?,
+    @Value("\${s3.aws.secret.access.key}") secretKey: String?,
+    @Value("\${s3.endpoint.region}") region: String?
   ): AmazonS3 {
     val creds = BasicAWSCredentials(accessKey, secretKey)
     return AmazonS3ClientBuilder.standard()
