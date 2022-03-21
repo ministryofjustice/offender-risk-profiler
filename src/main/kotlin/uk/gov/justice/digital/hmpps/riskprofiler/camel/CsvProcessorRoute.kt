@@ -40,7 +40,7 @@ class CsvProcessorRoute(private val dataService: DataService, private val fileSe
       .bean(dataService, "process")
       .endChoice()
     from("timer://viper-schedule?fixedRate=true&period={{viper.period}}")
-      .bean(fileService, "getLatestFile('{{s3.path.viper}}')")
+      .bean(fileService, "getLatestFile('{{s3.path.viper}}',VIPER)")
       .choice()
       .`when`().simple("\${body} != null")
       .setProperty("fileInfo", simple("\${body}"))
