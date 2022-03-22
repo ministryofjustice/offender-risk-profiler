@@ -20,7 +20,6 @@ import java.io.InputStream
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
-
 @RunWith(MockitoJUnitRunner::class)
 class S3FileServiceTest {
   private lateinit var service: S3FileService
@@ -39,7 +38,7 @@ class S3FileServiceTest {
   }
 
   @Test
-  fun testProcessingViperFile(){
+  fun testProcessingViperFile() {
     val viperFile = """
       1209658,X0099AK,,0.283760332148618,0.52756476251039,-0.767545791412149,0.185067326935523,-0.483785459263531,0.55908361999052,2,FALSE
       0,A5015DY,,5.09880356645588e-05,1.09626459573684,-2.95133056520195,0.188235111383585,-2.95138155323762,1.1123077456458,3,FALSE
@@ -53,13 +52,13 @@ class S3FileServiceTest {
   }
 
   @Test
-  fun testProcessingOcgmFile(){
+  fun testProcessingOcgmFile() {
     val ocgmFile = "classpath:localstack/buckets/ocgm/OCGM-Dummy.csv".readResourceAsText()
 
     amazonS3Client = mockS3Client("ocgm/file.csv", ocgmFile)
     service = S3FileService(amazonS3Client)
 
-    val pendingFile = service.getLatestFile("risk-profiler/ocgm/file.csv",null)
+    val pendingFile = service.getLatestFile("risk-profiler/ocgm/file.csv", null)
 
     assertThat(String(pendingFile?.data!!))
       .isEqualTo("classpath:localstack/buckets/ocgm/OCGM-Dummy.csv".readResourceAsText())
