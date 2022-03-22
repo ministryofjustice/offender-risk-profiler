@@ -46,9 +46,9 @@ generic-service:
       RISK_PROFILER_CLIENT_SECRET: "RISK_PROFILER_CLIENT_SECRET"
 
     risk-profiler-s3-bucket-output:
-      AWS_ACCESS_KEY_ID: "access_key_id"
-      AWS_SECRET_ACCESS_KEY: "secret_access_key"
-      S3_BUCKET_DEFAULT: "bucket_name"
+      S3_AWS_ACCESS_KEY_ID: "access_key_id"
+      S3_AWS_SECRET_ACCESS_KEY: "secret_access_key"
+      S3_BUCKET_NAME: "bucket_name"
 
     rp-sqs-instance-output:
       SQS_AWS_ACCESS_KEY_ID: "access_key_id"

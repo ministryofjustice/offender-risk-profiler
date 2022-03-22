@@ -111,3 +111,7 @@ management:
     info:
       cache:
         time-to-live: 2000ms
+
+s3:
+  provider: aws
+  endpoint.region: eu-west-2

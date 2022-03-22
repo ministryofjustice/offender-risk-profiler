@@ -1,5 +1,10 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.config
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider
+import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.client.builder.AwsClientBuilder
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.sqs.AmazonSQS
 import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
@@ -8,6 +13,7 @@ import com.amazonaws.services.sqs.model.CreateQueueRequest
 import com.amazonaws.services.sqs.model.QueueAttributeName
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -23,7 +29,7 @@ import org.testcontainers.utility.DockerImageName
 
 @Configuration
 @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "localstack-embedded")
-open class JmsEmbeddedLocalStackConfig {
+open class EmbeddedLocalStackConfig {
 
   companion object {
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -35,10 +41,11 @@ open class JmsEmbeddedLocalStackConfig {
     val logConsumer = Slf4jLogConsumer(log).withPrefix("localstack")
     val localStackContainer: LocalStackContainer =
       LocalStackContainer(DockerImageName.parse("localstack/localstack:0.11.2"))
-        .withServices(LocalStackContainer.Service.SQS, LocalStackContainer.Service.SNS)
+        .withServices(LocalStackContainer.Service.SQS, LocalStackContainer.Service.SNS, LocalStackContainer.Service.S3)
+        .withClasspathResourceMapping("/localstack/buckets", "/docker-entrypoint-initaws.d/buckets", BindMode.READ_WRITE)
         .withClasspathResourceMapping(
-          "/localstack/setup-sns.sh",
-          "/docker-entrypoint-initaws.d/setup-sns.sh",
+          "/localstack/setup-localstack.sh",
+          "/docker-entrypoint-initaws.d/setup-localstack.sh",
           BindMode.READ_WRITE
         )
         .withEnv("HOSTNAME_EXTERNAL", "localhost")
@@ -108,5 +115,21 @@ open class JmsEmbeddedLocalStackConfig {
       )
     )
     return queueUrl
+  }
+
+  @Bean("s3Client")
+  @ConditionalOnProperty(name = ["s3.provider"], havingValue = "localstack-embedded")
+  open fun awsS3ClientLocalstack(
+    @Value("\${s3.aws.access.key.id}") accessKey: String,
+    @Value("\${s3.aws.secret.access.key}") secretKey: String,
+    @Value("\${s3.endpoint.region}") region: String,
+    @Autowired localStackContainer: LocalStackContainer,
+  ): AmazonS3 {
+    return AmazonS3ClientBuilder.standard()
+      .withPathStyleAccessEnabled(true)
+      .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration("http://localhost:${localStackContainer.getMappedPort(4566)}", region))
+      // Cannot supply anonymous credentials here since only a subset of S3 APIs will accept unsigned requests
+      .withCredentials(AWSStaticCredentialsProvider(BasicAWSCredentials(accessKey, secretKey)))
+      .build()
   }
 }

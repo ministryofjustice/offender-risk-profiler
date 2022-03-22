@@ -1,43 +1,28 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services
 
 import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.model.S3ObjectInputStream
 import com.amazonaws.services.s3.model.S3ObjectSummary
 import com.amazonaws.util.IOUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
+import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Viper
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
 import java.time.ZoneId
-import java.util.stream.Collectors
-
-// import java.util.Map
 
 @Component
 @ConditionalOnProperty(name = ["file.process.type"], havingValue = "s3")
 class S3FileService(
-  @Qualifier("s3Client") s3Client: AmazonS3?,
-  @Qualifier("viperS3Client") viperS3client: AmazonS3?,
-  @Value("\${bucket.account.map}") clientList: List<String>
+  @Qualifier("s3Client") private val s3Client: AmazonS3?
 ) : FileService {
-  private val bucketAccountMap: Map<String, AmazonS3?>
-  private fun getBucketClientMap(@Value("\${bucket.account.map}") clientList: List<String>): Map<String, String> {
-    return clientList.stream()
-      .collect(
-        Collectors.toMap(
-          { v: String? -> StringUtils.split(v, "|")[0] },
-          { v: String? -> StringUtils.split(v, "|")[1] },
-          { v1: String, _ ->
-            log.warn("duplicate key found {}", v1)
-            v1
-          }
-        )
-      )
-  }
 
-  override fun getLatestFile(fileLocation: String): PendingFile? {
+  override fun getLatestFile(fileLocation: String, fileType: FileType?): PendingFile? {
     val s3Result = getObjectSummaries(fileLocation)
     log.info("Found {} objects in {}", s3Result.objects.size, fileLocation)
     return s3Result.objects.stream()
@@ -50,7 +35,9 @@ class S3FileService(
             o.lastModified.toInstant()
               .atZone(ZoneId.systemDefault())
               .toLocalDateTime(),
-            IOUtils.toByteArray(s3Object.objectContent)
+            if (fileType == FileType.VIPER) getViperFile(s3Object.objectContent) else IOUtils.toByteArray(
+              s3Object.objectContent
+            )
           )
         } catch (e: IOException) {
           return@map null
@@ -60,7 +47,11 @@ class S3FileService(
 
   override fun deleteHistoricalFiles(fileLocation: String) {
     val s3ObjectResult = getObjectSummaries(fileLocation)
-    log.info("Found {} data files for data housekeeping in {}", s3ObjectResult.objects.size, fileLocation)
+    log.info(
+      "Found {} data files for data housekeeping in {}",
+      s3ObjectResult.objects.size,
+      fileLocation
+    )
     s3ObjectResult.objects.stream().sorted(
       Comparator.comparing { obj: S3ObjectSummary -> obj.lastModified }
         .reversed()
@@ -70,20 +61,38 @@ class S3FileService(
     }
   }
 
+  private fun getViperFile(s3ObjectContent: S3ObjectInputStream): ByteArray {
+    val reader = BufferedReader(InputStreamReader(s3ObjectContent))
+    var row: List<String>
+    val rowList = mutableListOf<String>()
+
+    while (true) {
+      val line = reader.readLine() ?: break
+      row = line.split(",")
+      if (row[Viper.RECORD_ID] != "0") {
+        rowList.add(line)
+      }
+    }
+    s3ObjectContent.close()
+
+    val csv = rowList.joinToString(System.lineSeparator())
+    return csv.toByteArray()
+  }
+
   private fun getObjectSummaries(fileLocation: String): ObjectSummaryResult {
     val bucketAndPrefix = BucketAndPrefix(fileLocation)
     val bucketName = bucketAndPrefix.bucketName!!
     val prefix = bucketAndPrefix.prefix
-    val amazonS3Client = bucketAccountMap[bucketName]
-    val result = amazonS3Client!!.listObjectsV2(bucketName, prefix)
+    val result = s3Client!!.listObjectsV2(bucketName, prefix)
     val objects = result.objectSummaries
-    return ObjectSummaryResult(objects, amazonS3Client, bucketName)
+    return ObjectSummaryResult(objects, s3Client, bucketName)
   }
 
   private data class BucketAndPrefix(
     var bucketName: String?,
     var prefix: String?
   ) {
+
     constructor(fileLocation: String) : this(null, null) {
 
       val split = StringUtils.split(fileLocation, "/")
@@ -100,12 +109,5 @@ class S3FileService(
 
   companion object {
     private val log = LoggerFactory.getLogger(S3FileService::class.java)
-  }
-
-  init {
-    bucketAccountMap = getBucketClientMap(clientList).entries.stream()
-      .collect(
-        Collectors.toMap(Map.Entry<String, String>::key) { (_, value) -> if (value == "s3Client") s3Client else viperS3client }
-      )
   }
 }
