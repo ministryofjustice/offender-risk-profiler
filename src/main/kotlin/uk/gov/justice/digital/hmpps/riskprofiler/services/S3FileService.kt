@@ -70,7 +70,7 @@ class S3FileService(
       val line = reader.readLine() ?: break
       row = line.split(",")
       if (row[Viper.RECORD_ID] != "0") {
-        rowList.add(row.joinToString(","))
+        rowList.add(line)
       }
     }
     s3ObjectContent.close()
