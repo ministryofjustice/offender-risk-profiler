@@ -105,6 +105,46 @@ class SocDecisionTreeServiceTest {
   }
 
   @Test
+  fun testNotOnPrasFileAndBandInListAndMultiplePrincipleStanding() {
+    Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
+      .thenReturn(Optional.empty())
+    Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
+      Optional.of(
+        OcgmList(
+          OFFENDER_1,
+          Ocgm(OFFENDER_1, "12345", "${SocDecisionTreeService.PRINCIPAL_SUBJECT},${SocDecisionTreeService.PRINCIPAL_SUBJECT},${SocDecisionTreeService.PRINCIPAL_SUBJECT}"),
+          null
+        )
+      )
+    )
+    Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("12345")))
+      .thenReturn(Optional.of(Ocg("id", "2a")))
+    val socProfile: SocProfile = service.getSocData(OFFENDER_1)
+    Assertions.assertThat(socProfile.provisionalCategorisation).isEqualTo("C")
+    Assertions.assertThat(socProfile.transferToSecurity).isTrue()
+  }
+
+  @Test
+  fun testNotOnPrasFileAndBandInListAndNotPrincipleStanding() {
+    Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
+      .thenReturn(Optional.empty())
+    Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
+      Optional.of(
+        OcgmList(
+          OFFENDER_1,
+          Ocgm(OFFENDER_1, "12345", null),
+          null
+        )
+      )
+    )
+    Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("12345")))
+      .thenReturn(Optional.of(Ocg("id", "2a")))
+    val socProfile: SocProfile = service.getSocData(OFFENDER_1)
+    Assertions.assertThat(socProfile.provisionalCategorisation).isEqualTo("C")
+    Assertions.assertThat(socProfile.transferToSecurity).isFalse()
+  }
+
+  @Test
   fun testNotOnPrasFileAndNotInBandInListAndPrincipleStanding() {
     Mockito.`when`(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())

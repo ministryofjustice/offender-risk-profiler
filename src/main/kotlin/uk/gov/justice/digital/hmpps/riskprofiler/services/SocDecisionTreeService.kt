@@ -60,13 +60,13 @@ class SocDecisionTreeService(
     if (ocg.ocgmBand != null && OCGM_BANDS.contains(ocg.ocgmBand)) {
       log.debug("SOC: {} in OGCM band 1 to 3", nomsId)
       soc.provisionalCategorisation = "C"
-      if (PRINCIPAL_SUBJECT.equals(ocgm.standingWithinOcg, ignoreCase = true)) {
+      if (ocgm.standingWithinOcg?.contains(PRINCIPAL_SUBJECT, ignoreCase = true) == true) {
         log.debug("SOC: {} in OGCM band 1 to 3 and principal subject", nomsId)
         soc.transferToSecurity = true
       }
     } else {
       log.debug("SOC: {} not in OGCM band 1 to 3", nomsId)
-      if (PRINCIPAL_SUBJECT.equals(ocgm.standingWithinOcg, ignoreCase = true)) {
+      if (ocgm.standingWithinOcg?.contains(PRINCIPAL_SUBJECT, ignoreCase = true) == true) {
         log.debug("SOC: {} principal subject", nomsId)
         soc.transferToSecurity = true
         soc.provisionalCategorisation = "C"
