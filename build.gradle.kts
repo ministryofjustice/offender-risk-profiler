@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.4"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.3"
   kotlin("plugin.spring") version "1.6.10"
   kotlin("plugin.jpa") version "1.6.10"
 }
@@ -13,13 +13,13 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.15.0"
+val camelVersion = "3.16.0"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   runtimeOnly("com.h2database:h2:2.1.210")
-  runtimeOnly("org.flywaydb:flyway-core:8.5.1")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.5")
   runtimeOnly("org.postgresql:postgresql:42.3.3")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -36,7 +36,7 @@ dependencies {
   implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.16")
+  implementation("org.springframework:spring-jms:5.3.18")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
@@ -53,7 +53,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.6")
   implementation("org.springdoc:springdoc-openapi-security:1.6.6")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
 
@@ -70,7 +70,7 @@ dependencies {
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("com.google.code.gson:gson:2.9.0")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
-  testImplementation("org.awaitility:awaitility-kotlin:4.1.1")
+  testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
 }
 
 tasks {
