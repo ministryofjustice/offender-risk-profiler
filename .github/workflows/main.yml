@@ -1,0 +1,81 @@
+name: ⬆️ Update GSP
+
+on:
+  schedule:
+    - cron: "0 0 * * 2" 
+  # https://crontab.guru/#0_0_*_*_2
+  workflow_dispatch:
+
+env:
+  FILE: "build.gradle.kts"
+
+jobs:
+  get-latest-version:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+      
+      - name: Get HMPPS Grade SpringBoot Version
+        run: |
+          echo "Getting Latest Version"
+
+          file="hmpps.build.gradle.kts"
+          curl https://raw.githubusercontent.com/ministryofjustice/dps-gradle-spring-boot/main/build.gradle.kts > $file
+          latest=$(awk '/version =/ {print $3}' $file | sed "s/\"//g")
+          echo $latest
+          echo "LATEST=$(echo $latest)" >> $GITHUB_ENV
+          echo "::set-output name=latest::${{ env.LATEST }}"
+      
+      - name: Get Current GSB Version
+        run: |
+          echo "Getting Current Version"
+
+          file="build.gradle.kts"
+          current=$(awk '/uk.gov.justice.hmpps.gradle-spring-boot/ {print $3}' $file | sed "s/\"//g")
+          echo $current
+          echo "CURRENT=$(echo $current)" >> $GITHUB_ENV
+          echo "::set-output name=current::${{ env.CURRENT }}"
+
+      - name: Update GSB Version
+        if: env.CURRENT != env.LATEST
+        run: |
+          sed -i 's,'"$CURRENT"','"$LATEST"',' $FILE
+          cat ${{ env.FILE }}
+
+      - name: Setup Git Config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+
+      - name: Create a new branch, add the file and push
+        run: |
+          git checkout -b "gsp/$LATEST"
+          git add ${{ env.FILE }}
+          git commit -m "⬆️ Bump Gradle Spring Boot from $CURRENT to $LATEST"
+          git push --set-upstream origin "gsp/$LATEST"
+
+      - name: Create Pull Request
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { CURRENT, LATEST } = process.env
+            const { repo, owner } = context.repo;
+            const result = await github.rest.pulls.create({
+              title: `Bump HMPSS Gradle Spring Boot from ${CURRENT} to ${LATEST}`,
+              owner,
+              repo,
+              head: `gsp/${LATEST}`,
+              base: 'main',
+              body: [
+                `Bump HMPPS Gradle Spring Boot from ${CURRENT} to ${LATEST}`,
+                `- [${LATEST}](https://plugins.gradle.org/plugin/uk.gov.justice.hmpps.gradle-spring-boot/${LATEST}).`
+              ].join('\n')
+            });
+            github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: result.data.number,
+              labels: ['dependencies']
+            });
