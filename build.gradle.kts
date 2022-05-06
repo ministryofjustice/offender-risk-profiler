@@ -18,8 +18,8 @@ val camelVersion = "3.16.0"
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-  runtimeOnly("com.h2database:h2:2.1.210")
-  runtimeOnly("org.flywaydb:flyway-core:8.5.5")
+  runtimeOnly("com.h2database:h2:2.1.212")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.10")
   runtimeOnly("org.postgresql:postgresql:42.3.3")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -66,7 +66,7 @@ dependencies {
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
-  testImplementation("org.testcontainers:localstack:1.16.3")
+  testImplementation("org.testcontainers:localstack:1.17.1")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("com.google.code.gson:gson:2.9.0")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
