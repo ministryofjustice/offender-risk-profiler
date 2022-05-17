@@ -19,7 +19,7 @@ dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   runtimeOnly("com.h2database:h2:2.1.212")
-  runtimeOnly("org.flywaydb:flyway-core:8.5.10")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.11")
   runtimeOnly("org.postgresql:postgresql:42.3.5")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -36,7 +36,7 @@ dependencies {
   implementation("redis.clients:jedis:4.2.3")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.19")
+  implementation("org.springframework:spring-jms:5.3.20")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
@@ -53,7 +53,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.8")
   implementation("org.springdoc:springdoc-openapi-security:1.6.8")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
 
