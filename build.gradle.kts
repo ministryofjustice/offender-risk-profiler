@@ -36,7 +36,7 @@ dependencies {
   implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.19")
+  implementation("org.springframework:spring-jms:5.3.20")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
@@ -52,8 +52,8 @@ dependencies {
 
   implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.8")
-  implementation("org.springdoc:springdoc-openapi-security:1.6.6")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2")
+  implementation("org.springdoc:springdoc-openapi-security:1.6.8")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
 
