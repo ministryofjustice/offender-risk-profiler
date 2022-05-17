@@ -19,7 +19,7 @@ dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   runtimeOnly("com.h2database:h2:2.1.212")
-  runtimeOnly("org.flywaydb:flyway-core:8.5.10")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.11")
   runtimeOnly("org.postgresql:postgresql:42.3.5")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
