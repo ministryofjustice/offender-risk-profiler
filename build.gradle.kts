@@ -13,7 +13,7 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.16.0"
+val camelVersion = "3.17.0"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
