@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.6"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.7"
   kotlin("plugin.spring") version "1.6.21"
   kotlin("plugin.jpa") version "1.6.21"
 }
@@ -47,8 +47,8 @@ dependencies {
   implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
   implementation("org.apache.camel:camel-timer:$camelVersion")
 
-  implementation("net.javacrumbs.shedlock:shedlock-spring:4.34.0")
-  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.34.0")
+  implementation("net.javacrumbs.shedlock:shedlock-spring:4.35.0")
+  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.35.0")
 
   implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.8")
@@ -66,7 +66,7 @@ dependencies {
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
-  testImplementation("org.testcontainers:localstack:1.17.1")
+  testImplementation("org.testcontainers:localstack:1.17.2")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("com.google.code.gson:gson:2.9.0")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
