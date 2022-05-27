@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.7"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.2.0"
   kotlin("plugin.spring") version "1.6.21"
   kotlin("plugin.jpa") version "1.6.21"
 }
@@ -13,14 +13,14 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.16.0"
+val camelVersion = "3.17.0"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   runtimeOnly("com.h2database:h2:2.1.212")
   runtimeOnly("org.flywaydb:flyway-core:8.5.11")
-  runtimeOnly("org.postgresql:postgresql:42.3.5")
+  runtimeOnly("org.postgresql:postgresql:42.3.6")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
