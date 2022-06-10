@@ -48,7 +48,7 @@ dependencies {
   implementation("org.apache.camel:camel-timer:$camelVersion")
 
   implementation("net.javacrumbs.shedlock:shedlock-spring:4.35.0")
-  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.35.0")
+  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.36.0")
 
   implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
