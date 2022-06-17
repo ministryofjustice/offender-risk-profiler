@@ -36,7 +36,7 @@ dependencies {
   implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.20")
+  implementation("org.springframework:spring-jms:5.3.21")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
@@ -48,7 +48,7 @@ dependencies {
   implementation("org.apache.camel:camel-timer:$camelVersion")
 
   implementation("net.javacrumbs.shedlock:shedlock-spring:4.37.0")
-  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.35.0")
+  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.37.0")
 
   implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
