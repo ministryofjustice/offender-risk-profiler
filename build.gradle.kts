@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.7"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.2.1"
   kotlin("plugin.spring") version "1.6.21"
   kotlin("plugin.jpa") version "1.6.21"
 }
@@ -19,8 +19,8 @@ dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   runtimeOnly("com.h2database:h2:2.1.212")
-  runtimeOnly("org.flywaydb:flyway-core:8.5.11")
-  runtimeOnly("org.postgresql:postgresql:42.3.5")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.12")
+  runtimeOnly("org.postgresql:postgresql:42.3.6")
 
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -50,9 +50,9 @@ dependencies {
   implementation("net.javacrumbs.shedlock:shedlock-spring:4.35.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.35.0")
 
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.8")
-  implementation("org.springdoc:springdoc-openapi-security:1.6.8")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
+  implementation("org.springdoc:springdoc-openapi-security:1.6.9")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
