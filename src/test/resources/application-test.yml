@@ -1,12 +1,12 @@
 spring:
-  profiles:
-    include: stdout
-
   security:
     oauth2:
       resourceserver:
         jwt:
           public-key-location: classpath:local-public-key.pub
+  config:
+    activate:
+      on-profile:
 
 graceful:
   shutdown.enabled: false
