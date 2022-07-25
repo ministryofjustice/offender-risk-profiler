@@ -17,6 +17,9 @@ generic-service:
       cpu: 2000m
       memory: 4000Mi
 
+  ingress:
+    host: offender-risk-profiler.hmpps.service.justice.gov.uk
+
 # determine which slack channel alerts are sent to, via the correct Alert Manager receiver
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service

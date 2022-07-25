@@ -8,6 +8,22 @@ generic-service:
     pullPolicy: IfNotPresent
     port: 8080
 
+  ingress:
+    enabled: true
+    modsecurity_enabled: true
+    v1_2_enabled: true
+    annotations:
+    tlsSecretName: offender-risk-profiler-cert
+
+  allowlist:
+    cloudplatform-live1-1: 35.178.209.113/32
+    cloudplatform-live1-2: 3.8.51.207/32
+    cloudplatform-live1-3: 35.177.252.54/32
+    health-kick: 35.177.252.195/32
+    global-protect: 35.176.93.186/32
+    mojvpn: 81.134.202.29/32
+    office: 217.33.148.210/32
+
   livenessProbe:
     httpGet:
       path: /ping
