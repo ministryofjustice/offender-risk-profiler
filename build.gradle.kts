@@ -18,9 +18,10 @@ val camelVersion = "3.17.0"
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-  runtimeOnly("com.h2database:h2:2.1.214")
-  runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.4.0")
+  runtimeOnly("com.h2database:h2:2.1.212")
+  runtimeOnly("org.flywaydb:flyway-core:8.5.12")
+  runtimeOnly("org.postgresql:postgresql:42.3.6")
+
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-security")
@@ -35,7 +36,7 @@ dependencies {
   implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.22")
+  implementation("org.springframework:spring-jms:5.3.21")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
@@ -46,8 +47,8 @@ dependencies {
   implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
   implementation("org.apache.camel:camel-timer:$camelVersion")
 
-  implementation("net.javacrumbs.shedlock:shedlock-spring:4.38.0")
-  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.38.0")
+  implementation("net.javacrumbs.shedlock:shedlock-spring:4.37.0")
+  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.37.0")
 
   implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
