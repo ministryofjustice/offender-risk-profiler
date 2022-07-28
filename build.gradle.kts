@@ -83,9 +83,16 @@ dependencies {
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
 }
 
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(18))
+  }
+}
+
 tasks {
-  compileKotlin {
-    // See machine executor in config.yml
-    kotlinOptions.jvmTarget = "18"
+  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+      jvmTarget = "18"
+    }
   }
 }
