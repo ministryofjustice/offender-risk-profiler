@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.3.3"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.4.1"
   kotlin("plugin.spring") version "1.7.10"
   kotlin("plugin.jpa") version "1.7.10"
 }
@@ -14,7 +14,7 @@ dependencyCheck {
 }
 
 val camelVersion = "3.18.0"
-val awssdkVersion = "1.12.268"
+val awssdkVersion = "1.12.271"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
