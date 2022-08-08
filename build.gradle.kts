@@ -14,7 +14,7 @@ dependencyCheck {
 }
 
 val camelVersion = "3.18.0"
-val awssdkVersion = "1.12.271"
+val awssdkVersion = "1.12.276"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -78,7 +78,7 @@ dependencies {
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
   testImplementation("org.testcontainers:localstack:1.17.3")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
-  testImplementation("com.google.code.gson:gson:2.9.0")
+  testImplementation("com.google.code.gson:gson:2.9.1")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
 }
