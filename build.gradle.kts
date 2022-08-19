@@ -47,11 +47,11 @@ dependencies {
   implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
   implementation("org.apache.camel:camel-timer:$camelVersion")
 
-  implementation("net.javacrumbs.shedlock:shedlock-spring:4.39.0")
+  implementation("net.javacrumbs.shedlock:shedlock-spring:4.41.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.40.0")
 
   implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.10")
   implementation("org.springdoc:springdoc-openapi-security:1.6.9")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
 
