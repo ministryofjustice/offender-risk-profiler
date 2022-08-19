@@ -21,7 +21,7 @@ dependencies {
 
   runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.4.0")
+  runtimeOnly("org.postgresql:postgresql:42.4.2")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-security")
@@ -52,7 +52,7 @@ dependencies {
 
   implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
-  implementation("org.springdoc:springdoc-openapi-security:1.6.9")
+  implementation("org.springdoc:springdoc-openapi-security:1.6.10")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
