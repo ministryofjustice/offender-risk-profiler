@@ -53,13 +53,13 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
   implementation("org.springdoc:springdoc-openapi-security:1.6.9")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.4")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
 
   implementation("net.sf.ehcache:ehcache:2.10.9.2")
   implementation("org.apache.commons:commons-lang3:3.12.0")
-  implementation("org.apache.commons:commons-text:1.9")
+  implementation("org.apache.commons:commons-text:1.10.0")
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
   // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk
@@ -87,6 +87,9 @@ java {
   toolchain {
     languageVersion.set(JavaLanguageVersion.of(18))
   }
+}
+repositories {
+  mavenCentral()
 }
 
 tasks {
