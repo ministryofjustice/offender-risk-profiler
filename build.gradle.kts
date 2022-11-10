@@ -7,7 +7,6 @@ plugins {
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
-  testImplementation { exclude(group = "org.junit.vintage") }
 }
 
 dependencyCheck {
@@ -15,7 +14,7 @@ dependencyCheck {
 }
 
 val camelVersion = "3.19.0"
-val awssdkVersion = "1.12.336"
+val awssdkVersion = "1.12.337"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -88,9 +87,6 @@ java {
   toolchain {
     languageVersion.set(JavaLanguageVersion.of(18))
   }
-}
-repositories {
-  mavenCentral()
 }
 
 tasks {
