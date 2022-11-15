@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.4.1"
-  kotlin("plugin.spring") version "1.7.10"
-  kotlin("plugin.jpa") version "1.7.10"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.5.7"
+  kotlin("plugin.spring") version "1.7.20"
+  kotlin("plugin.jpa") version "1.7.20"
 }
 
 configurations {
@@ -13,15 +13,15 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.18.1"
-val awssdkVersion = "1.12.285"
+val camelVersion = "3.19.0"
+val awssdkVersion = "1.12.337"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.4.2")
+  runtimeOnly("org.postgresql:postgresql:42.5.0")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-security")
@@ -36,7 +36,7 @@ dependencies {
   implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.22")
+  implementation("org.springframework:spring-jms:5.3.23")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.0")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
@@ -47,19 +47,19 @@ dependencies {
   implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
   implementation("org.apache.camel:camel-timer:$camelVersion")
 
-  implementation("net.javacrumbs.shedlock:shedlock-spring:4.41.0")
-  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.40.0")
+  implementation("net.javacrumbs.shedlock:shedlock-spring:4.42.0")
+  implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.42.0")
 
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
-  implementation("org.springdoc:springdoc-openapi-security:1.6.9")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.12")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.12")
+  implementation("org.springdoc:springdoc-openapi-security:1.6.12")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.0")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
 
   implementation("net.sf.ehcache:ehcache:2.10.9.2")
   implementation("org.apache.commons:commons-lang3:3.12.0")
-  implementation("org.apache.commons:commons-text:1.9")
+  implementation("org.apache.commons:commons-text:1.10.0")
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
   // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk
@@ -76,9 +76,9 @@ dependencies {
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
-  testImplementation("org.testcontainers:localstack:1.17.3")
+  testImplementation("org.testcontainers:localstack:1.17.5")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
-  testImplementation("com.google.code.gson:gson:2.9.1")
+  testImplementation("com.google.code.gson:gson:2.10")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
 }
