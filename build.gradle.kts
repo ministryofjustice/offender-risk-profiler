@@ -50,7 +50,7 @@ dependencies {
   implementation("net.javacrumbs.shedlock:shedlock-spring:4.42.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.42.0")
 
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.12")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.13")
   implementation("org.springdoc:springdoc-openapi-security:1.6.12")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.0")
