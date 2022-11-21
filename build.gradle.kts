@@ -14,7 +14,7 @@ dependencyCheck {
 }
 
 val camelVersion = "3.19.0"
-val awssdkVersion = "1.12.344"
+val awssdkVersion = "1.12.346"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -50,9 +50,9 @@ dependencies {
   implementation("net.javacrumbs.shedlock:shedlock-spring:4.42.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.42.0")
 
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.12")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.12")
-  implementation("org.springdoc:springdoc-openapi-security:1.6.12")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.13")
+  implementation("org.springdoc:springdoc-openapi-security:1.6.13")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.0")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
@@ -75,7 +75,7 @@ dependencies {
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
-  testImplementation("org.testcontainers:localstack:1.17.5")
+  testImplementation("org.testcontainers:localstack:1.17.6")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("com.google.code.gson:gson:2.10")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
