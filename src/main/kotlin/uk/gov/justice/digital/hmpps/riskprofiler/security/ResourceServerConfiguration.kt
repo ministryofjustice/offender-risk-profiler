@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.security
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import io.swagger.v3.oas.models.Components
@@ -107,6 +108,22 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
       .withCredentials(AWSStaticCredentialsProvider(creds))
       .build()
   }
+
+  @Bean("s3Client")
+  @ConditionalOnProperty(name = ["s3.provider"], havingValue = "localstack")
+  open fun awsS3ClientLocalstack(
+    @Value("\${s3.aws.access.key.id}") accessKey: String,
+    @Value("\${s3.aws.secret.access.key}") secretKey: String,
+    @Value("\${s3.endpoint.region}") region: String
+  ): AmazonS3 {
+    return AmazonS3ClientBuilder.standard()
+      .withPathStyleAccessEnabled(true)
+      .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration("http://localhost:4572", region))
+      // Cannot supply anonymous credentials here since only a subset of S3 APIs will accept unsigned requests
+      .withCredentials(AWSStaticCredentialsProvider(BasicAWSCredentials(accessKey, secretKey)))
+      .build()
+  }
+
 
   @Bean
   fun lockProvider(dataSource: DataSource): LockProvider {
