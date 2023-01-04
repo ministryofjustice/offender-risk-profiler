@@ -7,4 +7,11 @@
     <packageUrl regex="true">^pkg:maven/redis\.clients/jedis@.*$</packageUrl>
     <cve>CVE-2021-32626</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: commons-pool2-2.11.1.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.apache\.commons/commons\-pool2@.*$</packageUrl>
+    <cve>CVE-2021-37533</cve>
+  </suppress>
 </suppressions>

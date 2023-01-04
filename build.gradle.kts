@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.7.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.7.4"
   kotlin("plugin.spring") version "1.7.22"
   kotlin("plugin.jpa") version "1.7.21"
 }
@@ -13,7 +13,7 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.19.0"
+val camelVersion = "3.20.0"
 val awssdkVersion = "1.12.353"
 
 dependencies {
