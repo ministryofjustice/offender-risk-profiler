@@ -42,7 +42,7 @@ Use `sqs` profile to run against an aws sqs resource. See required env variables
 There is a `localstack` profile for running locally with the sqs resource provided by
 localstack, which can be run as a docker container. See https://github.com/localstack/localstack. In this case it is up to you to create the required queues.
 
-Also for tests the 'localstack-embedded' profile is used which runs localstack in a thread and configures it with the necessary queues.
+Also, for tests the 'localstack-embedded' profile is used which runs localstack in a thread and configures it with the necessary queues.
 
 #### Tests
 
