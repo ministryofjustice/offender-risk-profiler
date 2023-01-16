@@ -52,7 +52,7 @@ dependencies {
 
   implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.13")
-  implementation("org.springdoc:springdoc-openapi-security:1.6.13")
+  implementation("org.springdoc:springdoc-openapi-security:1.6.14")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.1")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
