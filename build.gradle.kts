@@ -13,7 +13,7 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.20.0"
+val camelVersion = "3.20.1"
 val awssdkVersion = "1.12.384"
 
 dependencies {
