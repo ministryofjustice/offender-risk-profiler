@@ -77,7 +77,7 @@ dependencies {
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
   testImplementation("org.testcontainers:localstack:1.17.6")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
-  testImplementation("com.google.code.gson:gson:2.10")
+  testImplementation("com.google.code.gson:gson:2.10.1")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
 }
