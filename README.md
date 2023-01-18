@@ -47,3 +47,4 @@ Also, for tests the 'localstack-embedded' profile is used which runs localstack 
 #### Tests
 
 Note that **Redis** needs to be running for the unit / integration tests.
+
