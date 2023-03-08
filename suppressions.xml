@@ -46,4 +46,44 @@
     <packageUrl regex="true">^pkg:maven/org\.jetbrains\.kotlin/kotlin\-native\-utils@.*$</packageUrl>
     <cve>CVE-2021-4277</cve>
   </suppress>
+  <!-- can be suppressed as not used-->
+  <suppress>
+    <notes><![CDATA[
+   file name: guava-31.1-jre.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
+    <cve>CVE-2020-8908</cve>
+  </suppress>
+  <!-- can be suppressed as not used-->
+  <suppress>
+    <notes><![CDATA[
+   file name: guava-31.1-jre.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
+    <cve>CVE-2022-45688</cve>
+  </suppress>
+  <!-- suppressed in next beta version-->
+  <suppress>
+    <notes><![CDATA[
+   file name: jackson-core-2.14.2.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson-core@.*$</packageUrl>
+    <cve>CVE-2022-45688</cve>
+  </suppress>
+  <!-- suppressed in next beta version-->
+  <suppress>
+    <notes><![CDATA[
+   file name: json-smart-2.4.8.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/net\.minidev/json\-smart@.*$</packageUrl>
+    <cve>CVE-2022-45688</cve>
+  </suppress>
+  <!-- suppressed in next beta version-->
+  <suppress>
+    <notes><![CDATA[
+   file name: json-utils-2.18.40.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/software\.amazon\.awssdk/json\-utils@.*$</packageUrl>
+    <cve>CVE-2022-45688</cve>
+  </suppress>
 </suppressions>

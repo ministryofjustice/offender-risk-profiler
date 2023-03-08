@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.1.1-beta-3"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.3"
   kotlin("plugin.spring") version "1.8.0"
   kotlin("plugin.jpa") version "1.8.0"
 }
@@ -35,7 +35,7 @@ dependencies {
   // Note spring-data-redis 2.6.2 does not support Jedis 4.x
   implementation("redis.clients:jedis:3.8.0")
 
-  implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.7.RELEASE")
+  implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
   implementation("org.springframework:spring-jms:5.3.24")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.0")
 
