@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.1.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.1.1-beta-3"
   kotlin("plugin.spring") version "1.8.0"
   kotlin("plugin.jpa") version "1.8.0"
 }
@@ -14,7 +14,7 @@ dependencyCheck {
 }
 
 val camelVersion = "3.20.2"
-val awssdkVersion = "1.12.421"
+val awssdkVersion = "1.12.422"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -77,7 +77,7 @@ dependencies {
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
   testImplementation("org.testcontainers:localstack:1.17.6")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
-  testImplementation("com.google.code.gson:gson:2.10")
+  testImplementation("com.google.code.gson:gson:2.10.1")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
 }
