@@ -16,3 +16,6 @@ generic-service:
     limits:
       cpu: 2000m
       memory: 4000Mi
+
+  ingress:
+    host: offender-risk-profiler-preprod.hmpps.service.justice.gov.uk

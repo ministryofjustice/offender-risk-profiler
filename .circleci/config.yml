@@ -1,7 +1,18 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@3.14.3
+  hmpps: ministryofjustice/hmpps@6.2.0
+
+parameters:
+  alerts-slack-channel:
+    type: string
+    default: dps_sed_alerts
+  nonprod-releases-slack-channel:
+    type: string
+    default: sed-nonprod-releases
+  releases-slack-channel:
+    type: string
+    default: dps-releases
 
 executors:
   java-machine:
@@ -9,7 +20,7 @@ executors:
 #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
 #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
 #      When it is, the kotlinOptions.jvmTarget setting in build.gradle.kts can then be uncommented
-      image: ubuntu-2004:202111-02
+      image: ubuntu-2004:2022.04.1
     environment:
       _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
     working_directory: ~/app
@@ -53,7 +64,7 @@ workflows:
               ignore: /.*/
       - hmpps/helm_lint:
           name: helm_lint
-      - hmpps/build_docker:
+      - hmpps/build_multiplatform_docker:
           name: build_docker
           filters:
             branches:
@@ -64,6 +75,8 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
+          slack_notification: true
+          slack_channel_name: << pipeline.parameters.nonprod-releases-slack-channel >>
           context: hmpps-common-vars
           filters:
             branches:
@@ -80,6 +93,8 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
+          slack_notification: true
+          slack_channel_name: << pipeline.parameters.nonprod-releases-slack-channel >>
           context:
             - offender-risk-profiler-preprod
             - hmpps-common-vars
@@ -93,6 +108,7 @@ workflows:
           name: deploy_prod
           env: "prod"
           slack_notification: true
+          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
           context:
             - offender-risk-profiler-prod
             - hmpps-common-vars
@@ -109,12 +125,15 @@ workflows:
                 - main
     jobs:
       - hmpps/gradle_owasp_dependency_check:
+          slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
             - hmpps-common-vars
       - hmpps/trivy_latest_scan:
+          slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
             - hmpps-common-vars
       - hmpps/veracode_pipeline_scan:
+          slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
             - veracode-credentials
             - hmpps-common-vars
@@ -128,6 +147,7 @@ workflows:
                 - main
     jobs:
       - hmpps/veracode_policy_scan:
+          slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
             - veracode-credentials
             - hmpps-common-vars
