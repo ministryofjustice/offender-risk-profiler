@@ -103,22 +103,22 @@ tasks {
   }
   withType<org.gradle.api.Task> {
     ktlintCheck {
-      setEnabled(false)
+      enabled = false
     }
   }
   withType<org.gradle.api.Task> {
     ktlintTestSourceSetCheck {
-      setEnabled(false)
+      enabled = false
     }
   }
   withType<org.gradle.api.Task> {
     ktlintMainSourceSetCheck {
-      setEnabled(false)
+      enabled = false
     }
   }
   withType<org.gradle.api.Task> {
     ktlintKotlinScriptCheck {
-      setEnabled(false)
+      enabled = false
     }
   }
 }
