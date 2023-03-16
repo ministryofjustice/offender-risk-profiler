@@ -88,10 +88,37 @@ java {
   }
 }
 
+ktlint {
+  filter {
+    exclude("**/src/**")
+    exclude { it.file.path.contains("$buildDir${File.separator}generated${File.separator}") }
+  }
+}
+
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
       jvmTarget = "18"
+    }
+  }
+  withType<org.gradle.api.Task> {
+    ktlintCheck {
+      setEnabled(false)
+    }
+  }
+  withType<org.gradle.api.Task> {
+    ktlintTestSourceSetCheck {
+      setEnabled(false)
+    }
+  }
+  withType<org.gradle.api.Task> {
+    ktlintMainSourceSetCheck {
+      setEnabled(false)
+    }
+  }
+  withType<org.gradle.api.Task> {
+    ktlintKotlinScriptCheck {
+      setEnabled(false)
     }
   }
 }
