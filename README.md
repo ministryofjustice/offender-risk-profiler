@@ -44,6 +44,13 @@ localstack, which can be run as a docker container. See https://github.com/local
 
 Also, for tests the 'localstack-embedded' profile is used which runs localstack in a thread and configures it with the necessary queues.
 
+profile 'local' connects to localstack running on localhost, for development.
+Prerequisites:
+* Build docker containers with offender-categorisation (docker-compose-test.yml)
+* run src/test/resources/localstack/setup-local.sh. This will create queues (TBC are these still needed?) and S3 buckets.
+* create a new postgres database ``risk_profiler`` (migration will add the roles and tables)
+* on localhost start risk_profiler with env var ``SPRING_PROFILES_ACTIVE=local,stdout,postgres`` 
+
 #### Tests
 
 Note that **Redis** needs to be running for the unit / integration tests.
