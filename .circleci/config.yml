@@ -7,6 +7,9 @@ parameters:
   alerts-slack-channel:
     type: string
     default: dps_sed_alerts
+  nonprod-releases-slack-channel:
+    type: string
+    default: sed-nonprod-releases
   releases-slack-channel:
     type: string
     default: dps-releases
@@ -72,6 +75,8 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
+          slack_notification: true
+          slack_channel_name: << pipeline.parameters.nonprod-releases-slack-channel >>
           context: hmpps-common-vars
           filters:
             branches:
@@ -88,6 +93,8 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
+          slack_notification: true
+          slack_channel_name: << pipeline.parameters.nonprod-releases-slack-channel >>
           context:
             - offender-risk-profiler-preprod
             - hmpps-common-vars

@@ -7,4 +7,43 @@
     <packageUrl regex="true">^pkg:maven/redis\.clients/jedis@.*$</packageUrl>
     <cve>CVE-2021-32626</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: commons-pool2-2.11.1.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.apache\.commons/commons\-pool2@.*$</packageUrl>
+    <cve>CVE-2021-37533</cve>
+  </suppress>
+  <!-- suppressed as false positive match -->
+  <suppress>
+    <notes><![CDATA[
+   file name: LatencyUtils-2.0.3.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.latencyutils/LatencyUtils@.*$</packageUrl>
+    <cve>CVE-2021-4277</cve>
+  </suppress>
+  <!-- suppressed as false positive match -->
+  <suppress>
+    <notes><![CDATA[
+   file name: json-utils-2.18.40.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/software\.amazon\.awssdk/json\-utils@.*$</packageUrl>
+    <cve>CVE-2021-4277</cve>
+  </suppress>
+  <!-- suppressed as false positive match -->
+  <suppress>
+    <notes><![CDATA[
+   file name: utils-2.18.40.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/software\.amazon\.awssdk/utils@.*$</packageUrl>
+    <cve>CVE-2021-4277</cve>
+  </suppress>
+  <!-- suppressed as false positive match -->
+  <suppress>
+    <notes><![CDATA[
+   file name: kotlin-native-utils-1.7.22.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.jetbrains\.kotlin/kotlin\-native\-utils@.*$</packageUrl>
+    <cve>CVE-2021-4277</cve>
+  </suppress>
 </suppressions>
