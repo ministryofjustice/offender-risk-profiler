@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.4"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.5"
   kotlin("plugin.spring") version "1.8.10"
   kotlin("plugin.jpa") version "1.8.10"
 }
@@ -14,7 +14,7 @@ dependencyCheck {
 }
 
 val camelVersion = "3.20.2"
-val awssdkVersion = "1.12.429"
+val awssdkVersion = "1.12.430"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -36,7 +36,7 @@ dependencies {
   implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.24")
+  implementation("org.springframework:spring-jms:5.3.26")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.0")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
