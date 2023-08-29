@@ -2,8 +2,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.queue
 
 import com.amazon.sqs.javamessaging.ProviderConfiguration
 import com.amazon.sqs.javamessaging.SQSConnectionFactory
-import com.amazonaws.auth.AWSStaticCredentialsProvider
-import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import com.amazonaws.services.sqs.AmazonSQS
 import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
@@ -36,13 +35,10 @@ class JmsConfig {
   @Bean
   @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "aws")
   fun awsClientForEvents(
-    @Value("\${sqs.events.aws.access.key.id}") accessKey: String?,
-    @Value("\${sqs.events.aws.secret.access.key}") secretKey: String?,
     @Value("\${cloud.aws.region.static}") region: String?
   ): AmazonSQSAsync {
-    val creds = BasicAWSCredentials(accessKey, secretKey)
     return AmazonSQSAsyncClientBuilder.standard()
-      .withCredentials(AWSStaticCredentialsProvider(creds))
+      .withCredentials(DefaultAWSCredentialsProviderChain())
       .withRegion(region)
       .build()
   }
@@ -50,13 +46,10 @@ class JmsConfig {
   @Bean
   @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "aws")
   fun awsDlqClientForEvents(
-    @Value("\${sqs.events.aws.dlq.access.key.id}") accessKey: String?,
-    @Value("\${sqs.events.aws.dlq.secret.access.key}") secretKey: String?,
     @Value("\${cloud.aws.region.static}") region: String?
   ): AmazonSQSAsync {
-    val creds = BasicAWSCredentials(accessKey, secretKey)
     return AmazonSQSAsyncClientBuilder.standard()
-      .withCredentials(AWSStaticCredentialsProvider(creds))
+      .withCredentials(DefaultAWSCredentialsProviderChain())
       .withRegion(region)
       .build()
   }
