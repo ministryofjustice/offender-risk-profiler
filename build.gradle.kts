@@ -14,7 +14,7 @@ dependencyCheck {
 }
 
 val camelVersion = "3.20.2"
-val awssdkVersion = "1.12.429"
+val awssdkVersion = "1.12.468"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -37,7 +37,7 @@ dependencies {
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
   implementation("org.springframework:spring-jms:5.3.24")
-  implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.0")
+  implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")

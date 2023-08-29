@@ -1,6 +1,7 @@
 ---
 generic-service:
   nameOverride: offender-risk-profiler
+  serviceAccountName: offender-risk-profiler
 
   image:
     repository: quay.io/hmpps/offender-risk-profiler
@@ -63,23 +64,15 @@ generic-service:
       RISK_PROFILER_CLIENT_SECRET: "RISK_PROFILER_CLIENT_SECRET"
 
     risk-profiler-s3-bucket-output:
-      S3_AWS_ACCESS_KEY_ID: "access_key_id"
-      S3_AWS_SECRET_ACCESS_KEY: "secret_access_key"
       S3_BUCKET_NAME: "bucket_name"
 
     rp-sqs-instance-output:
-      SQS_AWS_ACCESS_KEY_ID: "access_key_id"
-      SQS_AWS_SECRET_ACCESS_KEY: "secret_access_key"
       SQS_RPC_QUEUE_URL: "sqs_rpc_url"
 
     oc-events-sqs-instance-output:
-      SQS_EVENTS_AWS_ACCESS_KEY_ID: "access_key_id"
-      SQS_EVENTS_AWS_SECRET_ACCESS_KEY: "secret_access_key"
       SQS_EVENTS_QUEUE_NAME: "sqs_oce_name"
 
     oc-events-sqs-dl-instance-output:
-      SQS_EVENTS_AWS_DLQ_ACCESS_KEY_ID: "access_key_id"
-      SQS_EVENTS_AWS_DLQ_SECRET_ACCESS_KEY: "secret_access_key"
       SQS_EVENTS_DLQ_QUEUE_NAME: "sqs_oce_name"
 
     oc-elasticache-redis:
