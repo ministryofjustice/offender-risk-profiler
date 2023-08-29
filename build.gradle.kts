@@ -69,6 +69,7 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-kms:$awssdkVersion")
   implementation("com.amazonaws:aws-java-sdk-sns:$awssdkVersion")
   implementation("com.amazonaws:aws-java-sdk-sqs:$awssdkVersion")
+  implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
   testImplementation("junit:junit:4.13.2")

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.security
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
@@ -102,6 +103,7 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
   ): AmazonS3 {
     return AmazonS3ClientBuilder.standard()
       .withRegion(region)
+      .withCredentials(DefaultAWSCredentialsProviderChain())
       .build()
   }
 
