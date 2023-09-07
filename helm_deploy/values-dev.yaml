@@ -5,7 +5,7 @@ generic-service:
 
   env:
     NOMIS_AUTH_URL: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
-    ELITE2API_ENDPOINT_URL: https://api-dev.prison.service.justice.gov.uk
+    ELITE2API_ENDPOINT_URL: https://prison-api-dev.prison.service.justice.gov.uk
     PATHFINDERAPI_ENDPOINT_URL: https://dev-api.pathfinder.service.justice.gov.uk
 
   ingress:
