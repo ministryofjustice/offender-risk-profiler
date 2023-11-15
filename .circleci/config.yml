@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@6.2.0
+  hmpps: ministryofjustice/hmpps@7
 
 parameters:
   alerts-slack-channel:
@@ -17,9 +17,9 @@ parameters:
 executors:
   java-machine:
     machine:
-#      TODO: this should be upgraded as soon as a java 16+ machine image is available,
-#        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
-#      When it is, the kotlinOptions.jvmTarget setting in build.gradle.kts can then be uncommented
+      #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
+      #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
+      #      When it is, the kotlinOptions.jvmTarget setting in build.gradle.kts can then be uncommented
       image: ubuntu-2004:2022.04.1
     environment:
       _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
