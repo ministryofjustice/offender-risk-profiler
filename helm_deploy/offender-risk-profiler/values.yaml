@@ -2,6 +2,7 @@
 generic-service:
   nameOverride: offender-risk-profiler
   serviceAccountName: offender-risk-profiler
+  productId: "DPS006"
 
   image:
     repository: quay.io/hmpps/offender-risk-profiler
