@@ -6,7 +6,7 @@ generic-service:
   env:
     JAVA_OPTS: "-Xmx3072m"
     NOMIS_AUTH_URL: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth
-    ELITE2API_ENDPOINT_URL: https://api-preprod.prison.service.justice.gov.uk
+    ELITE2API_ENDPOINT_URL: https://prison-api-preprod.prison.service.justice.gov.uk
     PATHFINDERAPI_ENDPOINT_URL: https://preprod-api.pathfinder.service.justice.gov.uk
 
   resources:
