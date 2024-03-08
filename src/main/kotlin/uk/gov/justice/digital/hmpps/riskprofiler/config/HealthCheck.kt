@@ -8,10 +8,10 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 
-abstract class HealthCheck(private val webClient: WebClient) : HealthIndicator {
+abstract class HealthCheck(private val webClient: WebClient, private val pingEndpoint: String) : HealthIndicator {
   override fun health(): Health? =
     webClient.get()
-      .uri("/ping")
+      .uri(pingEndpoint)
       .retrieve()
       .toEntity(String::class.java)
       .flatMap { Mono.just(Health.up().withDetail("HttpStatus", it?.statusCode).build()) }
@@ -26,8 +26,8 @@ abstract class HealthCheck(private val webClient: WebClient) : HealthIndicator {
 
 @Component
 class Elite2ApiHealth
-constructor(@Qualifier("elite2ApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)
+constructor(@Qualifier("elite2ApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/health/ping")
 
 @Component
 class PathfinderApiHealth
-constructor(@Qualifier("pathfinderApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)
+constructor(@Qualifier("pathfinderApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient, "/ping")
