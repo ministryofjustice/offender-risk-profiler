@@ -212,7 +212,7 @@ class PrisonMockServer : WireMockServer(8080) {
 
   fun stubPing() {
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/ping"))
+      WireMock.get(WireMock.urlEqualTo("/health/ping"))
         .willReturn(
           WireMock.aResponse()
             .withBody("pong")
@@ -230,7 +230,7 @@ class PathfinderMockServer : WireMockServer(8083) {
 
   fun stubPing() {
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/ping"))
+      WireMock.get(WireMock.urlEqualTo("/health/ping"))
         .willReturn(
           WireMock.aResponse()
             .withBody("pong")

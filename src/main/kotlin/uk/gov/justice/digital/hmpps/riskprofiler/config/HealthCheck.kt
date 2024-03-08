@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
 abstract class HealthCheck(private val webClient: WebClient) : HealthIndicator {
   override fun health(): Health? =
     webClient.get()
-      .uri("/ping")
+      .uri("/health/ping")
       .retrieve()
       .toEntity(String::class.java)
       .flatMap { Mono.just(Health.up().withDetail("HttpStatus", it?.statusCode).build()) }
