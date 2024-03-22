@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
-import javax.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotBlank
 
 @Schema(description = "RiskProfile")
 @JsonInclude(JsonInclude.Include.NON_NULL)
