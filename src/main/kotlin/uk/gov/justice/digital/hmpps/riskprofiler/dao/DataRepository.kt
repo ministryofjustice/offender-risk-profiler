@@ -4,6 +4,8 @@ import org.slf4j.LoggerFactory
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.RiskDataSet
 import java.time.LocalDateTime
 import java.util.Optional
+import java.util.Optional.empty
+import java.util.Optional.ofNullable
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.regex.Pattern
 
@@ -27,10 +29,10 @@ abstract class DataRepository<F : RiskDataSet?> {
     data: ImportedFile<F>
   )
 
-  open fun getByKey(key: String?): Optional<F> {
+  open fun getByKey(key: String?): Optional<F & Any> {
     return if (data.dataSet != null) {
-      Optional.ofNullable(data.dataSet!![key!!])
-    } else Optional.empty()
+      ofNullable(data.dataSet!![key!!])
+    } else empty()
   }
 
   val fileTimestamp: LocalDateTime?

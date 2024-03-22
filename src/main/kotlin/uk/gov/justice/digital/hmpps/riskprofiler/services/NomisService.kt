@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services
 
+import jakarta.validation.constraints.NotNull
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CacheEvict
@@ -14,7 +15,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderBooking
 import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderSentenceTerms
 import java.util.Objects
 import java.util.stream.Collectors
-import javax.validation.constraints.NotNull
 
 @Service
 class NomisService(
