@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ListObjectsV2Result
 import com.amazonaws.services.s3.model.S3Object
 import com.amazonaws.services.s3.model.S3ObjectSummary
 import com.amazonaws.util.StringInputStream
+import com.microsoft.applicationinsights.core.dependencies.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableList
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
@@ -35,7 +36,7 @@ class S3FileServiceTest {
   @Before
   fun setup() {
     service = S3FileService(
-      amazonS3Client,
+      amazonS3Client
     )
   }
 

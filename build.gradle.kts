@@ -78,6 +78,8 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
+  runtimeOnly("org.glassfish.jaxb:jaxb-runtime")
+
   testImplementation("junit:junit:4.13.2")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.testcontainers:localstack:1.17.6")
@@ -89,32 +91,32 @@ dependencies {
 
 java {
   toolchain {
-    languageVersion.set(JavaLanguageVersion.of(18))
+    languageVersion.set(JavaLanguageVersion.of(21))
   }
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-      jvmTarget = "18"
+      jvmTarget = "21"
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintTestSourceSetCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintMainSourceSetCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintKotlinScriptCheck {
       enabled = false
     }
