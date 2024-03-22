@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.model.ListObjectsV2Result
 import com.amazonaws.services.s3.model.S3Object
 import com.amazonaws.services.s3.model.S3ObjectSummary
 import com.amazonaws.util.StringInputStream
-import com.google.common.collect.ImmutableList
+import com.microsoft.applicationinsights.core.dependencies.google.common.collect.ImmutableList
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test

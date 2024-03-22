@@ -107,7 +107,7 @@ class NomisService(
   fun getMainOffences(bookingId: Long?): List<String> {
     val uri = String.format("/api/bookings/%d/mainOffence", bookingId)
     val results = webClientCallHelper.getForList(uri, MAP).body
-    return results.stream().map { m: Map<*, *> -> m["offenceDescription"] as String }
+    return results!!.stream().map { m: Map<*, *> -> m["offenceDescription"] as String }
       .collect(Collectors.toList())
   }
 
