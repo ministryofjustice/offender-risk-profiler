@@ -43,7 +43,7 @@ dependencies {
   implementation("org.springframework:spring-jms:5.3.24")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
-  implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
+  // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
   implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
@@ -76,6 +76,8 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
+  runtimeOnly("org.glassfish.jaxb:jaxb-runtime")
+
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
@@ -89,32 +91,32 @@ dependencies {
 
 java {
   toolchain {
-    languageVersion.set(JavaLanguageVersion.of(18))
+    languageVersion.set(JavaLanguageVersion.of(21))
   }
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-      jvmTarget = "18"
+      jvmTarget = "21"
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintTestSourceSetCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintMainSourceSetCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintKotlinScriptCheck {
       enabled = false
     }
