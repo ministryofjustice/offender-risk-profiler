@@ -6,6 +6,9 @@ plugins {
 
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
+  implementation { exclude(group = "spring-boot-starter-logging") }
+  implementation { exclude(module = "logback-classic") }
+  implementation { exclude(module = "logback-classic") }
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
   testImplementation { exclude(group = "org.junit.vintage") }
 }
@@ -31,7 +34,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
-  implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
+  // implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
 
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
