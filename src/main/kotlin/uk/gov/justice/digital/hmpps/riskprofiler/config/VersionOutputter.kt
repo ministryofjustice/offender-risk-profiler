@@ -10,15 +10,21 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.EventListener
 
 @Configuration
-class VersionOutputter(private val buildProperties: BuildProperties?) {
+class VersionOutputter(buildProperties: BuildProperties) {
+  private val version = buildProperties.version
+
   @EventListener(ApplicationReadyEvent::class)
   fun logVersionOnStartup() {
-    log.info("Version {} started", if (buildProperties == null) "NONE" else buildProperties.version)
+    log.info("Version {} started", version)
   }
 
   @Bean
   fun versionContextInitializer(): ContextInitializer {
-    return ContextInitializer { telemetryContext: TelemetryContext -> telemetryContext.component.setVersion(if (buildProperties == null) "NONE" else buildProperties.version) }
+    return ContextInitializer { telemetryContext: TelemetryContext ->
+      telemetryContext.component.setVersion(
+        version,
+      )
+    }
   }
 
   companion object {
