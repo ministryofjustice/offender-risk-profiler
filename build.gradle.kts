@@ -7,8 +7,10 @@ plugins {
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
   implementation { exclude(group = "spring-boot-starter-logging") }
+  implementation { exclude(group = "logback-classic") }
   implementation { exclude(module = "logback-classic") }
-  implementation { exclude(module = "logback-classic") }
+  implementation { exclude(group = "commons-logging") }
+  implementation { exclude(module = "commons-logging") }
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
   testImplementation { exclude(group = "org.junit.vintage") }
 }
