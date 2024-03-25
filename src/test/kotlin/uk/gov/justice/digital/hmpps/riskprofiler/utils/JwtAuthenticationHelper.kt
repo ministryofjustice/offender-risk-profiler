@@ -46,8 +46,4 @@ class JwtAuthenticationHelper() {
           .signWith(SignatureAlgorithm.RS256, keyPair.private)
           .compact()
       }
-
-  @Bean
-  @Primary
-  fun jwtDecoder(): JwtDecoder = NimbusJwtDecoder.withPublicKey(keyPair.public as RSAPublicKey).build()
 }
