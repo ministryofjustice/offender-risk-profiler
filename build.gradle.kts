@@ -34,6 +34,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+  implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
   // implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
@@ -42,7 +43,7 @@ dependencies {
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
   implementation("org.springframework.data:spring-data-redis")
   // Note spring-data-redis 2.6.2 does not support Jedis 4.x
-  implementation("redis.clients:jedis:3.8.0")
+  // implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
   implementation("org.springframework:spring-jms:5.3.24")
