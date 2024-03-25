@@ -5,8 +5,6 @@ import com.amazonaws.services.s3.model.ListObjectsV2Result
 import com.amazonaws.services.s3.model.S3Object
 import com.amazonaws.services.s3.model.S3ObjectSummary
 import com.amazonaws.util.StringInputStream
-import com.microsoft.applicationinsights.core.dependencies.google.common.collect.ImmutableList
-import com.google.common.collect.ImmutableList
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -18,6 +16,7 @@ import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.readResourceAsText
+import wiremock.com.google.common.collect.ImmutableList
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
