@@ -32,29 +32,26 @@ executors:
       #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
       #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
       #      When it is, the kotlinOptions.jvmTarget setting in build.gradle.kts can then be uncommented
-      image: ubuntu-2004:2022.04.1
+      image: cimg/openjdk:21.0.2
     environment:
       _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
     working_directory: ~/app
 
 jobs:
   validate:
-    executor:
-      name: hmpps/java_postgres
-      jdk_tag: "21.0"
-      postgres_tag: "16"
-    environment:
-      _JAVA_OPTIONS: -Xmx800m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false
-
+    executor: java-machine
     steps:
       - checkout
+      - hmpps/install_aws_cli
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
-      - hmpps/wait_till_ready_postgres
       - run:
-          command: ./gradlew -Dorg.gradle.jvmargs="--illegal-access=permit" -Dkotlin.daemon.jvm.options="--illegal-access=permit" check
+          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
+          background: true
+      - run:
+          command: ./gradlew check
       - save_cache:
           paths:
             - ~/.gradle
@@ -68,6 +65,7 @@ jobs:
           paths:
             - build/libs
             - build.gradle.kts
+
 workflows:
   version: 2
   build-test-and-deploy:
