@@ -43,7 +43,7 @@ dependencies {
 
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
-  // implementation("org.springframework.data:spring-data-redis:2.7.8")
+   implementation("org.springframework.data:spring-data-redis:2.7.8")
   // Note spring-data-redis 2.6.2 does not support Jedis 4.x
    implementation("redis.clients:jedis:3.8.0")
 
