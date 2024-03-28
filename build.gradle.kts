@@ -31,12 +31,12 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.7.2")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-  // implementation("org.springframework.boot:spring-boot-starter-cache:2.6.4")
+  implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-  implementation("org.springframework.boot:spring-boot-starter-data-redis:2.6.4")
+  implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
   // implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
@@ -84,7 +84,7 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
-  runtimeOnly("org.glassfish.jaxb:jaxb-runtime")
+ // runtimeOnly("org.glassfish.jaxb:jaxb-runtime")
 
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
