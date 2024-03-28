@@ -1,0 +1,73 @@
+version: '3.1'
+services:
+
+  form-db:
+    image: postgres
+    networks:
+      - hmpps
+    container_name: form-builder-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=form-builder
+      - POSTGRES_USER=form-builder
+      - POSTGRES_DB=form-builder
+
+  redis:
+    image: 'redis'
+    networks:
+      - hmpps
+    container_name: rf-redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '6379:6379'
+
+  localstack:
+    image: localstack/localstack:3.0.0
+    ports:
+      - "4566:4566"
+    networks:
+      - hmpps
+    container_name: rf-localstack
+    environment:
+      - SERVICES=${SERVICES-sqs,s3,sns}
+      - DEBUG=${DEBUG- }
+      - PERSISTENCE=${DATA_DIR- }
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - DEFAULT_REGION=eu-west-2
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  setup-localstack-resources:
+    image: jetbrainsinfra/aws-cli
+    networks:
+      - hmpps
+    depends_on:
+      - localstack
+    volumes:
+      - ./dev_env:/project/dev_env
+    container_name: setup-aws-resources
+    environment:
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_DEFAULT_REGION=eu-west-2
+    entrypoint: /bin/sh -c
+    command: >
+      "
+        while [[ $$(curl -s -o /dev/null -w ''%{http_code}'' localstack:4566) != "200" ]]; do
+          echo 'Risk Profiler AWS - awaiting localstack service start'
+          sleep 10
+        done
+
+        aws --endpoint-url=http://localstack:4566 s3 mb s3://testbucket
+        aws --endpoint-url=http://localstack:4566 s3 ls
+
+        exit 0
+      "
+
+networks:
+  hmpps:
