@@ -40,7 +40,7 @@ open class EmbeddedLocalStackConfig {
     log.info("Starting localstack...")
     val logConsumer = Slf4jLogConsumer(log).withPrefix("localstack")
     val localStackContainer: LocalStackContainer =
-      LocalStackContainer(DockerImageName.parse("localstack/localstack:0.11.2"))
+      LocalStackContainer(DockerImageName.parse("localstack/localstack:3.0.0"))
         .withServices(LocalStackContainer.Service.SQS, LocalStackContainer.Service.SNS, LocalStackContainer.Service.S3)
         .withClasspathResourceMapping("/localstack/buckets", "/docker-entrypoint-initaws.d/buckets", BindMode.READ_WRITE)
         .withClasspathResourceMapping(
@@ -50,9 +50,9 @@ open class EmbeddedLocalStackConfig {
         )
         .withEnv("HOSTNAME_EXTERNAL", "localhost")
         .withEnv("DEFAULT_REGION", "eu-west-2")
-        .waitingFor(
-          Wait.forLogMessage(".*All Ready.*", 1) // .withStartupTimeout(Duration.ofMinutes(10))
-        )
+    //    .waitingFor(
+    //      Wait.forLogMessage(".*All Ready.*", 1) // .withStartupTimeout(Duration.ofMinutes(10))
+    //    )
 
     log.info("Started localstack.")
 
