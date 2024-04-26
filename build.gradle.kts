@@ -84,7 +84,7 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
- // runtimeOnly("org.glassfish.jaxb:jaxb-runtime")
+  implementation("org.slf4j:slf4j-simple:2.0.13")
 
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
