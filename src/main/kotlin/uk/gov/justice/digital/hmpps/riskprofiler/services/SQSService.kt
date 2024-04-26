@@ -29,6 +29,7 @@ class SQSService(
 
   init {
     val mapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
+//    println(amazonSqs.listQueues())
     mapper.dateFormat = StdDateFormat()
     mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     mapper.registerModule(JavaTimeModule())

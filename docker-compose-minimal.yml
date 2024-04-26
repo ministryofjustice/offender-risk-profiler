@@ -32,12 +32,8 @@ services:
       - hmpps
     container_name: rf-localstack
     environment:
-      - SERVICES=${SERVICES-sqs,s3,sns}
-      - DEBUG=${DEBUG- }
-      - PERSISTENCE=${DATA_DIR- }
-      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - SERVICES=sqs,s3,sns
       - DEFAULT_REGION=eu-west-2
-      - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
