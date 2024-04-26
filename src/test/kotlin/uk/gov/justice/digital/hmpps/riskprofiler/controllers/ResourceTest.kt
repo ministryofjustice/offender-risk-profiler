@@ -82,7 +82,7 @@ abstract class ResourceTest {
   }
 
   fun assertThatStatus(response: ResponseEntity<String?>, status: Int) {
-    Assertions.assertThat(response.statusCodeValue).withFailMessage(
+    Assertions.assertThat(response.statusCode).withFailMessage(
       "Expecting status code value <%s> to be equal to <%s> but it was not.\nBody was\n%s",
       response.statusCode,
       status,
