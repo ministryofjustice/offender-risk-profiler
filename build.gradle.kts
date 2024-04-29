@@ -51,6 +51,8 @@ dependencies {
   implementation("org.springframework:spring-jms:5.3.24")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
+  // This error occurs when including spring boot camel -
+  // Entry BOOT-INF/lib/jaxb-core-4.0.1.jar is a duplicate but no duplicate handling strategy has been set
   // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
