@@ -51,7 +51,7 @@ dependencies {
   implementation("org.springframework:spring-jms:5.3.24")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
-  implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
+  // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
   implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
@@ -99,13 +99,13 @@ dependencies {
 }
 
 kotlin {
-  jvmToolchain(17)
+  jvmToolchain(21)
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-      jvmTarget = "17"
+      jvmTarget = "21"
     }
   }
   withType<Task> {
