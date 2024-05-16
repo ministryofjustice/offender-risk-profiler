@@ -17,19 +17,19 @@ class CacheConfig {
   @Value("\${spring.redis.cache.timeout-days}")
   private val timeoutDays = 0
 
-  @Value("\${spring.redis.host}")
+  @Value("\${spring.data.redis.host}")
   private val server: String? = null
 
-  @Value("\${spring.redis.port}")
+  @Value("\${spring.data.redis.port}")
   private val port = 0
 
-  @Value("\${spring.redis.password}")
+  @Value("\${spring.data.redis.password}")
   private val password: String? = null
 
-  @Value("\${spring.redis.ssl}")
+  @Value("\${spring.data.redis.ssl.enabled}")
   private val ssl = false
 
-  @Value("\${spring.redis.client-name}")
+  @Value("\${spring.data.redis.client-name}")
   private val clientName: String? = null
 
   @Bean
