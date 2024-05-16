@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.constraints.NotNull
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PathVariable
@@ -17,7 +18,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.events.QueueAdminService
 import uk.gov.justice.digital.hmpps.riskprofiler.model.ErrorResponse
 import uk.gov.justice.digital.hmpps.riskprofiler.schedule.PollPrisonersScheduler
 import uk.gov.justice.digital.hmpps.riskprofiler.services.PrisonService
-import javax.validation.constraints.NotNull
 
 @Tag(
   name = "batch",

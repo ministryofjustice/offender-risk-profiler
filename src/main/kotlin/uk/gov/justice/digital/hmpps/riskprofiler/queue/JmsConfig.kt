@@ -23,6 +23,7 @@ import javax.jms.Session
 class JmsConfig {
   @Bean
   fun jmsListenerContainerFactory(@Qualifier("awsClientForEvents") awsSqs: AmazonSQS?): DefaultJmsListenerContainerFactory {
+//    println(awsSqs?.listQueues())
     val factory = DefaultJmsListenerContainerFactory()
     factory.setConnectionFactory(SQSConnectionFactory(ProviderConfiguration(), awsSqs))
     factory.setDestinationResolver(DynamicDestinationResolver())

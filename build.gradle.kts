@@ -1,12 +1,20 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.4"
-  kotlin("plugin.spring") version "1.8.10"
-  kotlin("plugin.jpa") version "1.8.10"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.4"
+  kotlin("plugin.spring") version "1.9.23"
+  kotlin("plugin.jpa") version "1.9.23"
 }
 
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
+  implementation { exclude(group = "spring-boot-starter-logging") }
+  implementation { exclude(group = "logback-classic") }
+  implementation { exclude(module = "logback-classic") }
+  implementation { exclude(group = "commons-logging") }
+  implementation { exclude(module = "commons-logging") }
+//  implementation { exclude(module = "spring-data-redis") }
+
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
+  testImplementation { exclude(group = "org.junit.vintage") }
 }
 
 dependencyCheck {
@@ -21,25 +29,31 @@ dependencies {
 
   runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.5.4")
+  runtimeOnly("org.postgresql:postgresql:42.7.2")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+  implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+  implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
+  // implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
 
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
-  implementation("org.springframework.data:spring-data-redis")
+   implementation("org.springframework.data:spring-data-redis:2.7.8")
   // Note spring-data-redis 2.6.2 does not support Jedis 4.x
-  implementation("redis.clients:jedis:3.8.0")
+   implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
   implementation("org.springframework:spring-jms:5.3.24")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
-  implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
+  // This error occurs when including spring boot camel -
+  // Entry BOOT-INF/lib/jaxb-core-4.0.1.jar is a duplicate but no duplicate handling strategy has been set
+  // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
   implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
@@ -55,9 +69,9 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-security:1.6.15")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
 
-  implementation("io.jsonwebtoken:jjwt:0.9.1")
+  implementation("io.jsonwebtoken:jjwt:0.12.3")
 
-  implementation("org.apache.commons:commons-lang3:3.12.0")
+  implementation("org.apache.commons:commons-lang3:3.14.0")
   implementation("org.apache.commons:commons-text:1.10.0")
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
@@ -72,45 +86,46 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
+  implementation("org.slf4j:slf4j-simple:2.0.13")
+
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
-  testImplementation("org.testcontainers:localstack:1.17.6")
+  testImplementation("org.testcontainers:localstack:1.19.7")
+  testImplementation("org.testcontainers:postgresql:1.19.7")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("com.google.code.gson:gson:2.10.1")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
 }
 
-java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(18))
-  }
+kotlin {
+  jvmToolchain(21)
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-      jvmTarget = "18"
+      jvmTarget = "21"
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintTestSourceSetCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintMainSourceSetCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintKotlinScriptCheck {
       enabled = false
     }

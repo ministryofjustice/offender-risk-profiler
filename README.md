@@ -23,8 +23,8 @@
 
 ## Intellij setup
 
-- Install jdk 16
-- Enable Gradle using jdk 16
+- Install jdk 21
+- Enable Gradle using jdk 21
 - set jdk in project structure
 - Enable Annotation Processors at "Settings > Build > Compiler > Annotation Processors"
 
