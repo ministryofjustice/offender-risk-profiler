@@ -1,11 +1,13 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.camel
 
 import org.apache.camel.builder.RouteBuilder
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.riskprofiler.services.DefaultFileService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
 
 @Component
-class CsvHousekeepingRoute(private val fileService: FileService) : RouteBuilder() {
+class CsvHousekeepingRoute(private val fileService: DefaultFileService) : RouteBuilder() {
   override fun configure() {
     from("timer://data-deletion-schedule?fixedRate=true&period={{data.deletion.period}}")
       .bean(fileService, "deleteHistoricalFiles('{{s3.path.ocg}}')")

@@ -1,10 +1,13 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.events
 
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.jms.annotation.JmsListener
+import io.awspring.cloud.sqs.annotation.SqsListener
+import io.awspring.cloud.sqs.listener.QueueAttributes
+import io.opentelemetry.api.trace.SpanKind
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderEvent
 import uk.gov.justice.digital.hmpps.riskprofiler.services.NomisService
@@ -19,11 +22,19 @@ class EventListener(
   private val pollPrisonersService: PollPrisonersService,
   private val objectMapper: ObjectMapper
 ) {
-  @JmsListener(destination = "\${sqs.events.queue.name}")
-  fun eventListener(requestJson: String) {
-    val event = getOffenderEvent(requestJson)
-    if (event != null) {
-      when (event.eventType) {
+  @SqsListener("events", factory = "hmppsQueueContainerFactoryProxy")
+  //@WithSpan(value = "Digital-Prison-Services-dev-prisoner_offender_events_queue", kind = SpanKind.SERVER)
+  @Throws(JsonProcessingException::class)
+  fun onOffenderEvent(message: String?, attributes: QueueAttributes) {
+
+    val sqsMessage: SQSMessage = objectMapper.readValue(message, SQSMessage::class.java)
+
+    val eventType = sqsMessage.MessageAttributes.eventType.Value
+
+    val event = getOffenderEvent(sqsMessage.Message)
+
+    if (eventType != null) {
+      when (eventType) {
         "ALERT-INSERTED", "ALERT-UPDATED", "ALERT-DELETED" -> {
           val isEscape = NomisService.ESCAPE_LIST_ALERT_TYPES.contains(event.alertCode)
           val isSoc = NomisService.SOC_ALERT_TYPES.contains(event.alertCode)
@@ -49,7 +60,7 @@ class EventListener(
     }
   }
 
-  private fun getOffenderEvent(requestJson: String): OffenderEvent? {
+  private fun getOffenderEvent(requestJson: String): OffenderEvent {
     var event: OffenderEvent? = null
     try {
       val message: Map<String, Any?> = objectMapper.readValue(requestJson)
@@ -63,10 +74,21 @@ class EventListener(
     } catch (e: IOException) {
       log.error("Failed to Parse Message {} {}", requestJson, e)
     }
-    return event
+    return event!!
   }
 
   companion object {
     private val log = LoggerFactory.getLogger(EventListener::class.java)
   }
 }
+
+data class SQSMessage(val Message: String, val MessageId: String, val MessageAttributes: MessageAttributes)
+data class TypeValuePair(val Value: String, val Type: String)
+data class HmppsEvent(val id: String, val type: String, val contents: String)
+data class EventType(val Value: String, val Type: String)
+data class MessageAttributes(val eventType: EventType)
+data class Message(
+  val Message: String,
+  val MessageId: String,
+  val MessageAttributes: MessageAttributes,
+)

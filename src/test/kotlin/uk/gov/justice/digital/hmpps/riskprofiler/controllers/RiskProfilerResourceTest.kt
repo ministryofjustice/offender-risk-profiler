@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PathfinderMockServer
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PathfinderMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PrisonMockServer
 
 class RiskProfilerResourceTest : ResourceTest() {
 
