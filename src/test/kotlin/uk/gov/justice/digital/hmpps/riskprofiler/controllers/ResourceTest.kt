@@ -18,8 +18,8 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepositoryFactory
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer.Companion.oauthMockServer
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PathfinderMockServer.Companion.pathfinderMockServer
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer.Companion.prisonMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PathfinderMockServer.Companion.pathfinderMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PrisonMockServer.Companion.prisonMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.services.NomisService
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthenticationHelper
 import java.time.Duration
