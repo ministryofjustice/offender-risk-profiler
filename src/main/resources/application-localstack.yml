@@ -1,0 +1,20 @@
+hmpps.sqs:
+  provider: localstack
+  queues:
+    riskprofilechangequeue:
+      queueName: ${random.uuid}
+      dlqName: ${random.uuid}
+      subscribeTopicId: riskprofilechangetopic
+      subscribeFilter: '{"eventType":[ "CONVICTION_CHANGED", "OFFENDER_MANAGER_CHANGED"] }'
+      dlqMaxReceiveCount: 1
+    events:
+      queueName: events
+      dlqName: events_dl
+      subscribeTopicId: eventstopic
+      subscribeFilter: '{"eventType":[ "CONVICTION_CHANGED", "OFFENDER_MANAGER_CHANGED"] }'
+      dlqMaxReceiveCount: 1
+  topics:
+    riskprofilechangetopic:
+      arn: arn:aws:sns:eu-west-2:000000000000:${random.uuid}
+    eventstopic:
+      arn: arn:aws:sns:eu-west-2:000000000000:events_topic

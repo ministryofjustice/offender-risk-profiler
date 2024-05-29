@@ -68,11 +68,13 @@ spring:
       client:
         registration:
           api:
+            provider: nomis-auth
             client-id: ${risk.profiler.client.id}
             client-secret: ${risk.profiler.client.secret}
             authorization-grant-type: client_credentials
+            scope: read
         provider:
-          api:
+          nomis-auth:
             token-uri: ${nomis.auth.url}/oauth/token
       resourceserver:
         jwt:
@@ -82,7 +84,7 @@ spring:
       continue-on-error: true
 
 server:
-  port: 8080
+  port: 8082
   servlet:
     context-path: /
   forward-headers-strategy: native
@@ -118,3 +120,4 @@ management:
 s3:
   provider: aws
   endpoint.region: eu-west-2
+
