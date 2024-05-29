@@ -1,78 +1,49 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services
 
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.awspring.cloud.sqs.operations.SqsTemplate
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
-import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
-import software.amazon.awssdk.services.sqs.model.MessageAttributeValue
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfileChange
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.MissingQueueException
-
+import uk.gov.justice.hmpps.sqs.MissingTopicException
+import java.util.function.Consumer
 
 @Service
 class SQSService(
   hmppsQueueService: HmppsQueueService,
-  private val objectMapper: ObjectMapper,
-  @Qualifier("hmppsriskprofilechangequeue-sqs-client") private val riskProfilerChangeSqsClient: SqsAsyncClient,
+  private val objectMapper: ObjectMapper
 ) {
 
-  @Value("eu-west-2")
-  private val region: String? = null
+  private final val riskProfileChangeQueueSqsClient: SqsAsyncClient
 
-  @Value("anykey")
-  private val accessKey: String? = null
+  init {
+    val riskProfileChangeQueue = hmppsQueueService.findByQueueId("riskprofilechangequeue") ?: throw MissingTopicException("Could not find topic riskprofilechangequeue")
 
-  @Value("anysecret")
-  private val secretKey: String? = null
-
-  private val riskProfileChangeQueueUrl = hmppsQueueService.findByQueueId("hmppsriskprofilechangequeue")?.queueUrl ?: throw MissingQueueException("HmppsQueue hmppsoffenderqueue not found")
+    riskProfileChangeQueueSqsClient = riskProfileChangeQueue.sqsClient
+  }
 
   fun sendRiskProfileChangeMessage(payload: RiskProfileChange) {
 
-    val sendMessage =
-      SendMessageRequest.builder()
-        .queueUrl(riskProfileChangeQueueUrl)
-        .messageBody(
-          objectMapper.writeValueAsString(
-            payload,
-          ),
-        ).messageAttributes(
-          mapOf("eventType" to MessageAttributeValue.builder().dataType("String").stringValue("RISK_PROFIlE_CHANGE").build()),
-        ).build()
-    log.info("publishing event type {}", "RISK_PROFIlE_CHANGE")
+    try {
+      val request =
+        SendMessageRequest.builder().messageBody(objectMapper.writeValueAsString(payload))
 
-    riskProfilerChangeSqsClient.sendMessage(sendMessage)
+      val r: Consumer<SendMessageRequest.Builder>? = Consumer {
+        SendMessageRequest.builder().messageBody(objectMapper.writeValueAsString(payload))
+      }
+
+      riskProfileChangeQueueSqsClient.sendMessage(r)
+
+    } catch (e: JsonProcessingException) {
+      log.error("Failed to convert payload {} to json", payload)
+    }
   }
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
-  }
-
-
-  @Bean
-  fun sqsAsyncClientImpl(): SqsAsyncClient {
-    return SqsAsyncClient
-      .builder()
-      .region(Region.of(region))
-      .credentialsProvider(
-        StaticCredentialsProvider
-          .create(AwsBasicCredentials.create(accessKey, secretKey)),
-      )
-      .build()
-    // add more Options
-  }
-
-  @Bean
-  fun sqsTemplate(sqsAsyncClient: SqsAsyncClient?): SqsTemplate {
-    return SqsTemplate.builder().sqsAsyncClient(sqsAsyncClient).build()
   }
 }

@@ -68,10 +68,4 @@ class ResourceServerConfiguration {
     }
     return http.build()
   }
-
-  @Bean
-  fun locallyCachedJwtDecoder(
-    @Value("\${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") jwkSetUri: String,
-    cacheManager: CacheManager,
-  ): JwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).cache(cacheManager.getCache("jwks")).build()
 }

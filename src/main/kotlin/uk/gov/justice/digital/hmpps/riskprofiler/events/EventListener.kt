@@ -16,22 +16,24 @@ import java.io.IOException
 import java.util.function.Consumer
 
 @Service
-@ConditionalOnProperty(name = ["sqs.provider"])
 class EventListener(
   private val nomisService: NomisService,
   private val pollPrisonersService: PollPrisonersService,
   private val objectMapper: ObjectMapper
 ) {
   @SqsListener("events", factory = "hmppsQueueContainerFactoryProxy")
-  //@WithSpan(value = "Digital-Prison-Services-dev-prisoner_offender_events_queue", kind = SpanKind.SERVER)
   @Throws(JsonProcessingException::class)
-  fun onOffenderEvent(message: String?, attributes: QueueAttributes) {
+  fun onOffenderEvent(message: String, attributes: QueueAttributes) {
 
-    val sqsMessage: SQSMessage = objectMapper.readValue(message, SQSMessage::class.java)
+    val event = getOffenderEvent(message)
+    //val sqsMessage: SQSMessage = objectMapper.readValue(message, SQSMessage::class.java)
+    val sqsMessage =  SQSMessage(message,message,MessageAttributes(EventType("","")))
 
-    val eventType = sqsMessage.MessageAttributes.eventType.Value
 
-    val event = getOffenderEvent(sqsMessage.Message)
+
+    val eventType = event.eventType
+
+    //val event = getOffenderEvent(sqsMessage.Message)
 
     if (eventType != null) {
       when (eventType) {

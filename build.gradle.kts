@@ -92,12 +92,19 @@ dependencies {
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
+
   testImplementation("org.testcontainers:localstack:1.19.7")
+  testImplementation("com.amazonaws:aws-java-sdk-core:1.12.704") // Needed so Localstack has access to the AWS SDK V1 API
+
   testImplementation("org.testcontainers:postgresql:1.19.7")
-  testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
+
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+  testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
+  
+  testImplementation("org.wiremock:wiremock-standalone:3.5.3")
   testImplementation("com.google.code.gson:gson:2.10.1")
-  testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
-  testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
+  testImplementation("org.awaitility:awaitility-kotlin:4.2.1")
 }
 
 kotlin {

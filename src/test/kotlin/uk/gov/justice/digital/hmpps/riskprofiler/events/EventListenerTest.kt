@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.events
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.awspring.cloud.sqs.listener.QueueAttributes
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -32,7 +33,7 @@ class EventListenerTest {
   @Test
   fun testAlertsEscape() {
     Mockito.`when`(nomisService.getOffender(BOOKING_1)).thenReturn(OFFENDER_1)
-    service.onOffenderEvent("""{ "Message":"{ \"eventType\":\"ALERT-INSERTED\", \"alertCode\":\"XER\", \"bookingId\":$BOOKING_1 }"}""")
+    service.onOffenderEvent("""{ "Message":"{ \"eventType\":\"ALERT-INSERTED\", \"alertCode\":\"XER\", \"bookingId\":$BOOKING_1 }"}""", QueueAttributes("test","http://localhost:8989", emptyMap()))
     Mockito.verify(nomisService).evictEscapeListAlertsCache(OFFENDER_1)
     Mockito.verify(nomisService, Mockito.never()).evictSocListAlertsCache(OFFENDER_1)
     Mockito.verify(pollPrisonersService).pollPrisoner(OFFENDER_1)
@@ -42,7 +43,7 @@ class EventListenerTest {
   @Test
   fun testAlertsSoc() {
     Mockito.`when`(nomisService.getOffender(BOOKING_1)).thenReturn(OFFENDER_1)
-    service.onOffenderEvent("""{ "Message":"{ \"eventType\":\"ALERT-UPDATED\", \"alertCode\":\"XEAN\", \"bookingId\":$BOOKING_1 }"}""")
+    service.onOffenderEvent("""{ "Message":"{ \"eventType\":\"ALERT-UPDATED\", \"alertCode\":\"XEAN\", \"bookingId\":$BOOKING_1 }"}""", QueueAttributes("test","http://localhost:8989", emptyMap()))
     Mockito.verify(nomisService, Mockito.never()).evictEscapeListAlertsCache(OFFENDER_1)
     Mockito.verify(nomisService).evictSocListAlertsCache(OFFENDER_1)
     Mockito.verify(pollPrisonersService).pollPrisoner(OFFENDER_1)
@@ -51,7 +52,7 @@ class EventListenerTest {
 
   @Test
   fun testAlertsIrrelevant() {
-    service.onOffenderEvent("""{ "Message":"{ \"eventType\":\"ALERT-INSERTED\", \"alertCode\":\"OTHER\", \"bookingId\":$BOOKING_1 }"}""")
+    service.onOffenderEvent("""{ "Message":"{ \"eventType\":\"ALERT-INSERTED\", \"alertCode\":\"OTHER\", \"bookingId\":$BOOKING_1 }"}""", QueueAttributes("test","http://localhost:8989", emptyMap()))
     Mockito.verify(nomisService, Mockito.never()).evictEscapeListAlertsCache(ArgumentMatchers.any())
     Mockito.verify(nomisService, Mockito.never()).evictSocListAlertsCache(ArgumentMatchers.any())
     Mockito.verify(pollPrisonersService, Mockito.never()).pollPrisoner(ArgumentMatchers.anyString())
@@ -61,7 +62,7 @@ class EventListenerTest {
   @Test
   fun testIncidents() {
     Mockito.`when`(nomisService.getPartiesOfIncident(INCIDENT_1)).thenReturn(Arrays.asList(OFFENDER_1, OFFENDER_2))
-    service.onOffenderEvent("""{ "Message": "{ \"eventType\":\"INCIDENT-CHANGED-CASES\", \"incidentCaseId\":$INCIDENT_1 }"}""")
+    service.onOffenderEvent("""{ "Message": "{ \"eventType\":\"INCIDENT-CHANGED-CASES\", \"incidentCaseId\":$INCIDENT_1 }"}""", QueueAttributes("test","http://localhost:8989", emptyMap()))
     Mockito.verify(nomisService).evictIncidentsCache(OFFENDER_1)
     Mockito.verify(nomisService).evictIncidentsCache(OFFENDER_2)
     Mockito.verify(nomisService, Mockito.never()).getOffender(ArgumentMatchers.any())
@@ -69,7 +70,7 @@ class EventListenerTest {
 
   @Test
   fun testInvalidMessage() {
-    service.onOffenderEvent("text contents")
+    service.onOffenderEvent("text contents", QueueAttributes("test","http://localhost:8989", emptyMap()))
     Mockito.verify(nomisService, Mockito.never()).getOffender(ArgumentMatchers.any())
     Mockito.verify(nomisService, Mockito.never()).getPartiesOfIncident(ArgumentMatchers.any())
   }
