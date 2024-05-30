@@ -21,7 +21,7 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.20.2"
+val camelVersion = "4.6.0"
 val awssdkVersion = "1.12.468"
 
 dependencies {
@@ -54,7 +54,7 @@ dependencies {
 
   // This error occurs when including spring boot camel -
   // Entry BOOT-INF/lib/jaxb-core-4.0.1.jar is a duplicate but no duplicate handling strategy has been set
-  // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
+  implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
   implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
@@ -88,10 +88,12 @@ dependencies {
 
   implementation("org.slf4j:slf4j-simple:2.0.13")
 
+  implementation("org.apache.camel.springboot:camel-spring-boot-starter:$camelVersion")
+
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
-  testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
+//  testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
 
   testImplementation("org.testcontainers:localstack:1.19.7")
   testImplementation("com.amazonaws:aws-java-sdk-core:1.12.704") // Needed so Localstack has access to the AWS SDK V1 API
@@ -100,11 +102,14 @@ dependencies {
 
   testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
   testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
-  
+
   testImplementation("org.wiremock:wiremock-standalone:3.5.3")
   testImplementation("com.google.code.gson:gson:2.10.1")
   testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.1")
+
+  testImplementation("org.apache.camel:camel-test-spring-junit5:4.6.0")
+  testImplementation("org.apache.camel.springboot:camel-spring-boot-starter:4.6.0")
 }
 
 kotlin {

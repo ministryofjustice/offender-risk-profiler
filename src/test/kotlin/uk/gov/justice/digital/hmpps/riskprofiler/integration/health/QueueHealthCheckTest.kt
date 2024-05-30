@@ -5,7 +5,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.OAuthExtension.Companion.oAuthApi
 
 class QueueHealthCheckTest : IntegrationTestBase() {
-
   @Test
   fun `risk profiler change queue health ok`() {
     oAuthApi.stubHealthPing(200)

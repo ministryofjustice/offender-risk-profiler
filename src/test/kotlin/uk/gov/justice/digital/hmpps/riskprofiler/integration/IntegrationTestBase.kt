@@ -14,24 +14,22 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
+import uk.gov.justice.digital.hmpps.riskprofiler.camel.CsvProcessorRoute
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.OAuthExtension
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.testcontainers.LocalStackContainer
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.testcontainers.LocalStackContainer.setLocalStackProperties
 import uk.gov.justice.hmpps.sqs.HmppsQueueFactory
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.HmppsSqsProperties
 import uk.gov.justice.hmpps.sqs.MissingQueueException
-import uk.gov.justice.hmpps.sqs.MissingTopicException
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @Import(IntegrationTestBase.SqsConfig::class, JwtAuthHelper::class)
 @ExtendWith(OAuthExtension::class)
 @ActiveProfiles("test")
+@TestPropertySource(locations= ["classpath:test.properties"])
 abstract class IntegrationTestBase {
 
   @BeforeEach
@@ -47,7 +45,6 @@ abstract class IntegrationTestBase {
 
   fun HmppsSqsProperties.riskProfilerChangeQueueConfig() =
     queues["riskprofilechangequeue"] ?: throw MissingQueueException("riskprofilechangequeue has not been loaded from configuration properties")
-
 
   @SpyBean
   @Qualifier("riskprofilechangequeue-sqs-client")
