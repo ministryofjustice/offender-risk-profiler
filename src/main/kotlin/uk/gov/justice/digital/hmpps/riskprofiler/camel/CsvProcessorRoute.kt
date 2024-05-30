@@ -1,18 +1,15 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.camel
 
 import org.apache.camel.builder.RouteBuilder
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService
-import uk.gov.justice.digital.hmpps.riskprofiler.services.DefaultFileService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
 
 /**
  * Polls the 4 s3 folders for pras, ocgm, ocg and viper
  */
-@Service
-class CsvProcessorRoute(private val dataService: DataService, private val fileService: DefaultFileService) : RouteBuilder() {
+@Component
+class CsvProcessorRoute(private val dataService: DataService, private val fileService: FileService) : RouteBuilder() {
   override fun configure() {
     context.isStreamCaching = true
 

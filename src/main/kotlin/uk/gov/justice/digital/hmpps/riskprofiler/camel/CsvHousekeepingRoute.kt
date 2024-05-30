@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.DefaultFileService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
 
 @Component
-class CsvHousekeepingRoute(private val fileService: DefaultFileService) : RouteBuilder() {
+class CsvHousekeepingRoute(private val fileService: FileService) : RouteBuilder() {
   override fun configure() {
     from("timer://data-deletion-schedule?fixedRate=true&period={{data.deletion.period}}")
       .bean(fileService, "deleteHistoricalFiles('{{s3.path.ocg}}')")
