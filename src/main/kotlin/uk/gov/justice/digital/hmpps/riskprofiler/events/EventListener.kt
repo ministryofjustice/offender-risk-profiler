@@ -27,13 +27,8 @@ class EventListener(
 
     val event = getOffenderEvent(message)
     //val sqsMessage: SQSMessage = objectMapper.readValue(message, SQSMessage::class.java)
-    val sqsMessage =  SQSMessage(message,message,MessageAttributes(EventType("","")))
-
-
 
     val eventType = event.eventType
-
-    //val event = getOffenderEvent(sqsMessage.Message)
 
     if (eventType != null) {
       when (eventType) {

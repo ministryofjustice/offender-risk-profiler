@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.riskprofiler.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.gson.Gson
+import org.awaitility.kotlin.await
+import org.awaitility.kotlin.until
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +21,12 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import uk.gov.justice.digital.hmpps.riskprofiler.camel.CsvProcessorRoute
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.OAuthExtension
+import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepositoryFactory
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PathfinderMockServer.Companion.pathfinderMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PrisonMockServer.Companion.prisonMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.ResourceOAuthMockServer.Companion.oauthMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.services.NomisService
+
 import uk.gov.justice.hmpps.sqs.HmppsQueueFactory
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.HmppsSqsProperties
@@ -27,13 +34,38 @@ import uk.gov.justice.hmpps.sqs.MissingQueueException
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @Import(IntegrationTestBase.SqsConfig::class, JwtAuthHelper::class)
-@ExtendWith(OAuthExtension::class)
+//@ExtendWith(OAuthExtension::class)
 @ActiveProfiles("test")
 @TestPropertySource(locations= ["classpath:test.properties"])
 abstract class IntegrationTestBase {
 
+  @Autowired
+  protected lateinit var nomisService: NomisService
+
+  @Autowired
+  protected lateinit var dataRepositoryFactory: DataRepositoryFactory
+
+  private fun allFilesLoaded(): Boolean {
+    return dataRepositoryFactory.getRepositories().stream().allMatch { it.dataAvailable() }
+  }
+
   @BeforeEach
   fun `clear queues`() {
+
+      nomisService.evictSocListAlertsCache("A1234AB")
+      nomisService.evictSocListAlertsCache("A1234AC")
+      nomisService.evictSocListAlertsCache("A1234AE")
+      nomisService.evictSocListAlertsCache("A5015DY")
+      nomisService.evictIncidentsCache("A1234AB")
+      nomisService.evictIncidentsCache("A1234AC")
+      nomisService.evictEscapeListAlertsCache("A1234AB")
+      nomisService.evictEscapeListAlertsCache("A1234AC")
+
+      prisonMockServer.resetAll()
+      oauthMockServer.resetAll()
+      pathfinderMockServer.resetAll()
+      await until { allFilesLoaded() }
+
     riskProfilerChangeSqsClientSpy.purgeQueue(PurgeQueueRequest.builder().queueUrl(riskProfilerChangeQueueUrl).build()).get()
     riskProfilerChangeSqsDlqClientSpy.purgeQueue(PurgeQueueRequest.builder().queueUrl(riskProfilerChangeDlqUrl).build()).get()
  }
@@ -69,10 +101,10 @@ abstract class IntegrationTestBase {
   @Autowired
   lateinit var webTestClient: WebTestClient
 
-  internal fun HttpHeaders.authToken(roles: List<String> = listOf("ROLE_QUEUE_ADMIN")) {
+  internal fun HttpHeaders.authToken(user: String?, roles: List<String> = listOf("ROLE_QUEUE_ADMIN", "ROLE_RISK_PROFILER")) {
     this.setBearerAuth(
       jwtAuthHelper.createJwt(
-        subject = "SOME_USER",
+        subject = user,
         roles = roles,
         clientId = "some-client",
       ),

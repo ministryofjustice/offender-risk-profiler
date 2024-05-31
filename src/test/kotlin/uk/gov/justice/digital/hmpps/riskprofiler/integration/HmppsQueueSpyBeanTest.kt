@@ -46,7 +46,7 @@ class HmppsQueueSpyBeanTest : IntegrationTestBase() {
 
     webTestClient.put()
       .uri("/queue-admin/retry-dlq/${hmppsSqsPropertiesSpy.riskProfilerChangeQueueConfig().dlqName}")
-      .headers { it.authToken() }
+      .headers { it.authToken("API_TEST_USER") }
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
       .expectStatus().isOk
@@ -73,7 +73,7 @@ class HmppsQueueSpyBeanTest : IntegrationTestBase() {
 
     webTestClient.put()
       .uri("/queue-admin/purge-queue/${hmppsSqsPropertiesSpy.riskProfilerChangeQueueConfig().dlqName}")
-      .headers { it.authToken() }
+      .headers { it.authToken("API_TEST_USER") }
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
       .expectStatus().isOk

@@ -12,7 +12,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.web.reactive.server.WebTestClient
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.OAuthMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PrisonMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthenticationHelper

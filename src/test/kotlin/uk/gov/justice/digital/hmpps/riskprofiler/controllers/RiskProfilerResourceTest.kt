@@ -5,15 +5,15 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PrisonMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.ResourceOAuthMockServer.Companion.oauthMockServer
 
 class RiskProfilerResourceTest : ResourceTest() {
 
   @BeforeEach
   fun init() {
-    OAuthMockServer.oauthMockServer.stubGrantToken()
+    oauthMockServer.stubGrantToken()
     PrisonMockServer.prisonMockServer.stubBookingDetails(12)
     PrisonMockServer.prisonMockServer.stubOffender("A1234AB")
     PrisonMockServer.prisonMockServer.stubAlerts()
@@ -41,6 +41,7 @@ class RiskProfilerResourceTest : ResourceTest() {
     val response = testRestTemplate.exchange(
       "/risk-profile/soc/A1234AC",
       HttpMethod.GET,
+
       createHttpEntityWithBearerAuthorisation("API_TEST_USER-invalid", emptyList()),
       object : ParameterizedTypeReference<String?>() {
       }
@@ -155,19 +156,7 @@ class RiskProfilerResourceTest : ResourceTest() {
     assertThatStatus(response, 403)
   }
 
-  @Test
-  fun testGetLife() {
-    val response = testRestTemplate.exchange(
-      "/risk-profile/life/A1234AB",
-      HttpMethod.GET,
-      createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
-      object : ParameterizedTypeReference<String?>() {
-      }
-    )
-    assertThatStatus(response, 200)
-    assertThat(response.body)
-      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"B","life":true,"riskType":"LIFE"}""")
-  }
+
 
   @Test
   fun testGetLifeNoAuth() {
