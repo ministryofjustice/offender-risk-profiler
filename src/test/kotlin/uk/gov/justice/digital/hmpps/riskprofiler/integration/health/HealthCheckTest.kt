@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter
 import java.util.function.Consumer
 
 class HealthCheckTest : IntegrationTestBase() {
-
   @Test
   fun `Health page reports ok`() {
     webTestClient.get()

@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
+import com.github.tomakehurst.wiremock.matching.EqualToPattern
 import com.google.gson.GsonBuilder
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
@@ -11,6 +12,28 @@ import com.google.gson.stream.JsonWriter
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
+class ResourceOAuthMockServer : WireMockServer(9090) {
+
+  companion object {
+    @JvmStatic
+    val oauthMockServer = ResourceOAuthMockServer().apply { start() }
+  }
+
+  private val gson = GsonBuilder().create()
+
+  fun stubGrantToken() {
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/auth/oauth/token"))
+        .withHeader("Authorization", EqualToPattern("Basic cmlzay1wcm9maWxlcjpjbGllbnRzZWNyZXQ="))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(gson.toJson(mapOf("access_token" to "ABCDE", "token_type" to "bearer")))
+        )
+    )
+  }
+}
 
 class PrisonMockServer : WireMockServer(8080) {
 

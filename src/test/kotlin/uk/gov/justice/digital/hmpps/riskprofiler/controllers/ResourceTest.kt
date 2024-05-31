@@ -15,19 +15,21 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepositoryFactory
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer.Companion.oauthMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PathfinderMockServer.Companion.pathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PrisonMockServer.Companion.prisonMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.ResourceOAuthMockServer.Companion.oauthMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.services.NomisService
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthenticationHelper
 import java.time.Duration
 import java.util.Objects
 import java.util.UUID
 
-@ActiveProfiles(profiles = ["test", "localstack"])
+@ActiveProfiles(profiles = ["test"])
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations= ["classpath:test.properties"])
 abstract class ResourceTest {
 
   @Autowired
@@ -88,11 +90,6 @@ abstract class ResourceTest {
       status,
       response.body
     ).isEqualTo(status)
-  }
-
-  fun assertThatJsonFileAndStatus(response: ResponseEntity<String?>, status: Int, jsonFile: String?) {
-    assertThatStatus(response, status)
-    Assertions.assertThat(getBodyAsJsonContent<Any>(response)).isEqualToJson(jsonFile)
   }
 
   private fun <T> getBodyAsJsonContent(response: ResponseEntity<String?>): JsonContent<T> {
