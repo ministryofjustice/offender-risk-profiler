@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@8
+  hmpps: ministryofjustice/hmpps@7
 
 parameters:
   alerts-slack-channel:
@@ -15,50 +15,29 @@ parameters:
     default: dps-releases
 
 executors:
-  start_redis:
-    docker:
-      - image: "bitnami/redis:7.0.11"
-        environment:
-          - ALLOW_EMPTY_PASSWORD=yes
   java-machine:
     machine:
       #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
       #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
       #      When it is, the kotlinOptions.jvmTarget setting in build.gradle.kts can then be uncommented
-      image: default
+      image: ubuntu-2204:2024.04.4
     environment:
       _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
     working_directory: ~/app
 
 jobs:
-  init_redis:
-    executor: start_redis
-    steps:
-      - run:
-          name: Install and run redis
-          command: docker run -p 6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
-          background: true
   validate:
-    executor:
-      name: hmpps/java_localstack_postgres
-      jdk_tag: "21.0"
-      localstack_tag: "3"
-      postgres_tag: "15.5"
+    executor: java-machine
     steps:
       - checkout
       - hmpps/install_aws_cli
-      - hmpps/wait_till_ready
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
       - run:
-          name: Install and run redis
-          command: docker run -p 6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
+          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
           background: true
-      - run:
-          name: Wait for localstack to be ready
-          command: curl -4 --connect-timeout 30 --retry-connrefused --retry 20 --retry-delay 5 http://localhost:4566
       - run:
           command: ./gradlew check
       - save_cache:
@@ -79,7 +58,6 @@ workflows:
   version: 2
   build-test-and-deploy:
     jobs:
-      - init_redis:
       - validate:
           filters:
             tags:
