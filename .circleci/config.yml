@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@7
+  hmpps: ministryofjustice/hmpps@8
 
 parameters:
   alerts-slack-channel:
@@ -16,6 +16,15 @@ parameters:
 
 executors:
   java-machine:
+    docker:
+      - image: localstack/localstack:3
+        environment:
+          - SERVICES=sns,sqs,s3
+          - DEBUG=${DEBUG- }
+          - DOCKER_HOST=unix:///var/run/docker.sock
+          - DEFAULT_REGION=eu-west-2
+          - ES_PORT_EXTERNAL=4571
+          - DATA_DIR=/tmp/localstack/data
     machine:
       #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
       #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
