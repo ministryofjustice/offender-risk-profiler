@@ -15,8 +15,15 @@ parameters:
     default: dps-releases
 
 executors:
-  java-machine:
+  dockerized:
+    resource_class: medium+
     docker:
+      - image: cimg/openjdk:21.0.2
+      - image: "postgis/postgis"
+        environment:
+          - POSTGRES_USER=integration_test
+          - POSTGRES_PASSWORD=integration_test_password
+          - POSTGRES_DB=approved_premises_integration_test
       - image: localstack/localstack:3
         environment:
           - SERVICES=sns,sqs,s3
@@ -25,6 +32,10 @@ executors:
           - DEFAULT_REGION=eu-west-2
           - ES_PORT_EXTERNAL=4571
           - DATA_DIR=/tmp/localstack/data
+      - image: "bitnami/redis:7.0.11"
+        environment:
+          - ALLOW_EMPTY_PASSWORD=yes
+  java-machine:
     machine:
       #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
       #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
@@ -36,7 +47,7 @@ executors:
 
 jobs:
   validate:
-    executor: java-machine
+    executor: dockerized
     steps:
       - checkout
       - hmpps/install_aws_cli
