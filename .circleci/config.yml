@@ -27,18 +27,53 @@ parameters:
     default: dps-releases
 
 executors:
-  integration-tests:
+  java_localstack_postgres_redis:
     docker:
-      - image: localstack/localstack:1.2.0
+      - image: "bitnami/redis:7.0.11"
         environment:
-          SERVICES: sns,sqs,s3
-          DATA_DIR: /tmp/localstack/data
-          TMP_DIR: /private
-          DEFAULT_REGION: eu-west-2
-      - image: bitnami/redis:7.0.5
+          - ALLOW_EMPTY_PASSWORD=yes
+      - image: cimg/openjdk:<<parameters.jdk_tag>>
+      - image: localstack/<<parameters.localstack_type>>:<<parameters.localstack_tag>>
         environment:
-          ALLOW_EMPTY_PASSWORD=yes
+          - SERVICES=<<parameters.services>>
+          - ES_PORT_EXTERNAL=4571
+          - DEBUG=${DEBUG- }
+          - DOCKER_HOST=unix:///var/run/docker.sock
+          - AWS_EXECUTION_ENV=True
+          - PERSISTENCE=1
+      - image: postgres:<< parameters.postgres_tag >>
+        environment:
+          - POSTGRES_PASSWORD=<< parameters.postgres_password >>
+          - POSTGRES_USER=<< parameters.postgres_username >>
+    environment:
+      _JAVA_OPTIONS: <<parameters.java_options>>
     working_directory: ~/app
+    resource_class: <<parameters.resource_class>>
+    parameters:
+      resource_class:
+        default: medium
+        type: string
+      jdk_tag:
+        type: string
+      localstack_tag:
+        type: string
+      localstack_type:
+        default: "localstack"
+        type: string
+      services:
+        default: "sqs,sns,s3"
+        type: string
+      postgres_tag:
+        type: string
+      postgres_password:
+        default: "dev"
+        type: string
+      postgres_username:
+        default: "root"
+        type: string
+      java_options:
+        default: -Xmx512m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dkotlin.compiler.execution.strategy=in-process -Dorg.gradle.workers.max=1
+        type: string
   java-machine:
     machine:
       #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
@@ -52,7 +87,7 @@ executors:
 jobs:
   validate:
     executor:
-      name: hmpps/java_localstack_postgres
+      name: java_localstack_postgres_redis
       jdk_tag: "21.0"
       localstack_tag: "3"
       postgres_tag: "15.5"
