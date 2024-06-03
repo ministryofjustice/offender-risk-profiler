@@ -15,53 +15,11 @@ parameters:
     default: dps-releases
 
 executors:
-  java_localstack_postgres_redis:
+  init_redis:
     docker:
       - image: "bitnami/redis:7.0.11"
         environment:
           - ALLOW_EMPTY_PASSWORD=yes
-      - image: cimg/openjdk:<<parameters.jdk_tag>>
-      - image: localstack/<<parameters.localstack_type>>:<<parameters.localstack_tag>>
-        environment:
-          - SERVICES=<<parameters.services>>
-          - ES_PORT_EXTERNAL=4571
-          - DEBUG=${DEBUG- }
-          - DOCKER_HOST=unix:///var/run/docker.sock
-          - AWS_EXECUTION_ENV=True
-          - PERSISTENCE=1
-      - image: postgres:<< parameters.postgres_tag >>
-        environment:
-          - POSTGRES_PASSWORD=<< parameters.postgres_password >>
-          - POSTGRES_USER=<< parameters.postgres_username >>
-    environment:
-      _JAVA_OPTIONS: <<parameters.java_options>>
-    working_directory: ~/app
-    resource_class: <<parameters.resource_class>>
-    parameters:
-      resource_class:
-        default: medium
-        type: string
-      jdk_tag:
-        type: string
-      localstack_tag:
-        type: string
-      localstack_type:
-        default: "localstack"
-        type: string
-      services:
-        default: "sqs,sns,s3"
-        type: string
-      postgres_tag:
-        type: string
-      postgres_password:
-        default: "dev"
-        type: string
-      postgres_username:
-        default: "root"
-        type: string
-      java_options:
-        default: -Xmx512m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dkotlin.compiler.execution.strategy=in-process -Dorg.gradle.workers.max=1
-        type: string
   java-machine:
     machine:
       #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
@@ -73,9 +31,11 @@ executors:
     working_directory: ~/app
 
 jobs:
+  init_redis:
+    executor: init_redis
   validate:
     executor:
-      name: java_localstack_postgres_redis
+      name: hmpps/java_localstack_postgres
       jdk_tag: "21.0"
       localstack_tag: "3"
       postgres_tag: "15.5"
@@ -114,6 +74,7 @@ workflows:
   version: 2
   build-test-and-deploy:
     jobs:
+      - init_redis
       - validate:
           filters:
             tags:
