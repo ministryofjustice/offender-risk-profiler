@@ -27,6 +27,18 @@ parameters:
     default: dps-releases
 
 executors:
+  integration-tests:
+    docker:
+      - image: localstack/localstack:1.2.0
+        environment:
+          SERVICES: sns,sqs,s3
+          DATA_DIR: /tmp/localstack/data
+          TMP_DIR: /private
+          DEFAULT_REGION: eu-west-2
+      - image: bitnami/redis:7.0.5
+        environment:
+          ALLOW_EMPTY_PASSWORD=yes
+    working_directory: ~/app
   java-machine:
     machine:
       #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
@@ -39,14 +51,22 @@ executors:
 
 jobs:
   validate:
-    executor: java-machine
+    executor:
+      name: hmpps/java_localstack_postgres
+      jdk_tag: "21.0"
+      localstack_tag: "3"
+      postgres_tag: "15.5"
     steps:
       - checkout
       - hmpps/install_aws_cli
+      - hmpps/wait_till_ready
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
+      - run:
+          name: Wait for localstack to be ready
+          command: curl -4 --connect-timeout 30 --retry-connrefused --retry 20 --retry-delay 5 http://localhost:4566
       - run:
           command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
           background: true
