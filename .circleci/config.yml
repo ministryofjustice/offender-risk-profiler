@@ -27,7 +27,7 @@ parameters:
     default: dps-releases
 
 executors:
-  init_redis:
+  start_redis:
     docker:
       - image: "bitnami/redis:7.0.11"
         environment:
@@ -44,7 +44,12 @@ executors:
 
 jobs:
   init_redis:
-    executor: init_redis
+    executor: start_redis
+    steps:
+      - run:
+          name: Install and run redis
+          command: docker run -p 6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
+          background: true
   validate:
     executor:
       name: hmpps/java_localstack_postgres
