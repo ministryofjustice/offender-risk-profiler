@@ -238,6 +238,25 @@ class PathfinderMockServer : WireMockServer(8083) {
     )
   }
 
+  fun stubPathfinderBand3(nomsId: String) {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/pathfinder/offender/$nomsId"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              """
+  {
+    "id": 123456,
+    "nomsId": "$nomsId",
+    "band": 4
+  }
+              """.trimIndent()
+            )
+        )
+    )
+  }
+
   fun stubPathfinder(nomsId: String) {
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/pathfinder/offender/$nomsId"))

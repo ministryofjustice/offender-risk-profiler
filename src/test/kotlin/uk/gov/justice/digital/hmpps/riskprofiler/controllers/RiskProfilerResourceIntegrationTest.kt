@@ -111,25 +111,40 @@ class RiskProfilerResourceIntegrationTest : IntegrationTestBase() {
 
   @Test
   fun testGetExtremism() {
+    PathfinderMockServer.pathfinderMockServer.stubPathfinderBand3("A1234AX")
+
+
     webTestClient.get()
-      .uri("/risk-profile/extremism/A1234AB?previousOffences=true")
-      //.headers(createHttpEntityWithBearerAuthorisation("API_TEST_USER", RiskProfilerResourceTest.RISK_PROFILER_ROLE)),
-      //.headers{it.authToken(roles = listOf("ROLE_GLOBAL_SEARCH"))}
+      .uri("/risk-profile/extremism/A1234AX?previousOffences=true")
       .headers { it.authToken("API_TEST_USER", roles = RISK_PROFILER_ROLE) }
       .exchange()
       .expectStatus()
       .isOk
       .expectBody()
       .consumeWith(System.out::println)
-      .json("""{"nomsId":"A1234AB","provisionalCategorisation":"C","notifyRegionalCTLead":false,"increasedRiskOfExtremism":false,"riskType":"EXTREMISM"}""")
+      .json("""{"nomsId":"A1234AX","provisionalCategorisation":"C","notifyRegionalCTLead":false,"increasedRiskOfExtremism":false,"riskType":"EXTREMISM"}""")
+  }
+
+  /**
+   * Change provisional categorisation
+   */
+  @Test
+  fun testGetExtremismWhenBandIsFoundInPAthfinderChangeToExtremismRisk() {
+    webTestClient.get()
+      .uri("/risk-profile/extremism/A1234AB?previousOffences=true")
+      .headers { it.authToken("API_TEST_USER", roles = RISK_PROFILER_ROLE) }
+      .exchange()
+      .expectStatus()
+      .isOk
+      .expectBody()
+      .consumeWith(System.out::println)
+      .json("""{"nomsId":"A1234AB","provisionalCategorisation":"B","notifyRegionalCTLead":true,"increasedRiskOfExtremism":true,"riskType":"EXTREMISM"}""")
   }
 
   @Test
   fun testGetLife() {
     webTestClient.get()
       .uri("/risk-profile/life/A1234AB")
-      //.headers(createHttpEntityWithBearerAuthorisation("API_TEST_USER", RiskProfilerResourceTest.RISK_PROFILER_ROLE)),
-      //.headers{it.authToken(roles = listOf("ROLE_GLOBAL_SEARCH"))}
       .headers { it.authToken("API_TEST_USER", roles = RISK_PROFILER_ROLE) }
       .exchange()
       .expectStatus()
@@ -143,7 +158,6 @@ class RiskProfilerResourceIntegrationTest : IntegrationTestBase() {
   fun testGetLifeNoAuth() {
     webTestClient.get()
       .uri("/risk-profile/life/A1234AC")
-      //.headers(createHttpEntityWithBearerAuthorisation("API_TEST_USER", RiskProfilerResourceTest.RISK_PROFILER_ROLE)),
       .headers { it.authToken("API_TEST_USER-invalid", emptyList()) }
       .exchange()
       .expectStatus()
@@ -153,8 +167,6 @@ class RiskProfilerResourceIntegrationTest : IntegrationTestBase() {
   @Test fun testGetSocSecurity() {
     webTestClient.get()
       .uri("/risk-profile/soc/A5015DY")
-      //.headers(createHttpEntityWithBearerAuthorisation("API_TEST_USER", RiskProfilerResourceTest.RISK_PROFILER_ROLE)),
-      //.headers{it.authToken(roles = listOf("ROLE_GLOBAL_SEARCH"))}
       .headers { it.authToken("API_TEST_USER", roles = RISK_PROFILER_ROLE) }
       .exchange()
       .expectStatus()
@@ -168,8 +180,6 @@ class RiskProfilerResourceIntegrationTest : IntegrationTestBase() {
   fun testGetViolence() {
     webTestClient.get()
       .uri("/risk-profile/violence/A1234AB")
-      //.headers(createHttpEntityWithBearerAuthorisation("API_TEST_USER", RiskProfilerResourceTest.RISK_PROFILER_ROLE)),
-      //.headers{it.authToken(roles = listOf("ROLE_GLOBAL_SEARCH"))}
       .headers { it.authToken("API_TEST_USER", roles = RISK_PROFILER_ROLE) }
       .exchange()
       .expectStatus()
@@ -183,7 +193,6 @@ class RiskProfilerResourceIntegrationTest : IntegrationTestBase() {
   fun testGetViolenceNoAuth() {
     webTestClient.get()
       .uri("/risk-profile/violence/A1234AC")
-      //.headers(createHttpEntityWithBearerAuthorisation("API_TEST_USER", RiskProfilerResourceTest.RISK_PROFILER_ROLE)),
       .headers { it.authToken("API_TEST_USER-invalid", emptyList()) }
       .exchange()
       .expectStatus()
@@ -196,8 +205,6 @@ class RiskProfilerResourceIntegrationTest : IntegrationTestBase() {
 
     webTestClient.get()
       .uri("/risk-profile/extremism/A1234AB?previousOffences=true")
-      //.headers(createHttpEntityWithBearerAuthorisation("API_TEST_USER", RiskProfilerResourceTest.RISK_PROFILER_ROLE)),
-      //.headers{it.authToken(roles = listOf("ROLE_GLOBAL_SEARCH"))}
       .headers { it.authToken("API_TEST_USER", roles = RISK_PROFILER_ROLE) }
       .exchange()
       .expectStatus()
@@ -211,7 +218,6 @@ class RiskProfilerResourceIntegrationTest : IntegrationTestBase() {
   fun testGetExtremismNoAuth() {
     webTestClient.get()
       .uri("/risk-profile/extremism/A1234AC")
-      //.headers(createHttpEntityWithBearerAuthorisation("API_TEST_USER", RiskProfilerResourceTest.RISK_PROFILER_ROLE)),
       .headers { it.authToken("API_TEST_USER-invalid", emptyList()) }
       .exchange()
       .expectStatus()
