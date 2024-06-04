@@ -238,7 +238,10 @@ class PathfinderMockServer : WireMockServer(8083) {
     )
   }
 
-  fun stubPathfinderBand3(nomsId: String) {
+  /**
+   * data should be unaltered for band 4
+   */
+  fun stubPathfinderBand4(nomsId: String) {
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/pathfinder/offender/$nomsId"))
         .willReturn(

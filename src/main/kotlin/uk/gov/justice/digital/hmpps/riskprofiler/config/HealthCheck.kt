@@ -24,10 +24,6 @@ abstract class HealthCheck(private val webClient: WebClient) : HealthIndicator {
       .block()
 }
 
-/** TODO
- * add back in
- */
-/*
 @Component
 class Elite2ApiHealth
 constructor(@Qualifier("elite2ApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)
@@ -35,4 +31,3 @@ constructor(@Qualifier("elite2ApiHealthWebClient") webClient: WebClient) : Healt
 @Component
 class PathfinderApiHealth
 constructor(@Qualifier("pathfinderApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)
-*/

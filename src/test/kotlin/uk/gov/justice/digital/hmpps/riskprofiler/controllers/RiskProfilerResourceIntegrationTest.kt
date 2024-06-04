@@ -1,20 +1,14 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.controllers
 
-import org.assertj.core.api.Assertions.assertThat
-import org.awaitility.kotlin.await
-import org.awaitility.kotlin.until
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.IntegrationTestBase
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PrisonMockServer
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.ResourceOAuthMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.ResourceOAuthMockServer.Companion.oauthMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthenticationHelper
 import java.time.Duration
@@ -111,7 +105,7 @@ class RiskProfilerResourceIntegrationTest : IntegrationTestBase() {
 
   @Test
   fun testGetExtremism() {
-    PathfinderMockServer.pathfinderMockServer.stubPathfinderBand3("A1234AX")
+    PathfinderMockServer.pathfinderMockServer.stubPathfinderBand4("A1234AX")
 
 
     webTestClient.get()

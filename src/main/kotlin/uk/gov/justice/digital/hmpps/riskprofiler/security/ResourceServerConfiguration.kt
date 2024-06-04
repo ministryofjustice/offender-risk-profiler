@@ -52,8 +52,10 @@ class ResourceServerConfiguration {
         listOf(
           "/webjars/**",
           "/favicon.ico",
+          "csrf",
           "/health/**",
           "/info",
+          "/ping",
           "/h2-console/**",
           "/v3/api-docs/**",
           "/swagger-ui.html",
