@@ -23,7 +23,7 @@ hmpps.sqs:
       dlqMaxReceiveCount: 1
     events:
       queueName: events
-      dlqName: events_dl
+      dlqName: events-dl
       subscribeTopicId: eventstopic
       subscribeFilter: '{"eventType":[ "CONVICTION_CHANGED", "OFFENDER_MANAGER_CHANGED"] }'
       dlqMaxReceiveCount: 1

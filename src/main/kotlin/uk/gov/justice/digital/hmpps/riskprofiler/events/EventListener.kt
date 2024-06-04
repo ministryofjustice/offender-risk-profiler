@@ -26,12 +26,9 @@ class EventListener(
   fun onOffenderEvent(message: String, attributes: QueueAttributes) {
 
     val event = getOffenderEvent(message)
-    //val sqsMessage: SQSMessage = objectMapper.readValue(message, SQSMessage::class.java)
 
-    val eventType = event.eventType
-
-    if (eventType != null) {
-      when (eventType) {
+    if (event != null) {
+      when (event.eventType) {
         "ALERT-INSERTED", "ALERT-UPDATED", "ALERT-DELETED" -> {
           val isEscape = NomisService.ESCAPE_LIST_ALERT_TYPES.contains(event.alertCode)
           val isSoc = NomisService.SOC_ALERT_TYPES.contains(event.alertCode)
@@ -45,6 +42,8 @@ class EventListener(
               nomisService.evictSocListAlertsCache(nomsId)
             }
             pollPrisonersService.pollPrisoner(nomsId)
+          } else {
+
           }
         }
         "INCIDENT-INSERTED", "INCIDENT-CHANGED-CASES", "INCIDENT-CHANGED-PARTIES", "INCIDENT-CHANGED-RESPONSES", "INCIDENT-CHANGED-REQUIREMENTS" -> {
@@ -53,11 +52,15 @@ class EventListener(
           // Also should apply filter choosing only the relevant types of Assault incidents
           nomsIds.forEach(Consumer { nomsId: String? -> nomisService.evictIncidentsCache(nomsId) })
         }
+
+        else -> {  // What should we do?
+        }
       }
+    } else { // What should we do?
     }
   }
 
-  private fun getOffenderEvent(requestJson: String): OffenderEvent {
+  private fun getOffenderEvent(requestJson: String): OffenderEvent? {
     var event: OffenderEvent? = null
     try {
       val message: Map<String, Any?> = objectMapper.readValue(requestJson)
@@ -71,7 +74,7 @@ class EventListener(
     } catch (e: IOException) {
       log.error("Failed to Parse Message {} {}", requestJson, e)
     }
-    return event!!
+    return event
   }
 
   companion object {
