@@ -14,7 +14,6 @@ import software.amazon.awssdk.services.sqs.model.GetQueueAttributesRequest
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest
-import software.amazon.awssdk.services.sqs.model.StartMessageMoveTaskRequest
 import uk.gov.justice.digital.hmpps.riskprofiler.events.EventType
 import uk.gov.justice.digital.hmpps.riskprofiler.events.HmppsEvent
 import uk.gov.justice.digital.hmpps.riskprofiler.events.Message
@@ -54,16 +53,11 @@ class HmppsQueueSpyBeanTest : IntegrationTestBase() {
     await untilCallTo { riskProfilerChangeSqsDlqClientSpy.countMessagesOnQueue(riskProfilerChangeDlqUrl).get() } matches { it == 0 }
     await untilCallTo { riskProfilerChangeSqsClientSpy.countMessagesOnQueue(riskProfilerChangeQueueUrl).get() } matches { it == 1 }
 
-
-    // todo
-    //verify(riskProfilerChangeSqsClientSpy).handleMessage(event)
-
     val captor = argumentCaptor<SendMessageRequest>()
     verify(riskProfilerChangeSqsDlqClientSpy).sendMessage(captor.capture())
 
-    // todo
-    // assertThat(captor.firstValue.()).contains("000000000000")
-    // assertThat(captor.firstValue.destinationArn()).contains("000000000000")
+     assertThat(captor.firstValue.queueUrl()).contains("000000000000")
+     assertThat(captor.firstValue.messageBody()).contains("message1")
   }
 
   @Test

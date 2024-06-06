@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import org.awaitility.kotlin.await
 import org.awaitility.kotlin.until
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,7 +19,6 @@ import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
-import uk.gov.justice.digital.hmpps.riskprofiler.camel.CsvProcessorRoute
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepositoryFactory
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PathfinderMockServer.Companion.pathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PrisonMockServer.Companion.prisonMockServer
@@ -61,9 +59,9 @@ abstract class IntegrationTestBase {
       nomisService.evictEscapeListAlertsCache("A1234AB")
       nomisService.evictEscapeListAlertsCache("A1234AC")
 
-      prisonMockServer.resetAll()
-      oauthMockServer.resetAll()
-      pathfinderMockServer.resetAll()
+   //   prisonMockServer.resetAll()
+  //    oauthMockServer.resetAll()
+  //    pathfinderMockServer.resetAll()
       await until { allFilesLoaded() }
 
     riskProfilerChangeSqsClientSpy.purgeQueue(PurgeQueueRequest.builder().queueUrl(riskProfilerChangeQueueUrl).build()).get()
@@ -85,9 +83,6 @@ abstract class IntegrationTestBase {
   @SpyBean
   @Qualifier("riskprofilechangequeue-sqs-dlq-client")
   protected lateinit var riskProfilerChangeSqsDlqClientSpy: SqsAsyncClient
-
-  @Autowired
-  protected lateinit var objectMapper: ObjectMapper
 
   @Autowired
   protected lateinit var jwtAuthHelper: JwtAuthHelper

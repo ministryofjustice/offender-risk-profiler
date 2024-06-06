@@ -93,9 +93,7 @@ dependencies {
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
-//  testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
 
-  testImplementation("org.testcontainers:localstack:1.19.7")
   testImplementation("com.amazonaws:aws-java-sdk-core:1.12.704") // Needed so Localstack has access to the AWS SDK V1 API
 
   testImplementation("org.testcontainers:postgresql:1.19.7")
