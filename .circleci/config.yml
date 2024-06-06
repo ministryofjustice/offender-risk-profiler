@@ -1,5 +1,17 @@
 version: 2.1
 
+develop_branch: &develop_branch
+  filters:
+    branches:
+      only:
+        - develop
+
+main_branch: &main_branch
+  filters:
+    branches:
+      only:
+        - main
+
 orbs:
   hmpps: ministryofjustice/hmpps@8
 
@@ -15,19 +27,30 @@ parameters:
     default: dps-releases
 
 executors:
-  java-machine:
-    machine:
-      #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
-      #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
-      #      When it is, the kotlinOptions.jvmTarget setting in build.gradle.kts can then be uncommented
-      image: default
-    environment:
-      _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
-    working_directory: ~/app
+  container_dependencies:
+    resource_class: medium+
+    docker:
+      - image: cimg/openjdk:21.0.2
+      - image: "postgis/postgis"
+        environment:
+          - POSTGRES_USER=form-builder
+          - POSTGRES_PASSWORD=form-builder
+          - POSTGRES_DB=form-builder
+      - image: localstack/localstack:3
+        environment:
+          - SERVICES=sns,sqs,s3
+          - DEBUG=${DEBUG- }
+          - DOCKER_HOST=unix:///var/run/docker.sock
+          - DEFAULT_REGION=eu-west-2
+          - ES_PORT_EXTERNAL=4571
+          - DATA_DIR=/tmp/localstack/data
+      - image: "bitnami/redis:7.0.11"
+        environment:
+          - ALLOW_EMPTY_PASSWORD=yes
 
 jobs:
   validate:
-    executor: java-machine
+    executor: container_dependencies
     steps:
       - checkout
       - hmpps/install_aws_cli
@@ -35,9 +58,6 @@ jobs:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
-      - run:
-          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
-          background: true
       - run:
           command: ./gradlew check
       - save_cache:
@@ -64,33 +84,28 @@ workflows:
               ignore: /.*/
       - hmpps/helm_lint:
           name: helm_lint
-      - hmpps/build_multiplatform_docker:
-          name: build_docker
-          filters:
-            branches:
-              only:
-                - main
+      - hmpps/build_docker:
+          <<: *develop_branch
+          name: dev_branch_build_docker
           requires:
-            - validate
+            - helm_lint
       - hmpps/deploy_env:
-          name: deploy_dev
-          env: "dev"
+          <<: *develop_branch
+          name: dev_branch_deploy_dev
+          env: 'dev'
           slack_notification: true
           slack_channel_name: << pipeline.parameters.nonprod-releases-slack-channel >>
-          context: hmpps-common-vars
-          filters:
-            branches:
-              only:
-                - main
+          context:
+            - hmpps-common-vars
+          requires:
+            - dev_branch_build_docker
+      - hmpps/build_multiplatform_docker:
+          <<: *main_branch
+          name: build_docker
           requires:
             - validate
-            - helm_lint
-            - build_docker
-      - request-preprod-approval:
-          type: approval
-          requires:
-            - deploy_dev
       - hmpps/deploy_env:
+          <<: *main_branch
           name: deploy_preprod
           env: "preprod"
           slack_notification: true
@@ -99,12 +114,16 @@ workflows:
             - offender-risk-profiler-preprod
             - hmpps-common-vars
           requires:
-            - request-preprod-approval
+            - validate
+            - helm_lint
+            - build_docker
       - request-prod-approval:
+          <<: *main_branch
           type: approval
           requires:
             - deploy_preprod
       - hmpps/deploy_env:
+          <<: *main_branch
           name: deploy_prod
           env: "prod"
           slack_notification: true

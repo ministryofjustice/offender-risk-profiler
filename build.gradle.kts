@@ -21,10 +21,13 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.20.2"
+val camelVersion = "4.6.0"
 val awssdkVersion = "1.12.468"
 
 dependencies {
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:0.2.4")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:3.1.3")
+
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   runtimeOnly("com.h2database:h2:2.1.214")
@@ -48,12 +51,10 @@ dependencies {
    implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.24")
-  implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
   // This error occurs when including spring boot camel -
   // Entry BOOT-INF/lib/jaxb-core-4.0.1.jar is a duplicate but no duplicate handling strategy has been set
-  // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
+  implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
   implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
@@ -64,9 +65,8 @@ dependencies {
   implementation("net.javacrumbs.shedlock:shedlock-spring:5.2.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.42.0")
 
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.15")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.15")
-  implementation("org.springdoc:springdoc-openapi-security:1.6.15")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
 
   implementation("io.jsonwebtoken:jjwt:0.12.3")
@@ -88,16 +88,26 @@ dependencies {
 
   implementation("org.slf4j:slf4j-simple:2.0.13")
 
+  implementation("org.apache.camel.springboot:camel-spring-boot-starter:$camelVersion")
+
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
-  testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
-  testImplementation("org.testcontainers:localstack:1.19.7")
+
+  testImplementation("com.amazonaws:aws-java-sdk-core:1.12.704") // Needed so Localstack has access to the AWS SDK V1 API
+
   testImplementation("org.testcontainers:postgresql:1.19.7")
-  testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
+
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+  testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
+
+  testImplementation("org.wiremock:wiremock-standalone:3.5.3")
   testImplementation("com.google.code.gson:gson:2.10.1")
-  testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
-  testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
+  testImplementation("org.awaitility:awaitility-kotlin:4.2.1")
+
+  testImplementation("org.apache.camel:camel-test-spring-junit5:4.6.0")
+  testImplementation("org.apache.camel.springboot:camel-spring-boot-starter:4.6.0")
 }
 
 kotlin {

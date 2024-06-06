@@ -6,19 +6,13 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 /**
- * Application insights now controlled by the spring-boot-starter dependency.  However when the key is not specified
- * we don't get a telemetry bean and application won't start.  Therefore need this backup configuration.
+ * TelemetryClient gets altered at runtime by the java agent and so is a no-op otherwise
  */
 @Configuration
 class ApplicationInsightsConfiguration {
   @Bean
-  fun telemetryClient(): TelemetryClient {
-    log.warn("Application insights configuration missing, returning dummy bean instead")
-
-    return TelemetryClient()
-  }
-
-  companion object {
-    private val log = LoggerFactory.getLogger(this::class.java)
-  }
+  fun telemetryClient(): TelemetryClient = TelemetryClient()
 }
+
+fun TelemetryClient.trackEvent(name: String, properties: Map<String, String>) = this.trackEvent(name, properties, null)
+

@@ -1,10 +1,11 @@
-package uk.gov.justice.digital.hmpps.riskprofiler.config
+package uk.gov.justice.digital.hmpps.riskprofiler.security
 
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.opentelemetry.api.trace.Span
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.context.annotation.Configuration
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.text.ParseException
+import java.util.Optional
 
 @Configuration
 @ConditionalOnExpression("T(org.apache.commons.lang3.StringUtils).isNotBlank('\${applicationinsights.connection.string:}')")
@@ -24,35 +26,30 @@ class ClientTrackingConfiguration(private val clientTrackingInterceptor: ClientT
 
 @Configuration
 class ClientTrackingInterceptor : HandlerInterceptor {
-
-  companion object {
-    private val LOG = LoggerFactory.getLogger(this::class.java)
-  }
-
   override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
     val token = request.getHeader(HttpHeaders.AUTHORIZATION)
-    if (token?.startsWith("Bearer ") == true) {
+    val bearer = "Bearer "
+    if (StringUtils.startsWithIgnoreCase(token, bearer)) {
       try {
         val jwtBody = getClaimsFromJWT(token)
-        val user = jwtBody.getClaim("user_name")?.toString()
-        val currentSpan = getCurrentSpan()
-        user?.run {
-          currentSpan.setAttribute("username", this) // username in customDimensions
-          currentSpan.setAttribute("enduser.id", this) // user_Id at the top level of the request
+        val user = Optional.ofNullable(jwtBody.getClaim("user_name"))
+        user.map { it.toString() }.ifPresent {
+          Span.current().setAttribute("username", it) // username in customDimensions
+          Span.current().setAttribute("enduser.id", it) // user_Id at the top level of the request
         }
-        currentSpan.setAttribute("clientId", jwtBody.getClaim("client_id").toString())
+        Span.current().setAttribute("clientId", jwtBody.getClaim("client_id").toString())
       } catch (e: ParseException) {
-        LOG.warn("problem decoding jwt public key for application insights", e)
+        log.warn("problem decoding jwt public key for application insights", e)
       }
     }
     return true
   }
 
-  fun getCurrentSpan(): Span {
-    return Span.current()
-  }
-
   @Throws(ParseException::class)
   private fun getClaimsFromJWT(token: String): JWTClaimsSet =
     SignedJWT.parse(token.replace("Bearer ", "")).jwtClaimsSet
+
+  companion object {
+    private val log = LoggerFactory.getLogger(ClientTrackingInterceptor::class.java)
+  }
 }
