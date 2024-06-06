@@ -1,5 +1,17 @@
 version: 2.1
 
+develop_branch: &develop_branch
+  filters:
+    branches:
+      only:
+        - develop
+
+main_branch: &main_branch
+  filters:
+    branches:
+      only:
+        - main
+
 orbs:
   hmpps: ministryofjustice/hmpps@7
 
@@ -64,33 +76,28 @@ workflows:
               ignore: /.*/
       - hmpps/helm_lint:
           name: helm_lint
-      - hmpps/build_multiplatform_docker:
-          name: build_docker
-          filters:
-            branches:
-              only:
-                - main
+      - hmpps/build_docker:
+          <<: *develop_branch
+          name: dev_branch_build_docker
           requires:
-            - validate
+            - helm_lint
       - hmpps/deploy_env:
-          name: deploy_dev
-          env: "dev"
+          <<: *develop_branch
+          name: dev_branch_deploy_dev
+          env: 'dev'
           slack_notification: true
           slack_channel_name: << pipeline.parameters.nonprod-releases-slack-channel >>
-          context: hmpps-common-vars
-          filters:
-            branches:
-              only:
-                - main
+          context:
+            - hmpps-common-vars
+          requires:
+            - dev_branch_build_docker
+      - hmpps/build_multiplatform_docker:
+          <<: *main_branch
+          name: build_docker
           requires:
             - validate
-            - helm_lint
-            - build_docker
-      - request-preprod-approval:
-          type: approval
-          requires:
-            - deploy_dev
       - hmpps/deploy_env:
+          <<: *main_branch
           name: deploy_preprod
           env: "preprod"
           slack_notification: true
@@ -99,12 +106,16 @@ workflows:
             - offender-risk-profiler-preprod
             - hmpps-common-vars
           requires:
-            - request-preprod-approval
+            - validate
+            - helm_lint
+            - build_docker
       - request-prod-approval:
+          <<: *main_branch
           type: approval
           requires:
             - deploy_preprod
       - hmpps/deploy_env:
+          <<: *main_branch
           name: deploy_prod
           env: "prod"
           slack_notification: true
