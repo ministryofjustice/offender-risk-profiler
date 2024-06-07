@@ -30,7 +30,7 @@ executors:
   container_dependencies:
     resource_class: medium+
     docker:
-      - image: cimg/openjdk:21.0.2
+      - image: cimg/openjdk:21.0
       - image: "postgis/postgis"
         environment:
           - POSTGRES_USER=form-builder
