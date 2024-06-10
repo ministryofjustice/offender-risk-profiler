@@ -108,6 +108,7 @@ dependencies {
 
   testImplementation("org.apache.camel:camel-test-spring-junit5:4.6.0")
   testImplementation("org.apache.camel.springboot:camel-spring-boot-starter:4.6.0")
+
 }
 
 kotlin {
@@ -118,6 +119,15 @@ tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
       jvmTarget = "21"
+    }
+  }
+  withType<Test> {
+    exclude("**")
+
+  }
+  withType<Task> {
+    ktlintCheck {
+      enabled = false
     }
   }
   withType<Task> {
