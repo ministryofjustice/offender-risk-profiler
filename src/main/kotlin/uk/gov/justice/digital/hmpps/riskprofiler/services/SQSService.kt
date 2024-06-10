@@ -9,7 +9,6 @@ import software.amazon.awssdk.services.sqs.model.SendMessageRequest
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfileChange
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.MissingQueueException
-import uk.gov.justice.hmpps.sqs.MissingTopicException
 import java.util.function.Consumer
 
 @Service
@@ -21,7 +20,7 @@ class SQSService(
   private final val riskProfileChangeQueueSqsClient: SqsAsyncClient
 
   init {
-    val riskProfileChangeQueue = hmppsQueueService.findByQueueId("riskprofilechangequeue") ?: throw MissingTopicException("Could not find topic riskprofilechangequeue")
+    val riskProfileChangeQueue = hmppsQueueService.findByQueueId("risk_profiler_change") ?: throw MissingQueueException("Could not find topic riskprofilechangequeue")
 
     riskProfileChangeQueueSqsClient = riskProfileChangeQueue.sqsClient
   }
