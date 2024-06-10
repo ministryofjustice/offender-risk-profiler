@@ -19,6 +19,7 @@ class SQSService(
 
   private final val riskProfileChangeQueueSqsClient: SqsAsyncClient
 
+
   init {
     val riskProfileChangeQueue = hmppsQueueService.findByQueueId("risk_profiler_change") ?: throw MissingQueueException("Could not find topic riskprofilechangequeue")
 
