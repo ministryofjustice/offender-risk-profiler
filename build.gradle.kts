@@ -88,7 +88,7 @@ dependencies {
 
   implementation("org.slf4j:slf4j-simple:2.0.13")
 
-  implementation("org.apache.camel.springboot:camel-spring-boot-starter:$camelVersion")
+  // implementation("org.apache.camel.springboot:camel-spring-boot-starter:$camelVersion")
 
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
