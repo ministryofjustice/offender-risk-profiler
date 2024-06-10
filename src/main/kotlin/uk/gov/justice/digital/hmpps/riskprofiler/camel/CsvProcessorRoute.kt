@@ -13,10 +13,10 @@ class CsvProcessorRoute(private val dataService: DataService, private val fileSe
   override fun configure() {
     context.isStreamCaching = true
 
-    startPrasScehduler()
-    startOcgmScheduler()
-    startOcgScheduler()
-    startViperScheduler()
+//    startPrasScehduler()
+//    startOcgmScheduler()
+//    startOcgScheduler()
+//    startViperScheduler()
   }
 
   private fun startViperScheduler() {
