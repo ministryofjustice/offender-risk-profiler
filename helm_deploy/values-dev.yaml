@@ -12,18 +12,18 @@ generic-service:
     host: offender-risk-profiler-dev.hmpps.service.justice.gov.uk
 
   namespace_secrets:
-    riskprofilerchange-queue-sqs-instance-output:
+    rp-sqs-instance-output:
       HMPPS_SQS_QUEUES_RISKPROFILERCHANGE_ACCESS_KEY_ID: "access_key_id"
       HMPPS_SQS_QUEUES_RISKPROFILERCHANGE_SECRET_ACCESS_KEY: "secret_access_key"
-      HMPPS_SQS_QUEUES_RISKPROFILERCHANGE_QUEUE_NAME: "risk_profiler_change"
-    events-queue-sqs-instance-output:
+      HMPPS_SQS_QUEUES_RISKPROFILERCHANGE_QUEUE_NAME: "Digital-Prison-Services-dev-risk_profiler_change"
+    oc-events-sqs-instance-output:
       HMPPS_SQS_QUEUES_EVENTS_ACCESS_KEY_ID: "access_key_id"
       HMPPS_SQS_QUEUES_EVENTS_SECRET_ACCESS_KEY: "secret_access_key"
-      HMPPS_SQS_QUEUES_EVENTS_QUEUE_NAME: "events"
-    events-queue-sqs-dl-instance-output:
+      HMPPS_SQS_QUEUES_EVENTS_QUEUE_NAME: "Digital-Prison-Services-dev-offender_categorisation_events_queue"
+    oc-events-sqs-dl-instance-output:
       HMPPS_SQS_QUEUES_EVENTS_DLQ_ACCESS_KEY_ID: "dlq_access_key_id"
       HMPPS_SQS_QUEUES_EVENTS_DLQ_SECRET_ACCESS_KEY: "dlq_secret_access_key"
-      HMPPS_SQS_QUEUES_EVENTS_DLQ_NAME: "events-dl"
+      HMPPS_SQS_QUEUES_EVENTS_DLQ_NAME: "Digital-Prison-Services-dev-offender_categorisation_events_queue_dl"
 
   # CloudPlatform AlertManager receiver to route prometheus alerts to slack
   # See https://user-guide.cloud-platform.service.justice.gov.uk/documentation/monitoring-an-app/how-to-create-alarms.html#creating-your-own-custom-alerts
