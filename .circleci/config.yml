@@ -13,7 +13,7 @@ main_branch: &main_branch
         - main
 
 orbs:
-  hmpps: ministryofjustice/hmpps@9
+  hmpps: ministryofjustice/hmpps@8
 
 parameters:
   alerts-slack-channel:
@@ -30,12 +30,7 @@ executors:
   container_dependencies:
     resource_class: medium+
     docker:
-      - image: cimg/openjdk:21.0
-      - image: "postgis/postgis"
-        environment:
-          - POSTGRES_USER=form-builder
-          - POSTGRES_PASSWORD=form-builder
-          - POSTGRES_DB=form-builder
+      - image: cimg/openjdk:21.0.2
       - image: localstack/localstack:3
         environment:
           - SERVICES=sns,sqs,s3
