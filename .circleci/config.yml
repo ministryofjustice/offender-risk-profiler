@@ -39,7 +39,13 @@ executors:
 
 jobs:
   validate:
-    executor: java-machine
+    executor:
+      name: hmpps/java_localstack_postgres
+      jdk_tag: "21.0"
+      localstack_tag: "3.0.2"
+      postgres_tag: "16"
+    environment:
+      _JAVA_OPTIONS: -Xmx800m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false
     steps:
       - checkout
       - hmpps/install_aws_cli
@@ -47,9 +53,9 @@ jobs:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
+      - hmpps/wait_till_ready_postgres
       - run:
-          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
-          background: true
+          command: ./gradlew -Dorg.gradle.jvmargs="--illegal-access=permit" -Dkotlin.daemon.jvm.options="--illegal-access=permit" check
       - run:
           command: ./gradlew check
       - save_cache:
