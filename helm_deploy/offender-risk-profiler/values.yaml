@@ -7,7 +7,7 @@ generic-service:
 
   image:
     repository: quay.io/hmpps/offender-risk-profiler
-    tag: latest
+    tag: app_version    # override at deployment time
     port: 8080
 
   ingress:
