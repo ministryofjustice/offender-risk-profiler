@@ -3,7 +3,7 @@ generic-service:
   nameOverride: offender-risk-profiler
   productId: "DPS006"
 
-  replicaCount: 4
+  replicaCount: 2
 
   image:
     repository: quay.io/hmpps/offender-risk-profiler
