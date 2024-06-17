@@ -11,15 +11,7 @@ generic-service:
 
   ingress:
     enabled: true
-    modsecurity_enabled: true
-    v1_2_enabled: true
-    v0_47_enabled: false
-    annotations:
     tlsSecretName: offender-risk-profiler-cert
-
-  allowlist:
-    groups:
-      - internal
 
   livenessProbe:
     httpGet:
@@ -38,12 +30,16 @@ generic-service:
     timeoutSeconds: 30
     failureThreshold: 15
 
+  allowlist:
+    groups:
+      - internal
+      -
   env:
     JAVA_OPTS: "-Xmx512m"
+    SERVER_PORT: "8080"
     SPRING_PROFILES_ACTIVE: "s3,postgres,sqs"
     CACHE_TYPE: "elasticache"
     SPRING_REDIS_SSL: "true"
-    AWS_REGION: "eu-west-2"
 
   namespace_secrets:
     rp-sqs-instance-output:
