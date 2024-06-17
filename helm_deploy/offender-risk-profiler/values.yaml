@@ -1,39 +1,19 @@
+---
 generic-service:
   nameOverride: offender-risk-profiler
-  serviceAccountName: offender-risk-profiler
   productId: "DPS006"
+
+  replicaCount: 4
 
   image:
     repository: quay.io/hmpps/offender-risk-profiler
     tag: latest
-    pullPolicy: IfNotPresent
     port: 8080
 
   ingress:
     enabled: true
     tlsSecretName: offender-risk-profiler-cert
 
-  livenessProbe:
-    httpGet:
-      path: /ping
-      port: http
-    periodSeconds: 30
-    initialDelaySeconds: 90
-    timeoutSeconds: 20
-    failureThreshold: 10
-  readinessProbe:
-    httpGet:
-      path: /ping
-      port: http
-    periodSeconds: 20
-    initialDelaySeconds: 60
-    timeoutSeconds: 30
-    failureThreshold: 15
-
-  allowlist:
-    groups:
-      - internal
-      -
   env:
     JAVA_OPTS: "-Xmx512m"
     SERVER_PORT: "8080"
@@ -50,22 +30,18 @@ generic-service:
       HMPPS_SQS_QUEUES_EVENTS_ACCESS_KEY_ID: "access_key_id"
       HMPPS_SQS_QUEUES_EVENTS_SECRET_ACCESS_KEY: "secret_access_key"
       HMPPS_SQS_QUEUES_EVENTS_QUEUE_NAME: "sqs_oce_name"
-
     dps-rds-instance-output:
       DATABASE_NAME: "database_name"
       DATABASE_ENDPOINT: "rds_instance_endpoint"
       DATABASE_PASSWORD: "risk_profiler_password"
       SUPERUSER_USERNAME: "database_username"
       SUPERUSER_PASSWORD: "database_password"
-
     offender-risk-profiler:
       APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
       RISK_PROFILER_CLIENT_ID: "RISK_PROFILER_CLIENT_ID"
       RISK_PROFILER_CLIENT_SECRET: "RISK_PROFILER_CLIENT_SECRET"
-
     risk-profiler-s3-bucket-output:
       S3_BUCKET_NAME: "bucket_name"
-
     oc-elasticache-redis:
       SPRING_REDIS_HOST: "primary_endpoint_address"
       SPRING_REDIS_PASSWORD: "auth_token"
