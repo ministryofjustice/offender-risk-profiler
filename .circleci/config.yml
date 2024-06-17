@@ -1,7 +1,19 @@
 version: 2.1
 
+develop_branch: &develop_branch
+  filters:
+    branches:
+      only:
+        - develop
+
+main_branch: &main_branch
+  filters:
+    branches:
+      only:
+        - main
+
 orbs:
-  hmpps: ministryofjustice/hmpps@8
+  hmpps: ministryofjustice/hmpps@9
 
 parameters:
   alerts-slack-channel:
@@ -17,6 +29,9 @@ parameters:
 executors:
   java-machine:
     machine:
+      #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
+      #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
+      #      When it is, the kotlinOptions.jvmTarget setting in build.gradle.kts can then be uncommented
       image: ubuntu-2004:2022.04.1
     environment:
       _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
@@ -24,23 +39,19 @@ executors:
 
 jobs:
   validate:
-    executor:
-      name: hmpps/java_localstack_postgres
-      jdk_tag: "21.0"
-      localstack_tag: "3.0.2"
-      postgres_tag: "16"
-    environment:
-      _JAVA_OPTIONS: -Xmx800m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false
-
+    executor: java-machine
     steps:
       - checkout
+      - hmpps/install_aws_cli
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
-      - hmpps/wait_till_ready_postgres
       - run:
-          command: ./gradlew -Dorg.gradle.jvmargs="--illegal-access=permit" -Dkotlin.daemon.jvm.options="--illegal-access=permit" check
+          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
+          background: true
+      - run:
+          command: ./gradlew check
       - save_cache:
           paths:
             - ~/.gradle
@@ -54,6 +65,7 @@ jobs:
           paths:
             - build/libs
             - build.gradle.kts
+
 workflows:
   version: 2
   build-test-and-deploy:
@@ -64,33 +76,28 @@ workflows:
               ignore: /.*/
       - hmpps/helm_lint:
           name: helm_lint
-      - hmpps/build_multiplatform_docker:
-          name: build_docker
-          filters:
-            branches:
-              only:
-                - main
+      - hmpps/build_docker:
+          <<: *develop_branch
+          name: dev_branch_build_docker
           requires:
-            - validate
+            - helm_lint
       - hmpps/deploy_env:
-          name: deploy_dev
-          env: "dev"
+          <<: *develop_branch
+          name: dev_branch_deploy_dev
+          env: 'dev'
           slack_notification: true
           slack_channel_name: << pipeline.parameters.nonprod-releases-slack-channel >>
-          context: hmpps-common-vars
-          filters:
-            branches:
-              only:
-                - main
+          context:
+            - hmpps-common-vars
+          requires:
+            - dev_branch_build_docker
+      - hmpps/build_multiplatform_docker:
+          <<: *main_branch
+          name: build_docker
           requires:
             - validate
-            - helm_lint
-            - build_docker
-      - request-preprod-approval:
-          type: approval
-          requires:
-            - deploy_dev
       - hmpps/deploy_env:
+          <<: *main_branch
           name: deploy_preprod
           env: "preprod"
           slack_notification: true
@@ -99,12 +106,16 @@ workflows:
             - offender-risk-profiler-preprod
             - hmpps-common-vars
           requires:
-            - request-preprod-approval
+            - validate
+            - helm_lint
+            - build_docker
       - request-prod-approval:
+          <<: *main_branch
           type: approval
           requires:
             - deploy_preprod
       - hmpps/deploy_env:
+          <<: *main_branch
           name: deploy_prod
           env: "prod"
           slack_notification: true
