@@ -17,10 +17,6 @@ configurations {
   testImplementation { exclude(group = "org.junit.vintage") }
 }
 
-dependencyCheck {
-  suppressionFiles.add("suppressions.xml")
-}
-
 val camelVersion = "4.6.0"
 val awssdkVersion = "1.12.468"
 
