@@ -44,6 +44,8 @@ localstack, which can be run as a docker container. See https://github.com/local
 
 Also, for tests the 'localstack-embedded' profile is used which runs localstack in a thread and configures it with the necessary queues.
 
+SQS Properties are defined in values.yml
+
 #### Tests
 
 Note that **Redis** needs to be running for the unit / integration tests.
