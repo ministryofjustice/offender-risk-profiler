@@ -21,13 +21,11 @@ generic-service:
 
   namespace_secrets:
     rp-sqs-instance-output:
-      HMPPS_SQS_QUEUES_RISKPROFILERCHANGEQUEUE_ACCESS_KEY_ID: "access_key_id"
-      HMPPS_SQS_QUEUES_RISKPROFILERCHANGEQUEUE_SECRET_ACCESS_KEY: "secret_access_key"
       HMPPS_SQS_QUEUES_RISKPROFILERCHANGEQUEUE_QUEUE_NAME: "sqs_rpc_name"
     oc-events-sqs-instance-output:
-      HMPPS_SQS_QUEUES_EVENTS_ACCESS_KEY_ID: "access_key_id"
-      HMPPS_SQS_QUEUES_EVENTS_SECRET_ACCESS_KEY: "secret_access_key"
       HMPPS_SQS_QUEUES_EVENTS_QUEUE_NAME: "sqs_oce_name"
+    oc-events-sqs-dl-instance-output:
+      HMPPS_SQS_QUEUES_EVENTS_DLQ_NAME: "sqs_oce_name"
     dps-rds-instance-output:
       DATABASE_NAME: "database_name"
       DATABASE_ENDPOINT: "rds_instance_endpoint"
