@@ -21,7 +21,7 @@ generic-service:
 
   namespace_secrets:
     rp-sqs-instance-output:
-      HMPPS_SQS_QUEUES_RISKPROFILERCHANGEQUEUE_QUEUE_NAME: "sqs_rpc_name"
+      HMPPS_SQS_QUEUES_RISKPROFILERCHANGE_QUEUE_NAME: "sqs_rpc_name"
     oc-events-sqs-instance-output:
       HMPPS_SQS_QUEUES_EVENTS_QUEUE_NAME: "sqs_oce_name"
     oc-events-sqs-dl-instance-output:

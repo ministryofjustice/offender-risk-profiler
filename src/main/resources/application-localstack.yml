@@ -1,7 +1,7 @@
 hmpps.sqs:
   provider: localstack
   queues:
-    riskprofilechangequeue:
+    riskprofilechange:
       queueName: ${random.uuid}
       dlqName: ${random.uuid}
       subscribeTopicId: riskprofilechangetopic
