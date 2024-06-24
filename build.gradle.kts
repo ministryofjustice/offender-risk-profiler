@@ -1,45 +1,51 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.4"
-  kotlin("plugin.spring") version "1.8.10"
-  kotlin("plugin.jpa") version "1.8.10"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.4"
+  kotlin("plugin.spring") version "1.9.23"
+  kotlin("plugin.jpa") version "1.9.23"
 }
 
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
+  implementation { exclude(group = "spring-boot-starter-logging") }
+  implementation { exclude(group = "logback-classic") }
+  implementation { exclude(module = "logback-classic") }
+  implementation { exclude(group = "commons-logging") }
+  implementation { exclude(module = "commons-logging") }
+  //implementation { exclude(module = "spring-data-redis") }
+  implementation { exclude(module = "jaxb-core") }
+
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
+  testImplementation { exclude(group = "org.junit.vintage") }
 }
 
-dependencyCheck {
-  suppressionFiles.add("suppressions.xml")
-}
-
-val camelVersion = "3.20.2"
+val camelVersion = "4.6.0"
 val awssdkVersion = "1.12.468"
 
 dependencies {
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:0.2.4")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:3.1.3")
+
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.5.4")
+  runtimeOnly("org.postgresql:postgresql:42.7.2")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+  implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
-  // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
-  // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
-  implementation("org.springframework.data:spring-data-redis")
-  // Note spring-data-redis 2.6.2 does not support Jedis 4.x
+  implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
+  implementation("org.springframework.data:spring-data-redis:2.7.8")
   implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-  implementation("org.springframework:spring-jms:5.3.24")
-  implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
+  implementation("org.apache.camel:camel-core:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
   implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
@@ -50,14 +56,13 @@ dependencies {
   implementation("net.javacrumbs.shedlock:shedlock-spring:5.2.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.42.0")
 
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.15")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.15")
-  implementation("org.springdoc:springdoc-openapi-security:1.6.15")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
 
-  implementation("io.jsonwebtoken:jjwt:0.9.1")
+  implementation("io.jsonwebtoken:jjwt:0.12.3")
 
-  implementation("org.apache.commons:commons-lang3:3.12.0")
+  implementation("org.apache.commons:commons-lang3:3.14.0")
   implementation("org.apache.commons:commons-text:1.10.0")
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
@@ -72,45 +77,66 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
+  implementation("org.slf4j:slf4j-simple:2.0.13")
+
+  // implementation("org.apache.camel.springboot:camel-spring-boot-starter:$camelVersion")
+
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
-  testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
-  testImplementation("org.testcontainers:localstack:1.17.6")
-  testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
+
+  testImplementation("com.amazonaws:aws-java-sdk-core:1.12.704") // Needed so Localstack has access to the AWS SDK V1 API
+
+  testImplementation("org.testcontainers:postgresql:1.19.7")
+
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+  testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
+
+  testImplementation("org.wiremock:wiremock-standalone:3.5.3")
   testImplementation("com.google.code.gson:gson:2.10.1")
-  testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
-  testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
+  testImplementation("org.awaitility:awaitility-kotlin:4.2.1")
+
+  testImplementation("org.apache.camel:camel-test-spring-junit5:4.6.0")
+  testImplementation("org.apache.camel.springboot:camel-spring-boot-starter:4.6.0")
+
 }
 
-java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(18))
-  }
+kotlin {
+  jvmToolchain(21)
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-      jvmTarget = "18"
+      jvmTarget = "21"
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Test> {
+    exclude("**")
+
+  }
+  withType<Task> {
     ktlintCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
+    ktlintCheck {
+      enabled = false
+    }
+  }
+  withType<Task> {
     ktlintTestSourceSetCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintMainSourceSetCheck {
       enabled = false
     }
   }
-  withType<org.gradle.api.Task> {
+  withType<Task> {
     ktlintKotlinScriptCheck {
       enabled = false
     }

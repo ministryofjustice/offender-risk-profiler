@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model
 
 import io.swagger.v3.oas.annotations.media.Schema
-import javax.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotBlank
 
 data class LifeProfile(
   val nomsId: @NotBlank String,

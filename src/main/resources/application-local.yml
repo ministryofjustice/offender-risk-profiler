@@ -1,0 +1,20 @@
+
+
+security:
+  oauth2:
+    client:
+      registration:
+        api:
+          client-id: ${risk.profiler.client.id}
+          client-secret: ${risk.profiler.client.secret}
+          authorization-grant-type: client_credentials
+      provider:
+        api:
+          token-uri: ${nomis.auth.url}/oauth/token
+    resourceserver:
+      jwt:
+        jwk-set-uri: ${nomis.auth.url}/.well-known/jwks.json
+
+hmpps:
+  auth:
+    url: https://sign-in-dev.hmpps.service.justice.gov.uk/auth

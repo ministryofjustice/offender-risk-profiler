@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock
+package uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -13,11 +13,11 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class OAuthMockServer : WireMockServer(9090) {
+class ResourceOAuthMockServer : WireMockServer(9090) {
 
   companion object {
     @JvmStatic
-    val oauthMockServer = OAuthMockServer().apply { start() }
+    val oauthMockServer = ResourceOAuthMockServer().apply { start() }
   }
 
   private val gson = GsonBuilder().create()
@@ -234,6 +234,28 @@ class PathfinderMockServer : WireMockServer(8083) {
         .willReturn(
           WireMock.aResponse()
             .withBody("pong")
+        )
+    )
+  }
+
+  /**
+   * data should be unaltered for band 4
+   */
+  fun stubPathfinderBand4(nomsId: String) {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/pathfinder/offender/$nomsId"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              """
+  {
+    "id": 123456,
+    "nomsId": "$nomsId",
+    "band": 4
+  }
+              """.trimIndent()
+            )
         )
     )
   }

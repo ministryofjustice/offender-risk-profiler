@@ -14,15 +14,16 @@ spring:
     redis:
       repositories:
         enabled: false
+      host: localhost
+      port: 6379
+      password:
+      client-name: risk-profiler
+      ssl:
+        enabled: false
 
   redis:
-    host: localhost
-    port: 6379
-    password:
-    ssl: false
     cache:
       timeout-days: 30
-    client-name: risk-profiler
 
   h2:
     console:
@@ -54,7 +55,6 @@ spring:
   datasource:
     # This reopens the H2 database prepared by flyway with default schema and user RISK_PROFILER
     url: 'jdbc:h2:mem:risk-profiler-db;MODE=PostgreSQL;SCHEMA=RISK_PROFILER;IFEXISTS=TRUE'
-    continue-on-error: true
     username: risk_profiler
     password: dummy
 
@@ -68,15 +68,20 @@ spring:
       client:
         registration:
           api:
+            provider: nomis-auth
             client-id: ${risk.profiler.client.id}
             client-secret: ${risk.profiler.client.secret}
             authorization-grant-type: client_credentials
+            scope: read
         provider:
-          api:
+          nomis-auth:
             token-uri: ${nomis.auth.url}/oauth/token
       resourceserver:
         jwt:
           jwk-set-uri: ${nomis.auth.url}/.well-known/jwks.json
+  sql:
+    init:
+      continue-on-error: true
 
 server:
   port: 8080
@@ -115,3 +120,4 @@ management:
 s3:
   provider: aws
   endpoint.region: eu-west-2
+

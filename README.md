@@ -23,8 +23,8 @@
 
 ## Intellij setup
 
-- Install jdk 16
-- Enable Gradle using jdk 16
+- Install jdk 21
+- Enable Gradle using jdk 21
 - set jdk in project structure
 - Enable Annotation Processors at "Settings > Build > Compiler > Annotation Processors"
 
@@ -43,6 +43,8 @@ There is a `localstack` profile for running locally with the sqs resource provid
 localstack, which can be run as a docker container. See https://github.com/localstack/localstack. In this case it is up to you to create the required queues.
 
 Also, for tests the 'localstack-embedded' profile is used which runs localstack in a thread and configures it with the necessary queues.
+
+SQS Properties are defined in values.yml
 
 #### Tests
 
