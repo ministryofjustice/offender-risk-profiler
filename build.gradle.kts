@@ -11,7 +11,8 @@ configurations {
   implementation { exclude(module = "logback-classic") }
   implementation { exclude(group = "commons-logging") }
   implementation { exclude(module = "commons-logging") }
-//  implementation { exclude(module = "spring-data-redis") }
+  //implementation { exclude(module = "spring-data-redis") }
+  implementation { exclude(module = "jaxb-core") }
 
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
   testImplementation { exclude(group = "org.junit.vintage") }
@@ -44,6 +45,7 @@ dependencies {
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
+  implementation("org.apache.camel:camel-core:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
   implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
