@@ -21,7 +21,7 @@ class SQSService(
 
 
   init {
-    val riskProfileChangeQueue = hmppsQueueService.findByQueueId("riskprofilechange") ?: throw MissingQueueException("Could not find queue riskprofilechangequeue")
+    val riskProfileChangeQueue = hmppsQueueService.findByQueueId("riskprofilechangequeue") ?: throw MissingQueueException("Could not find queue riskprofilechangequeue")
 
     riskProfileChangeQueueSqsClient = riskProfileChangeQueue.sqsClient
   }
