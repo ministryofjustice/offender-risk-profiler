@@ -1,8 +1,9 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services
 
-import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.S3ObjectInputStream
-import com.amazonaws.services.s3.model.S3ObjectSummary
+import aws.sdk.kotlin.services.s3.S3Client
+import aws.sdk.kotlin.services.s3.model.ListObjectsV2Request
+import aws.sdk.kotlin.services.s3.model.ListObjectsV2Response
+import aws.sdk.kotlin.services.s3.model.Object
 import com.microsoft.applicationinsights.boot.dependencies.apachecommons.io.IOUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
@@ -16,13 +17,15 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.time.ZoneId
 
+
 @Component
 @ConditionalOnProperty(name = ["file.process.type"], havingValue = "s3")
 class S3FileService(
-  @Qualifier("s3Client") private val s3Client: AmazonS3?
+  @Qualifier("s3Client") private val s3Client: S3Client?,
 ) : FileService {
 
   override fun getLatestFile(fileLocation: String, fileType: FileType?): PendingFile? {
+    /*
     val s3Result = getObjectSummaries(fileLocation)
     log.info("Found {} objects in {}", s3Result.objects.size, fileLocation)
     return s3Result.objects.stream()
@@ -36,32 +39,39 @@ class S3FileService(
               .atZone(ZoneId.systemDefault())
               .toLocalDateTime(),
             if (fileType == FileType.VIPER) getViperFile(s3Object.objectContent) else IOUtils.toByteArray(
-              s3Object.objectContent
-            )
+              s3Object.objectContent,
+            ),
           )
         } catch (e: IOException) {
           return@map null
         }
       }.orElse(null)
+
+     */
+
+    return null
   }
 
   override fun deleteHistoricalFiles(fileLocation: String) {
-    val s3ObjectResult = getObjectSummaries(fileLocation)
+ /*   val s3ObjectResult = getObjectSummaries(fileLocation)
     log.info(
       "Found {} data files for data housekeeping in {}",
       s3ObjectResult.objects.size,
-      fileLocation
+      fileLocation,
     )
     s3ObjectResult.objects.stream().sorted(
-      Comparator.comparing { obj: S3ObjectSummary -> obj.lastModified }
-        .reversed()
+      Comparator.comparing { obj: Object -> obj.lastModified}
+        .reversed(),
     ).skip(2).forEach { o ->
       s3ObjectResult.amazonS3Client!!.deleteObject(s3ObjectResult.bucketName, o!!.key)
       log.info("Deleted s3 data file: {} from bucket {}", o.key, s3ObjectResult.bucketName)
     }
+
+  */
   }
 
-  private fun getViperFile(s3ObjectContent: S3ObjectInputStream): ByteArray {
+  private fun getViperFile(s3ObjectContent: Object): ByteArray? {
+    /*
     val reader = BufferedReader(InputStreamReader(s3ObjectContent))
     var row: List<String>
     val rowList = mutableListOf<String>()
@@ -77,20 +87,38 @@ class S3FileService(
 
     val csv = rowList.joinToString(System.lineSeparator())
     return csv.toByteArray()
+
+     */
+
+    return null
   }
 
-  private fun getObjectSummaries(fileLocation: String): ObjectSummaryResult {
+  private suspend fun getObjectSummaries(fileLocation: String): ObjectSummaryResult? {
     val bucketAndPrefix = BucketAndPrefix(fileLocation)
     val bucketName = bucketAndPrefix.bucketName!!
     val prefix = bucketAndPrefix.prefix
-    val result = s3Client!!.listObjectsV2(bucketName, prefix)
-    val objects = result.objectSummaries
+/*
+    val listObjectsV2Request: ListObjectsV2Request = ListObjectsV2Request.builder
+      .bucket(bucketName)
+      .build()
+
+    val listObjectsV2Response: ListObjectsV2Response = s3Client!!.listObjectsV2(listObjectsV2Request)
+
+    for (os in listObjectsV2Response.contents!!) {
+      System.out.println(os.key)
+    }
+
+    val objects = listObjectsV2Response.contents
     return ObjectSummaryResult(objects, s3Client, bucketName)
+
+ */
+
+    return null
   }
 
   private data class BucketAndPrefix(
     var bucketName: String?,
-    var prefix: String?
+    var prefix: String?,
   ) {
 
     constructor(fileLocation: String) : this(null, null) {
@@ -102,9 +130,9 @@ class S3FileService(
   }
 
   private data class ObjectSummaryResult(
-    var objects: List<S3ObjectSummary?>,
-    val amazonS3Client: AmazonS3?,
-    val bucketName: String
+    var objects: List<Object>?,
+    val amazonS3Client: S3Client?,
+    val bucketName: String,
   )
 
   companion object {

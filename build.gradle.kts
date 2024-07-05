@@ -23,7 +23,9 @@ val awssdkVersion = "1.12.756"
 
 dependencies {
 
-  implementation("com.amazonaws:aws-java-sdk-s3:1.12.756")
+  implementation("aws.sdk.kotlin:s3:1.2.38")
+  //implementation("// https://mvnrepository.com/artifact/software.amazon.awssdk/s3
+  // implementation("software.amazon.awssdk:s3:2.26.15")
 
   implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:0.2.4")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:3.1.3")
@@ -73,8 +75,6 @@ dependencies {
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
-
-  testImplementation("com.amazonaws:aws-java-sdk-core:1.12.704") // Needed so Localstack has access to the AWS SDK V1 API
 
   testImplementation("org.testcontainers:postgresql:1.19.7")
 
