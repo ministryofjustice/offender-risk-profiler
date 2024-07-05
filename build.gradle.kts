@@ -42,14 +42,18 @@ dependencies {
   implementation("org.springframework.data:spring-data-redis:2.7.8")
   implementation("redis.clients:jedis:3.8.0")
 
+  /*
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-
+*/
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-core:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
+  /*
   implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
   implementation("org.apache.camel:camel-aws2-sqs:$camelVersion")
+  */
+
   implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
   implementation("org.apache.camel:camel-timer:$camelVersion")
 
@@ -67,6 +71,7 @@ dependencies {
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
   // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk
+  /*
   implementation("com.amazonaws:aws-java-sdk-s3:$awssdkVersion")
   implementation("com.amazonaws:aws-java-sdk-cloudformation:$awssdkVersion")
   implementation("com.amazonaws:aws-java-sdk-core:$awssdkVersion")
@@ -76,6 +81,7 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sqs:$awssdkVersion")
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
+*/
 
   implementation("org.slf4j:slf4j-simple:2.0.13")
 
