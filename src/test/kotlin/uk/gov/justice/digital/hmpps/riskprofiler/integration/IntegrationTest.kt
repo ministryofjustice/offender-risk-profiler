@@ -1,12 +1,9 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.integration
 
-import com.amazonaws.services.sqs.AmazonSQS
 import com.google.gson.Gson
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.TestingAuthenticationToken

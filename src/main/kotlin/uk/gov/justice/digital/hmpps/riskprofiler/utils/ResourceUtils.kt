@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.utils
 
-import org.apache.commons.io.FileUtils
+import com.microsoft.applicationinsights.boot.dependencies.apachecommons.io.FileUtils
 import org.springframework.util.ResourceUtils
 import java.nio.charset.StandardCharsets
 

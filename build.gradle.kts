@@ -19,9 +19,12 @@ configurations {
 }
 
 val camelVersion = "4.6.0"
-val awssdkVersion = "1.12.468"
+val awssdkVersion = "1.12.756"
 
 dependencies {
+
+  implementation("com.amazonaws:aws-java-sdk-s3:1.12.756")
+
   implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:0.2.4")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:3.1.3")
 
@@ -42,17 +45,10 @@ dependencies {
   implementation("org.springframework.data:spring-data-redis:2.7.8")
   implementation("redis.clients:jedis:3.8.0")
 
-  /*
-  implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
-*/
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-core:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
-  /*
-  implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
-  implementation("org.apache.camel:camel-aws2-sqs:$camelVersion")
-  */
 
   implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
   implementation("org.apache.camel:camel-timer:$camelVersion")
@@ -69,19 +65,6 @@ dependencies {
   implementation("org.apache.commons:commons-lang3:3.14.0")
   implementation("org.apache.commons:commons-text:1.10.0")
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
-
-  // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk
-  /*
-  implementation("com.amazonaws:aws-java-sdk-s3:$awssdkVersion")
-  implementation("com.amazonaws:aws-java-sdk-cloudformation:$awssdkVersion")
-  implementation("com.amazonaws:aws-java-sdk-core:$awssdkVersion")
-  implementation("com.amazonaws:aws-java-sdk-ec2:$awssdkVersion")
-  implementation("com.amazonaws:aws-java-sdk-kms:$awssdkVersion")
-  implementation("com.amazonaws:aws-java-sdk-sns:$awssdkVersion")
-  implementation("com.amazonaws:aws-java-sdk-sqs:$awssdkVersion")
-  implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
-  implementation("com.amazonaws:jmespath-java:$awssdkVersion")
-*/
 
   implementation("org.slf4j:slf4j-simple:2.0.13")
 
