@@ -44,6 +44,9 @@ jobs:
             - gradle-
       - hmpps/wait_till_ready_postgres
       - run:
+          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
+          background: true
+      - run:
           command: ./gradlew -Dorg.gradle.jvmargs="--illegal-access=permit" -Dkotlin.daemon.jvm.options="--illegal-access=permit" check
       - run:
           command: ./gradlew check
