@@ -39,6 +39,10 @@ executors:
           - DEFAULT_REGION=eu-west-2
           - ES_PORT_EXTERNAL=4571
           - DATA_DIR=/tmp/localstack/data
+      - image: postgres:16.1
+        environment:
+          - POSTGRES_PASSWORD=risk_profiler
+          - POSTGRES_USER=risk_profiler
       - image: "bitnami/redis:7.0.11"
         environment:
           - ALLOW_EMPTY_PASSWORD=yes
