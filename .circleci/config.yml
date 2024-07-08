@@ -45,13 +45,7 @@ executors:
 
 jobs:
   validate:
-    executor:
-      name: container_dependencies
-      jdk_tag: "21.0"
-      localstack_tag: "3.0.2"
-      postgres_tag: "14"
-    environment:
-      _JAVA_OPTIONS: -Xmx800m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false
+    executor: container_dependencies
     steps:
       - checkout
       - hmpps/install_aws_cli
