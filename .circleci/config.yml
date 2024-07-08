@@ -26,10 +26,27 @@ parameters:
     type: string
     default: dps-releases
 
+executors:
+  container_dependencies:
+    resource_class: medium+
+    docker:
+      - image: cimg/openjdk:21.0.2
+      - image: localstack/localstack:3
+        environment:
+          - SERVICES=sns,sqs,s3
+          - DEBUG=${DEBUG- }
+          - DOCKER_HOST=unix:///var/run/docker.sock
+          - DEFAULT_REGION=eu-west-2
+          - ES_PORT_EXTERNAL=4571
+          - DATA_DIR=/tmp/localstack/data
+      - image: "bitnami/redis:7.0.11"
+        environment:
+          - ALLOW_EMPTY_PASSWORD=yes
+
 jobs:
   validate:
     executor:
-      name: hmpps/java_localstack_postgres
+      name: container_dependencies
       jdk_tag: "21.0"
       localstack_tag: "3.0.2"
       postgres_tag: "14"
