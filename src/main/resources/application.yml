@@ -14,15 +14,15 @@ spring:
     redis:
       repositories:
         enabled: false
-      host: localhost
-      port: 6379
-      password:
-      client-name: risk-profiler
-      ssl:
-        enabled: false
 
-
-
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    ssl: false
+    cache:
+      timeout-days: 30
+    client-name: risk-profiler
 
   h2:
     console:
