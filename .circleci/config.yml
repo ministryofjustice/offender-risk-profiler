@@ -31,6 +31,7 @@ executors:
     resource_class: medium+
     docker:
       - image: cimg/openjdk:21.0.2
+      - image: circleci/redis:4.0.9-alpine
       - image: localstack/localstack:3
         environment:
           - SERVICES=sns,sqs,s3
@@ -43,7 +44,6 @@ executors:
         environment:
           - POSTGRES_PASSWORD=risk_profiler
           - POSTGRES_USER=risk_profiler
-      - image: "bitnami/redis:7.0.11"
 
 jobs:
   validate:
