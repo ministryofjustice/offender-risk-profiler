@@ -51,6 +51,11 @@ jobs:
     steps:
       - checkout
       - hmpps/install_aws_cli
+      - run:
+          name: Install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.6.1
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
@@ -58,6 +63,12 @@ jobs:
       - run:
           command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
           background: true
+      - run:
+          name: Waiting for Postgres to be ready
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Waiting for Redis primary to be ready
+          command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           command: ./gradlew check
       - save_cache:

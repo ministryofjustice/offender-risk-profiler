@@ -21,9 +21,8 @@ spring:
       ssl:
         enabled: false
 
-  redis:
-    cache:
-      timeout-days: 30
+
+
 
   h2:
     console:
