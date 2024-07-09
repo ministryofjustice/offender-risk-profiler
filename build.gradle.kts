@@ -44,7 +44,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
-  // implementation("redis.clients:jedis:3.8.0")
+  implementation("redis.clients:jedis:4.4.1")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-core:$camelVersion")
