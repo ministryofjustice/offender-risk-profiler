@@ -27,22 +27,35 @@ parameters:
     default: dps-releases
 
 executors:
-  java-machine:
-    machine:
-      #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
-      #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
-      #      When it is, the kotlinOptions.jvmTarget setting in build.gradle.kts can then be uncommented
-      image: ubuntu-2004:2022.04.1
-    environment:
-      _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
-    working_directory: ~/app
+  container_dependencies:
+    resource_class: medium+
+    docker:
+      - image: cimg/openjdk:21.0.2
+      - image: circleci/redis:4.0.9-alpine
+      - image: localstack/localstack:3
+        environment:
+          - SERVICES=sns,sqs,s3
+          - DEBUG=${DEBUG- }
+          - DOCKER_HOST=unix:///var/run/docker.sock
+          - DEFAULT_REGION=eu-west-2
+          - ES_PORT_EXTERNAL=4571
+          - DATA_DIR=/tmp/localstack/data
+      - image: postgres:16.1
+        environment:
+          - POSTGRES_PASSWORD=risk_profiler
+          - POSTGRES_USER=risk_profiler
 
 jobs:
   validate:
-    executor: java-machine
+    executor: container_dependencies
     steps:
       - checkout
       - hmpps/install_aws_cli
+      - run:
+          name: Install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.6.1
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
@@ -50,6 +63,12 @@ jobs:
       - run:
           command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
           background: true
+      - run:
+          name: Waiting for Postgres to be ready
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Waiting for Redis primary to be ready
+          command: dockerize -wait tcp://localhost:6379 -timeout 1m
       - run:
           command: ./gradlew check
       - save_cache:
