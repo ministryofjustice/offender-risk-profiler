@@ -18,7 +18,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import java.time.Duration
 
 @Configuration
-// @EnableCaching
+@EnableCaching
 class CacheConfig {
   @Value("\${spring.redis.cache.timeout-days}")
   private val timeoutDays = 0
@@ -52,10 +52,11 @@ class CacheConfig {
   }
 
   @Bean
-  fun redisTemplate(): RedisTemplate<String, Any> {
-    val template: RedisTemplate<String, Any> = RedisTemplate()
-    template.setConnectionFactory(jedisConnectionFactory())
-    template.valueSerializer = GenericJackson2JsonRedisSerializer()
-    return template
+  fun cacheManager(): RedisCacheManager {
+    val cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+      .entryTtl(Duration.ofDays(timeoutDays.toLong()))
+    return RedisCacheManager.builder(jedisConnectionFactory())
+      .cacheDefaults(cacheConfig)
+      .build()
   }
 }
