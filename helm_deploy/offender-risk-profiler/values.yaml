@@ -7,11 +7,37 @@ generic-service:
   image:
     repository: quay.io/hmpps/offender-risk-profiler
     tag: app_version    # override at deployment time
+    pullPolicy: IfNotPresent
     port: 8080
 
   ingress:
     enabled: true
+    modsecurity_enabled: true
+    v1_2_enabled: true
+    v0_47_enabled: false
+    annotations:
     tlsSecretName: offender-risk-profiler-cert
+
+  allowlist:
+    groups:
+      - internal
+
+  livenessProbe:
+    httpGet:
+      path: /ping
+      port: http
+    periodSeconds: 30
+    initialDelaySeconds: 90
+    timeoutSeconds: 20
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /ping
+      port: http
+    periodSeconds: 20
+    initialDelaySeconds: 60
+    timeoutSeconds: 30
+    failureThreshold: 15
 
   env:
     JAVA_OPTS: "-Xmx512m"
