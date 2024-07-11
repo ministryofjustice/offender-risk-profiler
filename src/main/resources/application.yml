@@ -14,7 +14,7 @@ spring:
     redis:
       host: localhost
       port: 6379
-      password: ${REDIS_SECRET_KEY:}
+      password:
       client-name: risk-profiler
       ssl:
         enabled: false
