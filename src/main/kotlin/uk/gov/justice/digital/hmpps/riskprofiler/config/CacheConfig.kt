@@ -16,8 +16,6 @@ import java.awt.print.Book
 import java.time.Duration
 
 
-@Configuration
-@EnableCaching
 class CacheConfig {
   @Value("\${spring.redis.cache.timeout-days}")
   private val timeoutDays = 0
