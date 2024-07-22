@@ -18,6 +18,7 @@ spring:
       client-name: risk-profiler
       ssl:
         enabled: false
+      database: 0
 
   redis:
     cache:
