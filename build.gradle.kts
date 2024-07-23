@@ -42,6 +42,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
+  implementation("org.springframework.boot:spring-boot-starter-cache")
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
   implementation("redis.clients:jedis:3.8.0")
