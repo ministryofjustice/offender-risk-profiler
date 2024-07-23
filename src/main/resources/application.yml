@@ -15,7 +15,7 @@ spring:
       repositories:
         enabled: true
       host: localhost
-      port: 6380
+      port: 6379
       password: 'mypass'
       ssl:
         enabled: true
@@ -26,10 +26,6 @@ spring:
         pool:
           enabled: true
       timeout: 30
-
-  redis:
-    cache:
-      timeout-days: 30
 
   h2:
     console:
