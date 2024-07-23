@@ -44,6 +44,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
   implementation("org.springframework.boot:spring-boot-starter-cache")
 
+  implementation("redis.clients:jedis:5.1.2")
   implementation("org.apache.commons:commons-pool2:2.12.0")
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")

@@ -1,21 +1,17 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.config
 
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.cache.RedisCacheConfiguration
-import org.springframework.data.redis.cache.RedisCacheManager
-import org.springframework.data.redis.connection.RedisConnectionFactory
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration
-import org.springframework.data.redis.connection.jedis.JedisClientConfiguration
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
-import uk.gov.justice.digital.hmpps.riskprofiler.model.PrisonSupported
-import java.awt.print.Book
-import java.time.Duration
+import org.springframework.data.redis.listener.ChannelTopic
+import org.springframework.data.redis.listener.RedisMessageListenerContainer
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter
+import org.springframework.data.redis.serializer.GenericToStringSerializer
 
 
+@Configuration
 class CacheConfig {
   @Value("\${spring.redis.cache.timeout-days}")
   private val timeoutDays = 0
@@ -35,33 +31,39 @@ class CacheConfig {
   @Value("\${spring.data.redis.client-name}")
   private val clientName: String? = null
 
-  /*
   @Bean
   fun jedisConnectionFactory(): JedisConnectionFactory {
-    val redisConfig = RedisStandaloneConfiguration(server!!, port)
-    redisConfig.setPassword(password)
-    val jedisClientConfigurationBuilder = JedisClientConfiguration.builder()
-    if (ssl) {
-      jedisClientConfigurationBuilder.useSsl()
-    }
-    jedisClientConfigurationBuilder.usePooling()
-    jedisClientConfigurationBuilder.clientName(clientName!!)
-    return JedisConnectionFactory(redisConfig, jedisClientConfigurationBuilder.build())
+    return JedisConnectionFactory()
   }
 
-*/
-/*
   @Bean
-  fun redisConnectionFactory() : RedisConnectionFactory {
-    val redisConnectionFactory = RedisConnectionFactory()
-  }
-*/
-  @Bean
-  fun redisTemplate(connectionFactory: RedisConnectionFactory?): RedisTemplate<Long, PrisonSupported> {
-
-    val template = RedisTemplate<Long, PrisonSupported>()
-    template.connectionFactory = connectionFactory
-    // Add some specific configuration here. Key serializers, etc.
+  fun redisTemplate(): RedisTemplate<String, Any> {
+    val template = RedisTemplate<String, Any>()
+    template.connectionFactory = jedisConnectionFactory()
+    template.valueSerializer = GenericToStringSerializer(Any::class.java)
     return template
+  }
+
+  @Bean
+  fun messageListener(): MessageListenerAdapter {
+    return MessageListenerAdapter(RedisMessageSubscriber())
+  }
+
+  @Bean
+  fun redisContainer(): RedisMessageListenerContainer {
+    val container = RedisMessageListenerContainer()
+    container.connectionFactory = jedisConnectionFactory()
+    container.addMessageListener(messageListener(), topic())
+    return container
+  }
+
+  @Bean
+  fun redisPublisher(): MessagePublisher {
+    return RedisMessagePublisher(redisTemplate(), topic())
+  }
+
+  @Bean
+  fun topic(): ChannelTopic {
+    return ChannelTopic("pubsub:queue")
   }
 }
