@@ -10,6 +10,17 @@ spring:
   application:
     name: offender-risk-profiler-api
 
+  data:
+    redis:
+      repositories:
+        enabled: true
+      host: localhost
+      port: 6379
+
+  redis:
+    cache:
+      timeout-days: 30
+
   h2:
     console:
       enabled: false
