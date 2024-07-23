@@ -16,7 +16,7 @@ spring:
         enabled: true
       host: localhost
       port: 6379
-      password: 'mypass'
+      password:
       ssl:
         enabled: true
       client-name: risk-profiler
