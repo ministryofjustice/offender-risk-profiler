@@ -43,7 +43,7 @@ generic-service:
     JAVA_OPTS: "-Xmx512m"
     SPRING_PROFILES_ACTIVE: "s3,postgres,sqs"
     CACHE_TYPE: "elasticache"
-    SPRING_REDIS_SSL: "true"
+    SPRING_DATA_REDIS_SSL_ENABLED: "true"
     AWS_REGION: "eu-west-2"
 
   namespace_secrets:
