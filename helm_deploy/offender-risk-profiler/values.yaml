@@ -66,8 +66,8 @@ generic-service:
     risk-profiler-s3-bucket-output:
       S3_BUCKET_NAME: "bucket_name"
     oc-elasticache-redis:
-      SPRING_REDIS_HOST: "primary_endpoint_address"
-      SPRING_REDIS_PASSWORD: "auth_token"
+      SPRING_DATA_REDIS_HOST: "primary_endpoint_address"
+      SPRING_DATA_REDIS_PASSWORD: "auth_token"
 
   resources:
     requests:
