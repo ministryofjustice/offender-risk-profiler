@@ -4,6 +4,8 @@ info:
 
 # see https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
   config:
     use-legacy-processing: true
 
