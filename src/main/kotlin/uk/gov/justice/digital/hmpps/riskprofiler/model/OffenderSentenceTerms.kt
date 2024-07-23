@@ -2,9 +2,11 @@ package uk.gov.justice.digital.hmpps.riskprofiler.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
+import org.springframework.data.redis.core.RedisHash
 import java.io.Serializable
 import java.time.LocalDate
 
+@RedisHash("OffenderSentenceTerms")
 @Schema(title = "Offender Sentence terms details for booking id")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class OffenderSentenceTerms(
