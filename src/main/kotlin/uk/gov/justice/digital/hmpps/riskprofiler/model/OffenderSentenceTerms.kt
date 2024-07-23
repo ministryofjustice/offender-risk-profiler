@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.riskprofiler.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
+import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash
 import java.io.Serializable
 import java.time.LocalDate
@@ -11,7 +12,7 @@ import java.time.LocalDate
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class OffenderSentenceTerms(
   @Schema(required = true, title = "Offender booking id.", example = "1132400")
-  private val bookingId: Long? = null,
+  @Id private val bookingId: Long? = null,
 
   @Schema(required = true, title = "Sentence number within booking id.", example = "2")
   private val sentenceSequence: Int? = null,

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash
 import java.io.Serializable
 import java.time.LocalDate
@@ -9,7 +10,7 @@ import java.time.LocalDate
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Alert(
 
-  private val alertId: Long? = null,
+  @Id private val alertId: Long? = null,
   private val bookingId: Long? = null,
   private val offenderNo: String? = null,
   private val alertType: String? = null,
