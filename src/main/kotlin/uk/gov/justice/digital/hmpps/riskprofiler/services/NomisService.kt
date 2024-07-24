@@ -3,8 +3,6 @@ package uk.gov.justice.digital.hmpps.riskprofiler.services
 import jakarta.validation.constraints.NotNull
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -22,24 +20,21 @@ class NomisService(
   @param:Value("\${app.assaults.incident.types:ASSAULT}") private val incidentTypes: List<String?>,
   @param:Value("\${app.assaults.participation.roles}") private val participationRoles: List<String>
 ) {
-  @Cacheable("escapeAlert")
+
   fun getEscapeListAlertsForOffender(nomsId: String): List<Alert> {
     log.info("Getting escape list alerts for noms id {}", nomsId)
     return getAlertsForOffender(nomsId, ESCAPE_LIST_ALERT_TYPES)
   }
 
-  @CacheEvict("escapeAlert")
   fun evictEscapeListAlertsCache(nomsId: String?) {
     log.info("Evicting {} from escapeAlert cache", nomsId)
   }
 
-  @Cacheable("socAlert")
   fun getSocListAlertsForOffender(nomsId: String?): List<Alert> {
     log.info("Getting soc list alerts for noms id {}", nomsId)
     return getAlertsForOffender(nomsId, SOC_ALERT_TYPES)
   }
 
-  @CacheEvict("socAlert")
   fun evictSocListAlertsCache(nomsId: String?) {
     log.info("Evicting {} from socAlert cache", nomsId)
   }
@@ -59,7 +54,6 @@ class NomisService(
     return webClientCallHelper.getForList(uri, SENTENCE_TERMS).body!!
   }
 
-  @Cacheable("incident")
   fun getIncidents(nomsId: @NotNull String?): List<IncidentCase> {
     log.info(
       "Getting incidents for noms id {} and type {}, with roles of {}",
@@ -78,7 +72,6 @@ class NomisService(
     return webClientCallHelper.getForList(uriIncidentsForOffender, INCIDENTS).body!!
   }
 
-  @CacheEvict("incident")
   fun evictIncidentsCache(nomsId: String?) {
     log.info("Evicting {} from incident cache", nomsId)
   }
