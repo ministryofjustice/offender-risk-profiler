@@ -7,7 +7,6 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
 
 // @Configuration
-// @EnableRedisRepositories
 class CacheConfig {
  //  @Bean
   fun redisConnectionFactory(): LettuceConnectionFactory {
