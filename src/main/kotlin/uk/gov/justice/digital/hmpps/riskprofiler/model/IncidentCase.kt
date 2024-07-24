@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import org.springframework.data.redis.core.RedisHash
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+@RedisHash("IncidentCase")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class IncidentCase(val incidentCaseId: Long? = null) : Serializable {
 

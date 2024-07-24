@@ -1,3 +1,4 @@
+---
 generic-service:
   nameOverride: offender-risk-profiler
   serviceAccountName: offender-risk-profiler
@@ -5,7 +6,7 @@ generic-service:
 
   image:
     repository: quay.io/hmpps/offender-risk-profiler
-    tag: latest
+    tag: latest    # override at deployment time
     pullPolicy: IfNotPresent
     port: 8080
 
@@ -42,37 +43,31 @@ generic-service:
     JAVA_OPTS: "-Xmx512m"
     SPRING_PROFILES_ACTIVE: "s3,postgres,sqs"
     CACHE_TYPE: "elasticache"
-    SPRING_REDIS_SSL: "true"
+    SPRING_DATA_REDIS_SSL_ENABLED: "true"
     AWS_REGION: "eu-west-2"
 
   namespace_secrets:
+    rp-sqs-instance-output:
+      HMPPS_SQS_QUEUES_RISKPROFILERCHANGEQUEUE_QUEUE_NAME: "sqs_rpc_name"
+    oc-events-sqs-instance-output:
+      HMPPS_SQS_QUEUES_EVENTS_QUEUE_NAME: "sqs_oce_name"
+    oc-events-sqs-dl-instance-output:
+      HMPPS_SQS_QUEUES_EVENTS_DLQ_NAME: "sqs_oce_name"
     dps-rds-instance-output:
       DATABASE_NAME: "database_name"
       DATABASE_ENDPOINT: "rds_instance_endpoint"
       DATABASE_PASSWORD: "risk_profiler_password"
       SUPERUSER_USERNAME: "database_username"
       SUPERUSER_PASSWORD: "database_password"
-
     offender-risk-profiler:
       APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
       RISK_PROFILER_CLIENT_ID: "RISK_PROFILER_CLIENT_ID"
       RISK_PROFILER_CLIENT_SECRET: "RISK_PROFILER_CLIENT_SECRET"
-
     risk-profiler-s3-bucket-output:
       S3_BUCKET_NAME: "bucket_name"
-
-    rp-sqs-instance-output:
-      SQS_RPC_QUEUE_URL: "sqs_rpc_url"
-
-    oc-events-sqs-instance-output:
-      SQS_EVENTS_QUEUE_NAME: "sqs_oce_name"
-
-    oc-events-sqs-dl-instance-output:
-      SQS_EVENTS_DLQ_QUEUE_NAME: "sqs_oce_name"
-
     oc-elasticache-redis:
-      SPRING_REDIS_HOST: "primary_endpoint_address"
-      SPRING_REDIS_PASSWORD: "auth_token"
+      SPRING_DATA_REDIS_HOST: "primary_endpoint_address"
+      SPRING_DATA_REDIS_PASSWORD: "auth_token"
 
   resources:
     requests:

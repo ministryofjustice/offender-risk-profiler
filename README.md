@@ -23,8 +23,8 @@
 
 ## Intellij setup
 
-- Install jdk 16
-- Enable Gradle using jdk 16
+- Install jdk 21
+- Enable Gradle using jdk 21
 - set jdk in project structure
 - Enable Annotation Processors at "Settings > Build > Compiler > Annotation Processors"
 
@@ -38,11 +38,11 @@ by offender risk profiler health monitoring (e.g. pager duty) and not other syst
 
 #### SQS
 
-Use `sqs` profile to run against an aws sqs resource. See required env variables in application-sqs.properties
-There is a `localstack` profile for running locally with the sqs resource provided by
-localstack, which can be run as a docker container. See https://github.com/localstack/localstack. In this case it is up to you to create the required queues.
+Now uses the hmpps sqs library, dependency hmpps-sqs-spring-boot-starter.
 
-Also, for tests the 'localstack-embedded' profile is used which runs localstack in a thread and configures it with the necessary queues.
+#### S3
+
+
 
 #### Tests
 

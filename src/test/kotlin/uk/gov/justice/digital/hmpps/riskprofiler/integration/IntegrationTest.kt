@@ -1,20 +1,16 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.integration
 
-import com.amazonaws.services.sqs.AmazonSQS
 import com.google.gson.Gson
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.web.reactive.server.WebTestClient
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PathfinderMockServer
-import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PathfinderMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.mocks.PrisonMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.JwtAuthenticationHelper
 import java.time.Duration
 
@@ -22,10 +18,6 @@ import java.time.Duration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ComponentScan
 abstract class IntegrationTest {
-
-  @SpyBean
-  @Qualifier("awsClientForEvents")
-  internal lateinit var awsSqsClient: AmazonSQS
 
   @Autowired
   private lateinit var gson: Gson
@@ -45,9 +37,7 @@ abstract class IntegrationTest {
   @BeforeEach
   fun resetStubs() {
     PrisonMockServer.prisonMockServer.resetAll()
-    OAuthMockServer.oauthMockServer.resetAll()
     PathfinderMockServer.pathfinderMockServer.resetAll()
-    OAuthMockServer.oauthMockServer.stubGrantToken()
     PrisonMockServer.prisonMockServer.stubIncidents()
   }
 

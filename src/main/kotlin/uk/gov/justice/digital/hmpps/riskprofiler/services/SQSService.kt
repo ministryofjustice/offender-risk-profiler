@@ -1,42 +1,49 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services
 
-import com.amazonaws.services.sqs.AmazonSQSAsync
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.util.StdDateFormat
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.cloud.aws.core.env.ResourceIdResolver
-import org.springframework.cloud.aws.messaging.core.QueueMessageChannel
-import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
-import org.springframework.messaging.converter.MappingJackson2MessageConverter
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import software.amazon.awssdk.services.sqs.SqsAsyncClient
+import software.amazon.awssdk.services.sqs.model.SendMessageRequest
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfileChange
+import uk.gov.justice.hmpps.sqs.HmppsQueueService
+import uk.gov.justice.hmpps.sqs.MissingQueueException
+import java.util.function.Consumer
 
 @Service
 class SQSService(
-  @Qualifier("awsSqsClient") amazonSqs: AmazonSQSAsync,
-  @Value("\${sqs.rpc.queue.url}") queueUrl: String
+  hmppsQueueService: HmppsQueueService,
+  private val objectMapper: ObjectMapper
 ) {
-  private val queueTemplate: QueueMessagingTemplate
-  private val amazonSqs: AmazonSQSAsync
-  private val queueUrl: String
-  fun sendRiskProfileChangeMessage(payload: RiskProfileChange) {
-    queueTemplate.convertAndSend(QueueMessageChannel(amazonSqs, queueUrl), payload)
-  }
+
+  //private final val riskProfileChangeQueueSqsClient: SqsAsyncClient
+
 
   init {
-    val mapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
-    mapper.dateFormat = StdDateFormat()
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-    mapper.registerModule(JavaTimeModule())
-    val converter = MappingJackson2MessageConverter()
-    converter.serializedPayloadClass = String::class.java
-    converter.objectMapper = mapper
-    queueTemplate = QueueMessagingTemplate(amazonSqs, null as ResourceIdResolver?, converter)
-    this.queueUrl = queueUrl
-    this.amazonSqs = amazonSqs
+  //  val riskProfileChangeQueue = hmppsQueueService.findByQueueId("riskprofilechangequeue") ?: throw MissingQueueException("Could not find queue riskprofilechangequeue")
+
+ //   riskProfileChangeQueueSqsClient = riskProfileChangeQueue.sqsClient
+  }
+
+  fun sendRiskProfileChangeMessage(payload: RiskProfileChange) {
+
+    try {
+      val request =
+        SendMessageRequest.builder().messageBody(objectMapper.writeValueAsString(payload))
+
+      val r: Consumer<SendMessageRequest.Builder>? = Consumer {
+        SendMessageRequest.builder().messageBody(objectMapper.writeValueAsString(payload))
+      }
+
+    //  riskProfileChangeQueueSqsClient.sendMessage(r)
+
+    } catch (e: JsonProcessingException) {
+      log.error("Failed to convert payload {} to json", payload)
+    }
+  }
+
+  companion object {
+    private val log = LoggerFactory.getLogger(this::class.java)
   }
 }
