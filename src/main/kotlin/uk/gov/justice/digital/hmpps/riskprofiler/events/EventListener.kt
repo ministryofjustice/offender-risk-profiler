@@ -21,7 +21,7 @@ class EventListener(
   private val pollPrisonersService: PollPrisonersService,
   private val objectMapper: ObjectMapper
 ) {
-  @SqsListener("events", factory = "hmppsQueueContainerFactoryProxy")
+ // @SqsListener("events", factory = "hmppsQueueContainerFactoryProxy")
   @Throws(JsonProcessingException::class)
   fun onOffenderEvent(message: String, attributes: QueueAttributes) {
 
