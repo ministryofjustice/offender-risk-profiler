@@ -48,7 +48,7 @@ dependencies {
   implementation("org.apache.commons:commons-pool2:2.12.0")
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
-
+/*
   implementation("org.apache.camel:camel-management:4.6.0")
  // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-core:$camelVersion")
@@ -57,7 +57,7 @@ dependencies {
 
   implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
   implementation("org.apache.camel:camel-timer:$camelVersion")
-
+*/
   implementation("net.javacrumbs.shedlock:shedlock-spring:5.2.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.42.0")
 
