@@ -1,9 +1,12 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.camel
 
+import org.apache.camel.CamelContext
 import org.apache.camel.builder.RouteBuilder
+import org.apache.camel.impl.DefaultCamelContext
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
+
 
 /**
  * Polls the 4 s3 folders for pras, ocgm, ocg and viper
@@ -11,6 +14,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
 @Component
 class CsvProcessorRoute(private val dataService: DataService, private val fileService: FileService) : RouteBuilder() {
   override fun configure() {
+    val context: CamelContext = DefaultCamelContext()
     context.isStreamCaching = true
 
     startPrasScehduler()
