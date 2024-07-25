@@ -18,7 +18,6 @@ configurations {
   testImplementation { exclude(group = "org.junit.vintage") }
 }
 
-val camelVersion = "4.6.0"
 val awssdkVersion = "1.12.756"
 
 dependencies {
@@ -44,15 +43,15 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
   implementation("org.springframework.boot:spring-boot-starter-cache")
 
-  implementation("org.apache.camel.springboot:camel-spring-boot-starter:4.7.0")
-  implementation("org.apache.camel.springboot:camel-spring-boot-bom:4.7.0")
-  implementation("org.apache.camel.springboot:camel-core-starter:4.7.0")
-  implementation("org.apache.camel.springboot:camel-bean-starter:4.7.0")
-  implementation("org.apache.camel.springboot:camel-log-starter:4.7.0")
-  implementation("org.apache.camel.springboot:camel-bean-starter:4.7.0")
-  implementation("org.apache.camel.springboot:camel-timer-starter:4.7.0")
-  implementation("org.apache.camel.springboot:camel-csv-starter:4.7.0")
-  implementation("org.apache.camel.springboot:camel-xslt-starter:4.7.0")
+  implementation("org.apache.camel.springboot:camel-spring-boot-starter")
+  implementation("org.apache.camel.springboot:camel-spring-boot-bom")
+  implementation("org.apache.camel.springboot:camel-core-starter")
+  implementation("org.apache.camel.springboot:camel-bean-starter")
+  implementation("org.apache.camel.springboot:camel-log-starter")
+  implementation("org.apache.camel.springboot:camel-bean-starter")
+  implementation("org.apache.camel.springboot:camel-timer-starter")
+  implementation("org.apache.camel.springboot:camel-csv-starter")
+  implementation("org.apache.camel.springboot:camel-xslt-starter")
 
   implementation("org.apache.commons:commons-pool2:2.12.0")
 
