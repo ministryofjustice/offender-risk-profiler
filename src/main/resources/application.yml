@@ -2,6 +2,10 @@ info:
   app:
      name: Offender Risk Profiler API
 
+camel:
+  routecontroller:
+    thread-pool-size: 4
+
 # see https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html
 spring:
   config:
