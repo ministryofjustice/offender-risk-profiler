@@ -43,12 +43,13 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
   implementation("org.springframework.boot:spring-boot-starter-cache")
+  implementation("org.apache.camel.springboot:camel-spring-boot-starter:4.6.0")
 
   implementation("org.apache.commons:commons-pool2:2.12.0")
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
 
-  implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
+ // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-core:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
   implementation("org.apache.camel:camel-csv:$camelVersion")
