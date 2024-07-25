@@ -82,6 +82,7 @@ server:
     remote-ip:
       remote-ip-header: x-forwarded-for
       protocol_header: x-forwarded-proto
+  shutdown: graceful
 
 logging:
   level:

@@ -10,7 +10,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 
 
 @SpringBootApplication
-@EnableRedisRepositories(basePackages = ["uk.gov.justice.digital.hmpps.riskprofiler.cache"])
+// @EnableRedisRepositories(basePackages = ["uk.gov.justice.digital.hmpps.riskprofiler.cache"])
 @EnableJpaRepositories(basePackages = ["uk.gov.justice.digital.hmpps.riskprofiler.dao"])
 @EnableCaching
 class OffenderRiskProfilerApplication
