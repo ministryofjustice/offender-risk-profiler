@@ -52,6 +52,7 @@ dependencies {
   implementation("org.apache.camel.springboot:camel-bean-starter:4.7.0")
   implementation("org.apache.camel.springboot:camel-timer-starter:4.7.0")
   implementation("org.apache.camel.springboot:camel-csv-starter:4.7.0")
+  implementation("org.apache.camel.springboot:camel-xslt-starter:4.7.0")
 
   implementation("org.apache.commons:commons-pool2:2.12.0")
 
