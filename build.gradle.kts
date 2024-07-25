@@ -49,6 +49,7 @@ dependencies {
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
 
+  implementation("org.apache.camel:camel-management:4.6.0")
  // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
   implementation("org.apache.camel:camel-core:$camelVersion")
   implementation("org.apache.camel:camel-bean:$camelVersion")
