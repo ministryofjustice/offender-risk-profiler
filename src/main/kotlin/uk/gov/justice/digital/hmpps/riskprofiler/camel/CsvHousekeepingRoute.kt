@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
 
 
-@Component
+// @Component
 class CsvHousekeepingRoute(private val fileService: FileService) : RouteBuilder() {
   override fun configure() {
     val context: CamelContext = DefaultCamelContext()

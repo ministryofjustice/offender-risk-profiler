@@ -11,7 +11,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
 /**
  * Polls the 4 s3 folders for pras, ocgm, ocg and viper
  */
-@Component
+// @Component
 class CsvProcessorRoute(private val dataService: DataService, private val fileService: FileService) : RouteBuilder() {
   override fun configure() {
     val context: CamelContext = DefaultCamelContext()
