@@ -66,8 +66,6 @@ dependencies {
   implementation("org.apache.commons:commons-text:1.10.0")
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
-  implementation("org.slf4j:slf4j-simple:2.0.13")
-
   // implementation("org.apache.camel.springboot:camel-spring-boot-starter:$camelVersion")
 
   testImplementation("junit:junit:4.13.2")
