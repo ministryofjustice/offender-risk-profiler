@@ -67,6 +67,7 @@ dependencies {
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
   // implementation("org.apache.camel.springboot:camel-spring-boot-starter:$camelVersion")
+  implementation("ch.qos.logback:logback-core:1.5.6")
 
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
