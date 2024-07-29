@@ -43,13 +43,8 @@ dependencies {
 
   implementation("org.apache.camel.springboot:camel-spring-boot-starter:4.5.0")
   implementation("org.apache.camel.springboot:camel-spring-boot-bom:4.5.0")
-  implementation("org.apache.camel.springboot:camel-core-starter:4.5.0")
-  implementation("org.apache.camel.springboot:camel-bean-starter:4.5.0")
-  implementation("org.apache.camel.springboot:camel-log-starter:4.5.0")
-  implementation("org.apache.camel.springboot:camel-bean-starter:4.5.0")
-  implementation("org.apache.camel.springboot:camel-timer-starter:4.5.0")
-  implementation("org.apache.camel.springboot:camel-csv-starter:4.5.0")
-  implementation("org.apache.camel.springboot:camel-xslt-starter:4.5.0")
+
+  implementation("io.netty:netty-all:4.1.101.Final")
 
   implementation("org.apache.commons:commons-pool2:2.12.0")
 
