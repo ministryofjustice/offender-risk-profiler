@@ -4,6 +4,15 @@ plugins {
   kotlin("plugin.jpa") version "1.9.23"
 }
 
+configurations {
+  implementation {
+    exclude(module = "commons-logging")
+    exclude(module = "log4j")
+    exclude(module = "c3p0")
+    exclude(module = "tomcat-jdbc")
+  }
+}
+
 val camelVersion = "4.6.0"
 val awssdkVersion = "1.12.756"
 
