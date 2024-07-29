@@ -10,6 +10,7 @@ configurations {
     exclude(module = "log4j")
     exclude(module = "c3p0")
     exclude(module = "tomcat-jdbc")
+    exclude(module = "spring-boot-graceful-shutdown")
   }
 }
 
@@ -27,9 +28,10 @@ dependencies {
 
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-  runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
+
   runtimeOnly("org.postgresql:postgresql:42.7.2")
+
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-security")
@@ -53,16 +55,19 @@ dependencies {
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
   implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
-/*
-  implementation("org.apache.camel:camel-management:4.6.0")
- // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
-  implementation("org.apache.camel:camel-core:$camelVersion")
-  implementation("org.apache.camel:camel-bean:$camelVersion")
-  implementation("org.apache.camel:camel-csv:$camelVersion")
 
-  implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
-  implementation("org.apache.camel:camel-timer:$camelVersion")
-*/
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.32.0")
+
+  /*
+    implementation("org.apache.camel:camel-management:4.6.0")
+   // implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
+    implementation("org.apache.camel:camel-core:$camelVersion")
+    implementation("org.apache.camel:camel-bean:$camelVersion")
+    implementation("org.apache.camel:camel-csv:$camelVersion")
+
+    implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
+    implementation("org.apache.camel:camel-timer:$camelVersion")
+  */
   implementation("net.javacrumbs.shedlock:shedlock-spring:5.2.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.42.0")
 
@@ -77,7 +82,7 @@ dependencies {
   implementation("com.pauldijou:jwt-core_2.11:5.0.0")
 
   // implementation("org.apache.camel.springboot:camel-spring-boot-starter:$camelVersion")
-  implementation("org.slf4j:slf4j-api:2.0.13")
+  //implementation("org.slf4j:slf4j-api:2.0.13")
 
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.springframework.security:spring-security-test")
