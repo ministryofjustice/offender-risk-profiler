@@ -17,13 +17,13 @@ class SQSService(
   private val objectMapper: ObjectMapper
 ) {
 
-  private final val riskProfileChangeQueueSqsClient: SqsAsyncClient
+ // private final val riskProfileChangeQueueSqsClient: SqsAsyncClient
 
 
   init {
-    val riskProfileChangeQueue = hmppsQueueService.findByQueueId("riskprofilechangequeue") ?: throw MissingQueueException("Could not find queue riskprofilechangequeue")
+ //   val riskProfileChangeQueue = hmppsQueueService.findByQueueId("riskprofilechangequeue") ?: throw MissingQueueException("Could not find queue riskprofilechangequeue")
 
-    riskProfileChangeQueueSqsClient = riskProfileChangeQueue.sqsClient
+//    riskProfileChangeQueueSqsClient = riskProfileChangeQueue.sqsClient
   }
 
   fun sendRiskProfileChangeMessage(payload: RiskProfileChange) {
@@ -36,7 +36,7 @@ class SQSService(
         SendMessageRequest.builder().messageBody(objectMapper.writeValueAsString(payload))
       }
 
-      riskProfileChangeQueueSqsClient.sendMessage(r)
+//      riskProfileChangeQueueSqsClient.sendMessage(r)
 
     } catch (e: JsonProcessingException) {
       log.error("Failed to convert payload {} to json", payload)
