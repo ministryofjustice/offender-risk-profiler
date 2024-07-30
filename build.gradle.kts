@@ -49,9 +49,9 @@ dependencies {
   implementation("org.apache.commons:commons-pool2:2.12.0")
 
   implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
-  implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
+ // implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
 
-  ///implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.32.0")
+//  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:1.32.0")
 
   /*
     implementation("org.apache.camel:camel-management:4.6.0")
