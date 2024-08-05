@@ -20,13 +20,14 @@ class LocalstackConfig {
   @Bean("awsClientForEvents", "awsDlqClientForEvents", "awsSqsClient")
   @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "localstack")
   @Primary
-  fun awsSqsClient(
+  fun awsSqsClientLocalstack(
     @Value("\${sqs.events.endpoint.url}") serviceEndpoint: String?,
-    @Value("\${cloud.aws.region.static}") region: String?
+    @Value("\${cloud.aws.region.static}") region: String?,
+    @Value("\${s3.aws.access.key.id}") accessKey: String,
+    @Value("\${s3.aws.secret.access.key}") secretKey: String,
   ): AmazonSQSAsync {
-    val creds = AnonymousAWSCredentials()
     return AmazonSQSAsyncClientBuilder.standard()
-      .withCredentials(AWSStaticCredentialsProvider(creds))
+      .withCredentials(AWSStaticCredentialsProvider(BasicAWSCredentials(accessKey, secretKey)))
       .withEndpointConfiguration(EndpointConfiguration(serviceEndpoint, region))
       .build()
   }

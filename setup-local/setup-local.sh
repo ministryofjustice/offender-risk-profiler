@@ -12,8 +12,6 @@ set -e
 export TERM=ansi
 export AWS_ACCESS_KEY_ID=foo
 export AWS_SECRET_ACCESS_KEY=bar
-export AWS_SESSION_TOKEN=foo
-export AWS_SECURITY_TOKEN=bar
 export AWS_DEFAULT_REGION=eu-west-2
 
 echo 'Starting localstack bucket setup'
@@ -40,7 +38,5 @@ echo 'Listing all queues in Localstack'
 aws --endpoint-url=http://localstack:4566 sqs list-queues
 
 aws configure list
-
-aws macie2 describe-buckets  --criteria '{"bucketName":{"prefix":"testbucket"}}'
 
 echo All Ready
