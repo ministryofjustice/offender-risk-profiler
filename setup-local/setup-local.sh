@@ -18,7 +18,7 @@ echo 'Starting localstack bucket setup'
 
 aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name events-dl
 aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name events
-aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name riskprofilechangequeue
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name risk_profiler_change
 
 aws --endpoint-url=http://localhost:4566 s3 mb s3://testbucket
 
