@@ -38,8 +38,11 @@ This simulates the aws environment with sqs, s3, Redis, Postrgres.
 
  - It will create the sqs listeners required - events, events-dl
  - riskprofilerchangequeue producer queue 
- - s3 testbucket with thw following folders: ocgm, viper, pras and ocg
+ - s3 testbucket with the following folders: ocgm, viper, pras and ocg
  - populate ocgm, viper, pras and ocg with dummy .csv test data files
+
+
+**Run the sql script to create tables at setup-local\setup_sql_tables.sql**
 
 ### LocalStack Desktop
 
