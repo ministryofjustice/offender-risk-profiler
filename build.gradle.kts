@@ -21,13 +21,26 @@ dependencies {
 
   runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.5.4")
+  runtimeOnly("org.postgresql:postgresql:42.7.2")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
+  //
+  implementation("org.springframework.boot:spring-boot-starter:2.7.9")
+
+  implementation("org.springframework.security:spring-security-config:5.7.10")
+  implementation("org.springframework.boot:spring-boot-actuator-autoconfigure:2.7.11")
+  implementation("org.springframework.boot:spring-boot-autoconfigure:2.7.12")
+  implementation("org.springframework.security:spring-security-web:5.7.12")
+  implementation("org.springframework.security:spring-security-core:5.7.12")
+  implementation("org.springframework:spring-aop:5.3.34")
+
+  implementation("org.springframework:spring-web:5.3.39")
+  //
 
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
