@@ -34,6 +34,14 @@ dependencies {
   implementation("io.projectreactor.netty:reactor-netty-http:1.0.39")
   implementation("io.netty:netty-codec-http2:4.1.112.Final")
   implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.93")
+
+  // 3
+  implementation("software.amazon.ion:ion-java:1.10.5")
+  implementation("org.springframework:spring-expression:5.3.27")
+
+  testImplementation("com.jayway.jsonpath:json-path:2.9.0")
+
+
   //
   implementation("org.springframework.boot:spring-boot-starter:2.7.9")
 
