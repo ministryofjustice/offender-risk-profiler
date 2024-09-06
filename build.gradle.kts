@@ -29,6 +29,11 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
+  // 2
+  implementation("io.projectreactor.netty:reactor-netty-core:1.0.39")
+  implementation("io.projectreactor.netty:reactor-netty-http:1.0.39")
+  implementation("io.netty:netty-codec-http2:4.1.112.Final")
+  implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.93")
   //
   implementation("org.springframework.boot:spring-boot-starter:2.7.9")
 
