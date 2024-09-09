@@ -1,0 +1,82 @@
+version: '3.7'
+services:
+
+  risk-profiler-db:
+    image: postgres
+    networks:
+      - hmpps
+    container_name: risk-profiler-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=risk-profiler
+      - POSTGRES_USER=risk-profiler
+      - POSTGRES_DB=risk-profiler
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      # copy the sql script to create tables
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+  redis:
+    image: 'redis'
+    networks:
+      - hmpps
+    container_name: rf-redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '6379:6379'
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    networks:
+      - hmpps
+    container_name: rf-localstack
+    environment:
+      - SERVICES=sqs,s3,sns
+      - DEFAULT_REGION=eu-west-2
+    volumes:
+      - './setup-local/setup-local.sh:/etc/localstack/init/ready.d/init-aws.sh'
+      - './setup-local/VIPER-Dummy.csv:/etc/localstack/init/ready.d/buckets/VIPER-Dummy.csv'
+      - './setup-local/PRAS-Dummy.csv:/etc/localstack/init/ready.d/buckets/PRAS-Dummy.csv'
+      - './setup-local/OCG-Dummy.csv:/etc/localstack/init/ready.d/buckets/OCG-Dummy.csv'
+      - './setup-local/OCGM-Dummy.csv:/etc/localstack/init/ready.d/buckets/OCGM-Dummy.csv'
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  setup-localstack-resources:
+    image: jetbrainsinfra/aws-cli
+    networks:
+      - hmpps
+    depends_on:
+      - localstack
+    volumes:
+      - ./dev_env:/project/dev_env
+      - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
+      - /var/run/docker.sock:/var/run/docker.sock
+    container_name: setup-aws-resources
+    environment:
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_DEFAULT_REGION=eu-west-2
+    entrypoint: /bin/sh -c
+    command: >
+      "
+        while [[ $$(curl -s -o /dev/null -w ''%{http_code}'' localstack:4566) != "200" ]]; do
+          echo 'Risk Profiler AWS - awaiting localstack service start'
+          sleep 10
+        done
+        aws --endpoint-url=http://localstack:4566 s3 ls
+      
+        aws --endpoint-url=http://localstack:4566 s3 ls s3://testbucket --recursive 
+      
+        aws --endpoint-url=http://localstack:4566 sqs list-queues
+
+        exit 0
+      "
+
+networks:
+  hmpps:

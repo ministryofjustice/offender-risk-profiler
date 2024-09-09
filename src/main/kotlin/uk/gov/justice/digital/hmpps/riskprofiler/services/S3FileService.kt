@@ -17,7 +17,6 @@ import java.io.InputStreamReader
 import java.time.ZoneId
 
 @Component
-@ConditionalOnProperty(name = ["file.process.type"], havingValue = "s3")
 class S3FileService(
   @Qualifier("s3Client") private val s3Client: AmazonS3?
 ) : FileService {
