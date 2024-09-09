@@ -29,13 +29,17 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
-  // 2
   implementation("io.projectreactor.netty:reactor-netty-core:1.0.39")
   implementation("io.projectreactor.netty:reactor-netty-http:1.0.39")
   implementation("io.netty:netty-codec-http2:4.1.112.Final")
   implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.93")
 
   // 3
+
+    //  implementation("ch.qos.logback:logback-classic:1.3.12")
+ // implementation("ch.qos.logback:logback-core:1.3.12")
+ // implementation("com.microsoft.azure:applicationinsights-core:2.6.4")
+
   implementation("software.amazon.ion:ion-java:1.10.5")
   implementation("org.springframework:spring-expression:5.3.27")
 
@@ -43,6 +47,7 @@ dependencies {
 
 
   //
+
   implementation("org.springframework.boot:spring-boot-starter:2.7.9")
 
   implementation("org.springframework.security:spring-security-config:5.7.10")
@@ -53,7 +58,6 @@ dependencies {
   implementation("org.springframework:spring-aop:5.3.34")
 
   implementation("org.springframework:spring-web:5.3.39")
-  //
 
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
@@ -99,7 +103,6 @@ dependencies {
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
   testImplementation("junit:junit:4.13.2")
-  testImplementation("org.springframework.security:spring-security-test")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
   testImplementation("org.testcontainers:localstack:1.17.6")
@@ -107,6 +110,23 @@ dependencies {
   testImplementation("com.google.code.gson:gson:2.10.1")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
+
+  //testImplementation("org.springframework.security:spring-security-test")
+
+  testImplementation("com.jayway.jsonpath:json-path:2.9.0")
+  testImplementation("jakarta.xml.bind:jakarta.xml.bind-api:2.3.3")
+  testImplementation("org.assertj:assertj-core:4.5.1")
+  testImplementation("org.hamcrest:hamcrest:2.2")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+  testImplementation("org.mockito:mockito-core:4.5.1")
+  testImplementation("org.skyscreamer:jsonassert:1.5.1")
+  testImplementation("org.springframework.boot:spring-boot-starter:2.7.9")
+  testImplementation("org.springframework.boot:spring-boot-test-autoconfigure:2.7.9")
+  testImplementation("org.springframework.boot:spring-boot-test:2.7.9")
+  testImplementation("org.xmlunit:xmlunit-core:2.9.1")
+
+  testImplementation("org.springframework.security:spring-security-test")
+
 }
 
 java {
