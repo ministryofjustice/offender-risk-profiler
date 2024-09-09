@@ -7,6 +7,8 @@ plugins {
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
+  implementation { exclude(module = "ion-java:1.0.2") }
+  implementation { exclude(module = "json-smart:2.4.8") }
   // implementation { exclude(module = "applicationinsights-logging-logback") }
  //    implementation { exclude(module = "logback-classic:1.3.11") }
  // implementation { exclude(module = "logback-core:1.3.11") }
