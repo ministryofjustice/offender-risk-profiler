@@ -115,7 +115,7 @@ dependencies {
 
   testImplementation("com.jayway.jsonpath:json-path:2.9.0")
   testImplementation("jakarta.xml.bind:jakarta.xml.bind-api:2.3.3")
-  testImplementation("org.assertj:assertj-core:4.5.1")
+  testImplementation("org.assertj:assertj-core:3.22.0")
   testImplementation("org.hamcrest:hamcrest:2.2")
   testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
   testImplementation("org.mockito:mockito-core:4.5.1")
