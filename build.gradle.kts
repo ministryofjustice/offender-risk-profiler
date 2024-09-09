@@ -7,8 +7,8 @@ plugins {
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
-  implementation { exclude(module = "ion-java:1.0.2") }
-  implementation { exclude(module = "json-smart:2.4.8") }
+//  implementation { exclude(module = "ion-java:1.0.2") }
+//  implementation { exclude(module = "json-smart:2.4.8") }
   // implementation { exclude(module = "applicationinsights-logging-logback") }
  //    implementation { exclude(module = "logback-classic:1.3.11") }
  // implementation { exclude(module = "logback-core:1.3.11") }
@@ -33,7 +33,9 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-  implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+  implementation("org.springframework.boot:spring-boot-starter-oauth2-client") {
+    exclude(module = "json-smart")
+  }
 
   implementation("io.projectreactor.netty:reactor-netty-core:1.0.39")
   implementation("io.projectreactor.netty:reactor-netty-http:1.0.39")
@@ -51,12 +53,14 @@ dependencies {
  // testImplementation("ch.qos.logback:logback-classic:1.5.8")
  // implementation("ch.qos.logback:logback-core:1.5.8")
 
-  implementation("net.minidev:json-smart:2.4.9")
+   implementation("net.minidev:json-smart:2.4.9")
 
   // implementation("software.amazon.ion:ion-java:1.10.5")
   implementation("org.springframework:spring-expression:5.3.27")
 //  testImplementation("software.amazon.ion:ion-java:1.10.5")
-  testImplementation("com.jayway.jsonpath:json-path:2.9.0")
+  testImplementation("com.jayway.jsonpath:json-path:2.9.0") {
+    exclude(module = "json-smart")
+  }
 
 
   //
@@ -78,7 +82,9 @@ dependencies {
   // Note spring-data-redis 2.6.2 does not support Jedis 4.x
   implementation("redis.clients:jedis:3.8.0")
 
-  implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
+  implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE") {
+    exclude(module = "ion-java")
+  }
   implementation("org.springframework:spring-jms:5.3.24")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
