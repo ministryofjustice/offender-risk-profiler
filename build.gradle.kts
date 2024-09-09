@@ -18,7 +18,7 @@ dependencyCheck {
 }
 
 val camelVersion = "3.20.2"
-val awssdkVersion = "1.12.771"
+val awssdkVersion = "1.12.468"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
