@@ -7,6 +7,10 @@ plugins {
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
+  // implementation { exclude(module = "applicationinsights-logging-logback") }
+ //    implementation { exclude(module = "logback-classic:1.3.11") }
+ // implementation { exclude(module = "logback-core:1.3.11") }
+
 }
 
 dependencyCheck {
@@ -34,15 +38,22 @@ dependencies {
   implementation("io.netty:netty-codec-http2:4.1.112.Final")
   implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.93")
 
+  implementation("software.amazon.ion:ion-java:1.10.5")
+
   // 3
 
-    //  implementation("ch.qos.logback:logback-classic:1.3.12")
- // implementation("ch.qos.logback:logback-core:1.3.12")
- // implementation("com.microsoft.azure:applicationinsights-core:2.6.4")
+ // testImplementation("ch.qos.logback:logback-classic:1.3.12")
+ // testImplementation("ch.qos.logback:logback-core:1.3.12")
+ // testImplementation("com.microsoft.azure:applicationinsights-core:2.6.4")
+ // testImplementation("org.slf4j:slf4j-simple:1.7.36")
+ // testImplementation("ch.qos.logback:logback-classic:1.5.8")
+ // implementation("ch.qos.logback:logback-core:1.5.8")
 
- // implementation("software.amazon.ion:ion-java:1.10.5")
+  implementation("net.minidev:json-smart:2.4.9")
+
+  // implementation("software.amazon.ion:ion-java:1.10.5")
   implementation("org.springframework:spring-expression:5.3.27")
-//  testImplementation("software.amazon.ion:ion-java:1.10.5")
+  testImplementation("software.amazon.ion:ion-java:1.10.5")
   testImplementation("com.jayway.jsonpath:json-path:2.9.0")
 
 
