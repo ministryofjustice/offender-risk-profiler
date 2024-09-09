@@ -40,9 +40,9 @@ dependencies {
  // implementation("ch.qos.logback:logback-core:1.3.12")
  // implementation("com.microsoft.azure:applicationinsights-core:2.6.4")
 
-  implementation("software.amazon.ion:ion-java:1.10.5")
+ // implementation("software.amazon.ion:ion-java:1.10.5")
   implementation("org.springframework:spring-expression:5.3.27")
-  testImplementation("software.amazon.ion:ion-java:1.10.5")
+//  testImplementation("software.amazon.ion:ion-java:1.10.5")
   testImplementation("com.jayway.jsonpath:json-path:2.9.0")
 
 
