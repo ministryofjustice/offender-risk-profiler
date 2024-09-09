@@ -42,7 +42,7 @@ dependencies {
 
   implementation("software.amazon.ion:ion-java:1.10.5")
   implementation("org.springframework:spring-expression:5.3.27")
-
+  testImplementation("software.amazon.ion:ion-java:1.10.5")
   testImplementation("com.jayway.jsonpath:json-path:2.9.0")
 
 
