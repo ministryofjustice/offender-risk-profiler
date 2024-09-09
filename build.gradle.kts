@@ -38,7 +38,7 @@ dependencies {
   implementation("io.netty:netty-codec-http2:4.1.112.Final")
   implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.93")
 
-  implementation("software.amazon.ion:ion-java:1.10.5")
+  implementation("com.amazon.ion:ion-java:1.10.5")
 
   // 3
 
