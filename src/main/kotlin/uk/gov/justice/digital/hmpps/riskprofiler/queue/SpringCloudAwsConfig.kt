@@ -28,6 +28,7 @@ class SpringCloudAwsConfig {
       .build()
   }
 
+  /* TODO wny awsSqsClient but configuring with AmazonS3ClientBuilder?
   @Bean("awsSqsClient")
   @ConditionalOnProperty(name = ["s3.provider"], havingValue = "localstack")
   fun awsS3ClientLocalstack(
@@ -42,4 +43,6 @@ class SpringCloudAwsConfig {
       .withCredentials(AWSStaticCredentialsProvider(BasicAWSCredentials(accessKey, secretKey)))
       .build()
   }
+
+   */
 }
