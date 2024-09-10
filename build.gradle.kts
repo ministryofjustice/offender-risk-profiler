@@ -10,9 +10,6 @@ configurations {
   all {
     exclude (group="software.amazon.ion", module="ion-java" )
   }
-//  implementation { exclude(module = "json-smart:2.4.8") }
-  // implementation { exclude(module = "applicationinsights-logging-logback") }
-
 }
 
 dependencyCheck {
@@ -49,15 +46,10 @@ dependencies {
 
   implementation("net.minidev:json-smart:2.4.9")
 
-  // implementation("software.amazon.ion:ion-java:1.10.5")
   implementation("org.springframework:spring-expression:5.3.27")
-//  testImplementation("software.amazon.ion:ion-java:1.10.5")
   testImplementation("com.jayway.jsonpath:json-path:2.9.0") {
     exclude(module = "json-smart")
   }
-
-
-  //
 
   implementation("org.springframework.boot:spring-boot-starter:2.7.9")
 
@@ -76,9 +68,6 @@ dependencies {
   // Note spring-data-redis 2.6.2 does not support Jedis 4.x
   implementation("redis.clients:jedis:3.8.0")
 
-  //implementation("com.amazonaws:aws-java-sdk-core:1.12.468") {
- //   exclude(module = "ion-java")
- // }
   implementation("org.springframework:spring-jms:5.3.24")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
