@@ -28,6 +28,9 @@ dependencies {
   runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.7.2")
+
+  implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
+
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-security")
