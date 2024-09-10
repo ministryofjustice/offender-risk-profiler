@@ -7,11 +7,11 @@ plugins {
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
-//  implementation { exclude(module = "ion-java:1.0.2") }
+  all {
+    exclude (group="software.amazon.ion", module="ion-java" )
+  }
 //  implementation { exclude(module = "json-smart:2.4.8") }
   // implementation { exclude(module = "applicationinsights-logging-logback") }
- //    implementation { exclude(module = "logback-classic:1.3.11") }
- // implementation { exclude(module = "logback-core:1.3.11") }
 
 }
 
@@ -44,16 +44,7 @@ dependencies {
 
   implementation("com.amazon.ion:ion-java:1.10.5")
 
-  // 3
-
- // testImplementation("ch.qos.logback:logback-classic:1.3.12")
- // testImplementation("ch.qos.logback:logback-core:1.3.12")
- // testImplementation("com.microsoft.azure:applicationinsights-core:2.6.4")
- // testImplementation("org.slf4j:slf4j-simple:1.7.36")
- // testImplementation("ch.qos.logback:logback-classic:1.5.8")
- // implementation("ch.qos.logback:logback-core:1.5.8")
-
-   implementation("net.minidev:json-smart:2.4.9")
+  implementation("net.minidev:json-smart:2.4.9")
 
   // implementation("software.amazon.ion:ion-java:1.10.5")
   implementation("org.springframework:spring-expression:5.3.27")
@@ -82,9 +73,9 @@ dependencies {
   // Note spring-data-redis 2.6.2 does not support Jedis 4.x
   implementation("redis.clients:jedis:3.8.0")
 
-  implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE") {
-    exclude(module = "ion-java")
-  }
+  //implementation("com.amazonaws:aws-java-sdk-core:1.12.468") {
+ //   exclude(module = "ion-java")
+ // }
   implementation("org.springframework:spring-jms:5.3.24")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
