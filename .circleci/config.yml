@@ -18,7 +18,7 @@ orbs:
 parameters:
   alerts-slack-channel:
     type: string
-    default: dps_sed_alerts
+    default: sed-dev
   nonprod-releases-slack-channel:
     type: string
     default: sed-nonprod-releases
@@ -29,10 +29,7 @@ parameters:
 executors:
   java-machine:
     machine:
-      #      TODO: this should be upgraded as soon as a java 16+ machine image is available,
-      #        see https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
-      #      When it is, the kotlinOptions.jvmTarget setting in build.gradle.kts can then be uncommented
-      image: ubuntu-2004:2022.04.1
+     image: default
     environment:
       _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
     working_directory: ~/app
@@ -133,7 +130,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - main, develop
     jobs:
       - hmpps/gradle_owasp_dependency_check:
           slack_channel: << pipeline.parameters.alerts-slack-channel >>
