@@ -126,6 +126,12 @@ workflows:
   security:
     triggers:
       - schedule:
+          cron: "30 * * * *"
+          filters:
+            branches:
+              only:
+                - develop
+      - schedule:
           cron: "16 3 * * 1-5"
           filters:
             branches:
