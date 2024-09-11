@@ -97,6 +97,7 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
+  testImplementation("net.minidev:json-smart:2.4.9")
   testImplementation("junit:junit:4.13.2")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
