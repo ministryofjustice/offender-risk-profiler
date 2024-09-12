@@ -8,7 +8,10 @@ configurations {
   implementation { exclude(group = "tomcat-jdbc") }
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
   all {
-    exclude (group="software.amazon.ion", module="ion-java" )
+    exclude (group="net.minidev", module="json-smart" )
+    exclude(group="software.amazon.ion", module = "ion-java")
+    exclude(group="ch.qos.logback", module = "logback-core")
+    exclude(group="ch.qos.logback", module = "logback-classic")
   }
 }
 
@@ -33,23 +36,13 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-  implementation("org.springframework.boot:spring-boot-starter-oauth2-client") {
-    exclude(module = "json-smart")
-  }
-
+  implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("io.projectreactor.netty:reactor-netty-core:1.0.39")
   implementation("io.projectreactor.netty:reactor-netty-http:1.0.39")
   implementation("io.netty:netty-codec-http2:4.1.112.Final")
   implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.93")
 
-  implementation("com.amazon.ion:ion-java:1.10.5")
-
-  implementation("net.minidev:json-smart:2.4.9")
-
   implementation("org.springframework:spring-expression:5.3.27")
-  testImplementation("com.jayway.jsonpath:json-path:2.9.0") {
-    exclude(module = "json-smart")
-  }
 
   implementation("org.springframework.boot:spring-boot-starter:2.7.9")
 
@@ -104,6 +97,7 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
+  testImplementation("net.minidev:json-smart:2.4.9")
   testImplementation("junit:junit:4.13.2")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
