@@ -61,7 +61,7 @@ dependencies {
   // Note spring-data-redis 2.6.2 does not support Jedis 4.x
   implementation("redis.clients:jedis:3.8.0")
 
-  implementation("org.springframework:spring-jms:5.3.24")
+  implementation("org.springframework:spring-jms:6.1.12")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
   implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
