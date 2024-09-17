@@ -27,7 +27,7 @@ class HealthInfo : HealthIndicator {
       .stream().map { obj: DataRepository<out RiskDataSet?> -> obj.dataAvailable() }
       .reduce { accumulator: Boolean, dataAvailable: Boolean -> accumulator && dataAvailable }
     return Health.status(
-      if (allAvailable.orElse(false)) Status.UP else Status.OUT_OF_SERVICE
+      if (allAvailable.orElse(false)) Status.UP else Status.OUT_OF_SERVICE,
     )
       .withDetail("version", version).build()
   }

@@ -21,7 +21,7 @@ class DataSetInfoContributor @Autowired constructor(private val dataRepositoryFa
           "Processed (%s): %d, Dups: %d, Invalid: %d, Error: %d, Total: %d",
           data.fileTimestamp!!.format(DateTimeFormatter.ISO_DATE_TIME),
           data.linesProcessed.get(), data.linesDup.get(), data.linesInvalid.get(), data.linesError.get(),
-          data.index.get()
+          data.index.get(),
         )
       }
     }

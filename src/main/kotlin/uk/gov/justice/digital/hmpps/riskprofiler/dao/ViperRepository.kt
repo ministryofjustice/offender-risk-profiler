@@ -15,7 +15,7 @@ class ViperRepository : DataRepository<Viper>() {
     csvData: List<List<String>>,
     filename: String,
     timestamp: LocalDateTime,
-    data: ImportedFile<Viper>
+    data: ImportedFile<Viper>,
   ) {
     data.fileTimestamp = timestamp
     data.fileName = filename
@@ -55,11 +55,15 @@ class ViperRepository : DataRepository<Viper>() {
           data.linesError.incrementAndGet()
         }
         data.index.getAndIncrement()
-      }
+      },
     )
     log.info(
-      "Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.index.get(),
-      data.linesProcessed.get(), data.linesDup.get(), data.linesInvalid.get(), data.linesError.get()
+      "Lines total {}, processed {}, dups {}, invalid {}, errors {}",
+      data.index.get(),
+      data.linesProcessed.get(),
+      data.linesDup.get(),
+      data.linesInvalid.get(),
+      data.linesError.get(),
     )
   }
 

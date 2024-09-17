@@ -27,7 +27,7 @@ class PollPrisonersService(
   private val escapeDecisionTreeService: EscapeDecisionTreeService,
   private val previousProfileRepository: PreviousProfileRepository,
   private val telemetryClient: TelemetryClient?,
-  private val sqsService: SQSService
+  private val sqsService: SQSService,
 ) {
   private val jacksonMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
 
@@ -57,15 +57,17 @@ class PollPrisonersService(
             existing.escape = escape
             existing.executeDateTime = LocalDateTime.now()
           }
-        }
+        },
       ) {
-
         // if not there, just add
         previousProfileRepository.save(
           PreviousProfile(
             offenderNo,
-            escape, soc, violence, LocalDateTime.now()
-          )
+            escape,
+            soc,
+            violence,
+            LocalDateTime.now(),
+          ),
         )
         log.info("Added new offender {} to DB", offenderNo)
       }
@@ -79,7 +81,7 @@ class PollPrisonersService(
     socObject: SocProfile,
     violenceObject: ViolenceProfile,
     escapeObject: EscapeProfile,
-    existing: PreviousProfile
+    existing: PreviousProfile,
   ) {
     val newProfile = ProfileMessagePayload(escapeObject, socObject, violenceObject)
     val oldProfile: ProfileMessagePayload
@@ -87,7 +89,7 @@ class PollPrisonersService(
       oldProfile = ProfileMessagePayload(
         jacksonMapper.readValue(existing.escape),
         jacksonMapper.readValue(existing.soc),
-        jacksonMapper.readValue(existing.violence)
+        jacksonMapper.readValue(existing.violence),
       )
       val payload = RiskProfileChange(oldProfile, newProfile, offenderNo, existing.executeDateTime)
       log.info("Reporting risk change to queue for offender {}", offenderNo)

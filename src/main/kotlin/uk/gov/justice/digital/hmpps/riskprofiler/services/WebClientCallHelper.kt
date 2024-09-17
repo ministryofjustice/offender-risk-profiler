@@ -21,7 +21,7 @@ class WebClientCallHelper @Autowired constructor(@param:Qualifier("elite2SystemW
   protected fun <T> getForList(
     uri: String,
     responseType: ParameterizedTypeReference<T>,
-    headers: HttpHeaders?
+    headers: HttpHeaders?,
   ): ResponseEntity<T> {
     return webClient
       .get()
@@ -48,7 +48,7 @@ class WebClientCallHelper @Autowired constructor(@param:Qualifier("elite2SystemW
 
   fun <T> getPageRestResponse(
     uri: String,
-    responseType: ParameterizedTypeReference<T>
+    responseType: ParameterizedTypeReference<T>,
   ): ResponseEntity<T> {
     return webClient.get()
       .uri(uri)

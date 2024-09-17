@@ -13,7 +13,7 @@ class PrasRepository : DataRepository<Pras>() {
     csvData: List<List<String>>,
     filename: String,
     timestamp: LocalDateTime,
-    data: ImportedFile<Pras>
+    data: ImportedFile<Pras>,
   ) {
     data.fileTimestamp = timestamp
     data.fileName = filename
@@ -47,8 +47,12 @@ class PrasRepository : DataRepository<Pras>() {
         }
       }
     log.info(
-      "Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.index.get(),
-      data.linesProcessed.get(), data.linesDup.get(), data.linesInvalid.get(), data.linesError.get()
+      "Lines total {}, processed {}, dups {}, invalid {}, errors {}",
+      data.index.get(),
+      data.linesProcessed.get(),
+      data.linesDup.get(),
+      data.linesInvalid.get(),
+      data.linesError.get(),
     )
   }
 

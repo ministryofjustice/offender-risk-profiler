@@ -95,24 +95,4 @@ tasks {
       jvmTarget = "18"
     }
   }
-  withType<org.gradle.api.Task> {
-    ktlintCheck {
-      enabled = false
-    }
-  }
-  withType<org.gradle.api.Task> {
-    ktlintTestSourceSetCheck {
-      enabled = false
-    }
-  }
-  withType<org.gradle.api.Task> {
-    ktlintMainSourceSetCheck {
-      enabled = false
-    }
-  }
-  withType<org.gradle.api.Task> {
-    ktlintKotlinScriptCheck {
-      enabled = false
-    }
-  }
 }

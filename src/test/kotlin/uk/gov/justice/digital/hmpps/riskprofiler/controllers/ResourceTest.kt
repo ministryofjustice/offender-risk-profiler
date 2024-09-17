@@ -86,7 +86,7 @@ abstract class ResourceTest {
       "Expecting status code value <%s> to be equal to <%s> but it was not.\nBody was\n%s",
       response.statusCodeValue,
       status,
-      response.body
+      response.body,
     ).isEqualTo(status)
   }
 
@@ -105,7 +105,7 @@ abstract class ResourceTest {
       java.util.List.of("read", "write"),
       roles,
       Duration.ofHours(1),
-      UUID.randomUUID().toString()
+      UUID.randomUUID().toString(),
     )
   }
 }

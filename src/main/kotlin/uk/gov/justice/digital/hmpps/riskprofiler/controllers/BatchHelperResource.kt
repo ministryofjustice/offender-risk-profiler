@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull
 
 @Tag(
   name = "batch",
-  description = "Provides ability to configure and run batches"
+  description = "Provides ability to configure and run batches",
 )
 @ApiResponses(
   value = [
@@ -29,14 +29,14 @@ import javax.validation.constraints.NotNull
     ApiResponse(
       responseCode = "400",
       description = "Invalid prison id.",
-      content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
     ),
     ApiResponse(
       responseCode = "500",
       description = "Unrecoverable error occurred whilst processing request.",
-      content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
     ),
-  ]
+  ],
 )
 
 @RestController
@@ -44,7 +44,7 @@ import javax.validation.constraints.NotNull
 class BatchHelperResource(
   private val pollPrisonersScheduler: PollPrisonersScheduler,
   private val prisonService: PrisonService,
-  private val queueAdminService: QueueAdminService
+  private val queueAdminService: QueueAdminService,
 ) {
   @Operation(summary = "Start a batch job run")
   @PreAuthorize("hasRole('RISK_PROFILER')")
@@ -57,16 +57,17 @@ class BatchHelperResource(
 
   @Operation(
     summary = "Add prison to the config",
-    description = "The overnight polling batch will then include this prison"
+    description = "The overnight polling batch will then include this prison",
   )
   @PreAuthorize("hasRole('RISK_PROFILER')")
   @PostMapping(path = ["/prison/{prisonId}"])
   fun addPrison(
-    @Parameter(
+    @Parameter
+      (
       name = "prisonId",
       description = "Agency id of the prison",
       example = "LEI",
-      required = true
+      required = true,
     ) @PathVariable("prisonId") prisonId: @NotNull String
   ) =
     prisonService.addPrison(prisonId)

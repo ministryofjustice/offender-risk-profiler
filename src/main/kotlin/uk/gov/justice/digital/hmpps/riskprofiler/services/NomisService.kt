@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull
 class NomisService(
   private val webClientCallHelper: WebClientCallHelper,
   @param:Value("\${app.assaults.incident.types:ASSAULT}") private val incidentTypes: List<String?>,
-  @param:Value("\${app.assaults.participation.roles}") private val participationRoles: List<String>
+  @param:Value("\${app.assaults.participation.roles}") private val participationRoles: List<String>,
 ) {
   @Cacheable("escapeAlert")
   fun getEscapeListAlertsForOffender(nomsId: String): List<Alert> {
@@ -65,7 +65,7 @@ class NomisService(
       "Getting incidents for noms id {} and type {}, with roles of {}",
       nomsId,
       incidentTypes,
-      participationRoles
+      participationRoles,
     )
     val incidentTypesStr = incidentTypes.stream()
       .map { incidentType: String? -> String.format("incidentType=%s", incidentType) }
@@ -156,7 +156,7 @@ class NomisService(
     val ESCAPE_LIST_ALERT_TYPES = java.util.List.of("XER", "XEL")
     val SOC_ALERT_TYPES = java.util.List.of(
       "PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
-      "XFO", "XGANG", "XOCGN", "XP", "XSC"
+      "XFO", "XGANG", "XOCGN", "XP", "XSC",
     )
   }
 }

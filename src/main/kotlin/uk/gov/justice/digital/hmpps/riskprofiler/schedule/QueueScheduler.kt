@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.events.QueueAdminService
 @Service
 class QueueScheduler(
   private val queueAdminService: QueueAdminService,
-  private val telemetryClient: TelemetryClient?
+  private val telemetryClient: TelemetryClient?,
 ) {
   @Scheduled(initialDelay = 5 * 60 * 1000, fixedDelay = 60 * 60 * 1000)
   @SchedulerLock(name = "eventLock")

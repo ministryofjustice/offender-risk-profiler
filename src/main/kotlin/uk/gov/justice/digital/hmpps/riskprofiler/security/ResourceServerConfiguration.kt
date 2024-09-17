@@ -56,14 +56,13 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
           "/v3/api-docs",
           "/swagger-ui.html",
           "/swagger-ui/**",
-          "/swagger-resources/**"
+          "/swagger-resources/**",
         ).permitAll().anyRequest().authenticated()
       }.oauth2ResourceServer().jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())
   }
 
   @Bean
   fun api(): OpenAPI {
-
     return OpenAPI()
       .components(
         Components().addSecuritySchemes(
@@ -73,8 +72,8 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
             .scheme("bearer")
             .bearerFormat("JWT")
             .`in`(SecurityScheme.In.HEADER)
-            .name("Authorization")
-        )
+            .name("Authorization"),
+        ),
       )
       .info(
         Info().title("Offender Risk Profiler API Documentation")
@@ -83,9 +82,9 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
           .license(
             License()
               .name("Open Government Licence v3.0")
-              .url("https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/")
+              .url("https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"),
           )
-          .contact(Contact().name("HMPPS Digital Studio").email("dps-hmpps@digital.justice.gov.uk"))
+          .contact(Contact().name("HMPPS Digital Studio").email("dps-hmpps@digital.justice.gov.uk")),
       )
       .addSecurityItem(SecurityRequirement().addList("bearer-jwt", listOf("read", "write")))
   }
@@ -99,7 +98,7 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
   @Bean
   @ConditionalOnProperty(name = ["s3.provider"], havingValue = "aws")
   fun s3Client(
-    @Value("\${s3.endpoint.region}") region: String?
+    @Value("\${s3.endpoint.region}") region: String?,
   ): AmazonS3 {
     return AmazonS3ClientBuilder.standard()
       .withRegion(region)

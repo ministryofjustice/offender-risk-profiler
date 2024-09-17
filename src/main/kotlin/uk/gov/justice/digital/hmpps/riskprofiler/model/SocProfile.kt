@@ -12,7 +12,7 @@ data class SocProfile(
     title = "Indicates the offender must be transferred to security",
     example = "true",
   )
-  var transferToSecurity: Boolean
+  var transferToSecurity: Boolean,
 ) : RiskProfile(nomsId, provisionalCategorisation), Comparable<SocProfile> {
 
   constructor() : this("", "", false)

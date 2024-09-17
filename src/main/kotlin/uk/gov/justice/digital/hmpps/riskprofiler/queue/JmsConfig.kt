@@ -35,7 +35,7 @@ class JmsConfig {
   @Bean
   @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "aws")
   fun awsClientForEvents(
-    @Value("\${cloud.aws.region.static}") region: String?
+    @Value("\${cloud.aws.region.static}") region: String?,
   ): AmazonSQSAsync {
     return AmazonSQSAsyncClientBuilder.standard()
       .withCredentials(DefaultAWSCredentialsProviderChain())
@@ -46,7 +46,7 @@ class JmsConfig {
   @Bean
   @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "aws")
   fun awsDlqClientForEvents(
-    @Value("\${cloud.aws.region.static}") region: String?
+    @Value("\${cloud.aws.region.static}") region: String?,
   ): AmazonSQSAsync {
     return AmazonSQSAsyncClientBuilder.standard()
       .withCredentials(DefaultAWSCredentialsProviderChain())

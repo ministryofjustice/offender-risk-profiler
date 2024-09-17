@@ -18,7 +18,7 @@ class LocalstackConfig {
   @Primary
   fun awsSqsClient(
     @Value("\${sqs.events.endpoint.url}") serviceEndpoint: String?,
-    @Value("\${cloud.aws.region.static}") region: String?
+    @Value("\${cloud.aws.region.static}") region: String?,
   ): AmazonSQSAsync {
     val creds = AnonymousAWSCredentials()
     return AmazonSQSAsyncClientBuilder.standard()

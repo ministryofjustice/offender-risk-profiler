@@ -14,7 +14,7 @@ class DataService(private val factory: DataRepositoryFactory) {
   fun process(
     csvData: List<List<String>>,
     @ExchangeProperty("fileType") fileType: FileType,
-    @ExchangeProperty("fileInfo") fileInfo: PendingFile
+    @ExchangeProperty("fileInfo") fileInfo: PendingFile,
   ) {
     val repository = factory.getRepository(fileType.type)
     if (isFileShouldBeProcessed(repository, fileInfo.fileTimestamp)) {

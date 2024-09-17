@@ -11,7 +11,9 @@ import javax.validation.constraints.NotNull
 @Table(name = "PREVIOUS_PROFILE")
 data class PreviousProfile(
   @Id
-  val offenderNo: @Length(max = 10) String,
+  @Length(max = 10)
+  val offenderNo: String,
+
   var escape: String,
   var soc: String,
   var violence: String,

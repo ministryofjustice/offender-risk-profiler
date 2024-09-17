@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull
 @Service
 class SocDecisionTreeService(
   private val repositoryFactory: DataRepositoryFactory,
-  private val nomisService: NomisService
+  private val nomisService: NomisService,
 ) {
   private val OCGM_BANDS = setOf("1a", "1b", "1c", "2a", "2b", "2c", "3a", "3b", "3c")
 
@@ -36,7 +36,7 @@ class SocDecisionTreeService(
                 val potentialProfile = buildSocProfile(nomsId)
                 repositoryFactory.getRepository(Ocg::class.java).getByKey(ocgm.ocgId)
                   .ifPresentOrElse(
-                    { ocg: Ocg -> checkBand(nomsId, potentialProfile, ocgm, ocg) }
+                    { ocg: Ocg -> checkBand(nomsId, potentialProfile, ocgm, ocg) },
                   ) { checkAlerts(nomsId, potentialProfile, RiskProfile.DEFAULT_CAT) }
                 potentialProfile
               }.sorted()
@@ -44,7 +44,7 @@ class SocDecisionTreeService(
                 soc.transferToSecurity = transferToSecurity
                 soc.provisionalCategorisation = provisionalCategorisation
               }
-          }
+          },
         ) { checkAlerts(nomsId, soc, RiskProfile.DEFAULT_CAT) }
     }
     return soc

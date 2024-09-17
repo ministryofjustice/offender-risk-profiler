@@ -14,7 +14,7 @@ class DataRepositoryFactory(
   ocgmRepository: OcgmRepository,
   ocgRepository: OcgRepository,
   prasRepository: PrasRepository,
-  viperRepository: ViperRepository
+  viperRepository: ViperRepository,
 ) {
   private val ocgmRepository: DataRepository<OcgmList>
   private val ocgRepository: DataRepository<Ocg>
@@ -36,7 +36,7 @@ class DataRepositoryFactory(
       getRepository(Pras::class.java),
       getRepository(Viper::class.java),
       getRepository(Ocg::class.java),
-      getRepository(OcgmList::class.java)
+      getRepository(OcgmList::class.java),
     )
   }
 

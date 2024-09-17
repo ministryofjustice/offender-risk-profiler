@@ -33,7 +33,7 @@ class DefaultFileService : FileService {
             return@map PendingFile(
               f.name,
               LocalDateTime.ofInstant(Instant.ofEpochMilli(f.lastModified()), ZoneId.systemDefault()),
-              if (fileType == FileType.VIPER) getViperFile(f) else IOUtils.toByteArray(FileInputStream(f))
+              if (fileType == FileType.VIPER) getViperFile(f) else IOUtils.toByteArray(FileInputStream(f)),
             )
           } catch (e: IOException) {
             return@map null
@@ -52,7 +52,7 @@ class DefaultFileService : FileService {
       log.info("Housekeeping- found {} files in {}", listOfFiles.size, fileLocation)
       Arrays.stream(listOfFiles).sorted(
         Comparator.comparing { obj: File -> obj.lastModified() }
-          .reversed()
+          .reversed(),
       ).skip(2).forEach { file: File ->
         file.delete()
         log.info("Deleted file {} ", fileLocation + "/" + file.name)

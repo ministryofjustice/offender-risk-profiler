@@ -18,7 +18,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfileChange
 @Service
 class SQSService(
   @Qualifier("awsSqsClient") amazonSqs: AmazonSQSAsync,
-  @Value("\${sqs.rpc.queue.url}") queueUrl: String
+  @Value("\${sqs.rpc.queue.url}") queueUrl: String,
 ) {
   private val queueTemplate: QueueMessagingTemplate
   private val amazonSqs: AmazonSQSAsync

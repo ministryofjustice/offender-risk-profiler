@@ -10,9 +10,9 @@ data class ExtremismProfile(
   var notifyRegionalCTLead: Boolean = false,
   @field:Schema(
     title = "Indicates that there is data to indicate that this person has an increased risk of engaging in extremism",
-    example = "false"
+    example = "false",
   )
-  var increasedRiskOfExtremism: Boolean = false
+  var increasedRiskOfExtremism: Boolean = false,
 ) : RiskProfile(nomsId, provisionalCategorisation) {
 
   constructor() : this("", "", false, false)

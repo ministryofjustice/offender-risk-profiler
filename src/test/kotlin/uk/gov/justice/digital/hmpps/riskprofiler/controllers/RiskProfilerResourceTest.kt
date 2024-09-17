@@ -29,7 +29,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 200)
     assertThat(response.body)
@@ -43,7 +43,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER-invalid", emptyList()),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 403)
   }
@@ -54,7 +54,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 200)
     assertThat(response.body)
@@ -68,7 +68,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 200)
     assertThat(response.body)
@@ -82,7 +82,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER-invalid", emptyList()),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 403)
   }
@@ -94,7 +94,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 200)
     assertThat(response.body)
@@ -108,7 +108,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER-invalid", emptyList()),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 403)
   }
@@ -120,7 +120,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 200)
     assertThat(response.body)
@@ -136,7 +136,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 200)
     assertThat(response.body)
@@ -150,7 +150,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER-invalid", emptyList()),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 403)
   }
@@ -162,7 +162,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER", RISK_PROFILER_ROLE),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 200)
     assertThat(response.body)
@@ -176,7 +176,7 @@ class RiskProfilerResourceTest : ResourceTest() {
       HttpMethod.GET,
       createHttpEntityWithBearerAuthorisation("API_TEST_USER-invalid", emptyList()),
       object : ParameterizedTypeReference<String?>() {
-      }
+      },
     )
     assertThatStatus(response, 403)
   }
