@@ -29,8 +29,8 @@ class OAuthMockServer : WireMockServer(9090) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(gson.toJson(mapOf("access_token" to "ABCDE", "token_type" to "bearer")))
-        )
+            .withBody(gson.toJson(mapOf("access_token" to "ABCDE", "token_type" to "bearer"))),
+        ),
     )
   }
 }
@@ -51,7 +51,8 @@ class PrisonMockServer : WireMockServer(8080) {
   }
 
   private val gson = GsonBuilder().registerTypeAdapter(
-    LocalDate::class.java, LocalDateTypeAdapter().nullSafe()
+    LocalDate::class.java,
+    LocalDateTypeAdapter().nullSafe(),
   ).create()
 
   fun stubIncidents() {
@@ -66,13 +67,13 @@ class PrisonMockServer : WireMockServer(8080) {
                   mapOf(
                     "parties" to listOf(
                       mapOf("bookingId" to 1241232, "outcomeCode" to "POR"),
-                      "incidentTitle" to "Assault on staff member"
-                    )
-                  )
-                )
-              )
-            )
-        )
+                      "incidentTitle" to "Assault on staff member",
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ),
     )
   }
 
@@ -96,7 +97,7 @@ class PrisonMockServer : WireMockServer(8080) {
       null,
       null,
       null,
-      1
+      1,
     )
     val alert2 = Alert(
       5678,
@@ -115,15 +116,15 @@ class PrisonMockServer : WireMockServer(8080) {
       null,
       null,
       null,
-      1
+      1,
     )
     stubFor(
       WireMock.get(WireMock.urlMatching("/api/offenders/.+/alerts/v2\\?alertCodes=.+"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(gson.toJson(listOf(alert1, alert2)))
-        )
+            .withBody(gson.toJson(listOf(alert1, alert2))),
+        ),
     )
   }
 
@@ -139,16 +140,16 @@ class PrisonMockServer : WireMockServer(8080) {
                   "content" to listOf(
                     mapOf(
                       "bookingId" to bookingId,
-                      "imprisonmentStatus" to "OTHER"
-                    )
+                      "imprisonmentStatus" to "OTHER",
+                    ),
                   ),
                   "size" to 1,
                   "number" to 0,
-                  "totalElements" to 1
-                )
-              )
-            )
-        )
+                  "totalElements" to 1,
+                ),
+              ),
+            ),
+        ),
     )
   }
 
@@ -162,11 +163,11 @@ class PrisonMockServer : WireMockServer(8080) {
               gson.toJson(
                 mapOf(
                   "bookingId" to 12,
-                  "offenderNo" to offenderNo
-                )
-              )
-            )
-        )
+                  "offenderNo" to offenderNo,
+                ),
+              ),
+            ),
+        ),
     )
   }
 
@@ -181,12 +182,12 @@ class PrisonMockServer : WireMockServer(8080) {
                 listOf(
                   mapOf(
                     "bookingId" to bookingId,
-                    "lifeSentence" to false
-                  )
-                )
-              )
-            )
-        )
+                    "lifeSentence" to false,
+                  ),
+                ),
+              ),
+            ),
+        ),
     )
   }
 
@@ -201,12 +202,12 @@ class PrisonMockServer : WireMockServer(8080) {
                 listOf(
                   mapOf(
                     "bookingId" to bookingId,
-                    "offenceDescription" to "MURDER"
-                  )
-                )
-              )
-            )
-        )
+                    "offenceDescription" to "MURDER",
+                  ),
+                ),
+              ),
+            ),
+        ),
     )
   }
 
@@ -215,8 +216,8 @@ class PrisonMockServer : WireMockServer(8080) {
       WireMock.get(WireMock.urlEqualTo("/health/ping"))
         .willReturn(
           WireMock.aResponse()
-            .withBody("pong")
-        )
+            .withBody("pong"),
+        ),
     )
   }
 }
@@ -233,8 +234,8 @@ class PathfinderMockServer : WireMockServer(8083) {
       WireMock.get(WireMock.urlEqualTo("/health/ping"))
         .willReturn(
           WireMock.aResponse()
-            .withBody("pong")
-        )
+            .withBody("pong"),
+        ),
     )
   }
 
@@ -251,9 +252,9 @@ class PathfinderMockServer : WireMockServer(8083) {
     "nomsId": "$nomsId",
     "band": 2
   }
-              """.trimIndent()
-            )
-        )
+              """.trimIndent(),
+            ),
+        ),
     )
   }
 }

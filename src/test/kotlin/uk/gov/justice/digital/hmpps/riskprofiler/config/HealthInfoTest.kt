@@ -40,7 +40,7 @@ class HealthInfoTest {
       ReflectionTestUtils.getField(viperRepository, ViperRepository::class.java, "dataAvailable") as AtomicBoolean
     prasAvailable =
       ReflectionTestUtils.getField(prasRepository, PrasRepository::class.java, "dataAvailable") as AtomicBoolean
-    Mockito.`when`<List<DataRepository<out RiskDataSet?>>>(dataRepositoryFactory!!.getRepositories())
+    Mockito.`when`<List<DataRepository<out RiskDataSet>>>(dataRepositoryFactory!!.getRepositories())
       .thenReturn(listOf(viperRepository, prasRepository))
     Mockito.`when`(buildProperties!!.version).thenReturn("1.2.3")
   }

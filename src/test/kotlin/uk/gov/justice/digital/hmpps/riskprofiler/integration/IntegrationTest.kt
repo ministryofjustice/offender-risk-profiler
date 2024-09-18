@@ -55,13 +55,13 @@ abstract class IntegrationTest {
 
   protected fun setAuthorisation(
     user: String = "prisoner-search-client",
-    roles: List<String> = listOf()
+    roles: List<String> = listOf(),
   ): (HttpHeaders) -> Unit {
     val token = jwtHelper.createJwt(
       subject = user,
       scope = listOf("read"),
       expiryTime = Duration.ofHours(1L),
-      roles = roles
+      roles = roles,
     )
     return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
   }

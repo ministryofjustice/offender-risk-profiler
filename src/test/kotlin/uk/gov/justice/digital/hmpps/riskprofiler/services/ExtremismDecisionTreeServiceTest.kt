@@ -27,7 +27,8 @@ class ExtremismDecisionTreeServiceTest {
     whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(pathFinder)
 
     val (_, provisionalCategorisation, notifyRegionalCTLead, increasedRiskOfExtremism) = service.getExtremismProfile(
-      OFFENDER_1, false
+      OFFENDER_1,
+      false,
     )
 
     assertThat(provisionalCategorisation).isEqualTo("C")
@@ -40,8 +41,14 @@ class ExtremismDecisionTreeServiceTest {
     val pathFinder = PathFinder(OFFENDER_1, 2)
     whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(pathFinder)
 
-    val (_, provisionalCategorisation, notifyRegionalCTLead, increasedRiskOfExtremism) = service.getExtremismProfile(
-      OFFENDER_1, true
+    val (
+      _,
+      provisionalCategorisation,
+      notifyRegionalCTLead,
+      increasedRiskOfExtremism,
+    ) = service.getExtremismProfile(
+      OFFENDER_1,
+      true,
     )
 
     assertThat(provisionalCategorisation).isEqualTo("B")
@@ -55,7 +62,8 @@ class ExtremismDecisionTreeServiceTest {
     whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(pathFinder)
 
     val (_, provisionalCategorisation, notifyRegionalCTLead, increasedRiskOfExtremism) = service.getExtremismProfile(
-      OFFENDER_1, false
+      OFFENDER_1,
+      false,
     )
 
     assertThat(provisionalCategorisation).isEqualTo("C")
@@ -68,8 +76,13 @@ class ExtremismDecisionTreeServiceTest {
     val pathFinder = PathFinder(OFFENDER_1, 4)
     whenever(pathfinderRepo.getBand(eq(OFFENDER_1))).thenReturn(pathFinder)
 
-    val (_, provisionalCategorisation, notifyRegionalCTLead, increasedRiskOfExtremism) = service.getExtremismProfile(
-      OFFENDER_1, false
+    val (
+      _,
+      provisionalCategorisation,
+      notifyRegionalCTLead,
+      increasedRiskOfExtremism) = service.getExtremismProfile(
+      OFFENDER_1,
+      false,
     )
 
     assertThat(provisionalCategorisation).isEqualTo("C")

@@ -58,13 +58,13 @@ class ViolenceDecisionTreeServiceTest {
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
             IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "YES"),
-            IncidentResponse("Question 4", "NO")
-          )
-        )
-      )
+            IncidentResponse("Question 4", "NO"),
+          ),
+        ),
+      ),
     )
     val (_, provisionalCategorisation, _, notifySafetyCustodyLead, displayAssaults, numberOfAssaults, numberOfSeriousAssaults, numberOfNonSeriousAssaults) = service.getViolenceProfile(
-      OFFENDER_1
+      OFFENDER_1,
     )
     Assertions.assertThat(displayAssaults).isTrue
     Assertions.assertThat(provisionalCategorisation).isEqualTo("C")
@@ -89,8 +89,8 @@ class ViolenceDecisionTreeServiceTest {
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
             IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "YES"),
-            IncidentResponse("Question 4", "NO")
-          )
+            IncidentResponse("Question 4", "NO"),
+          ),
         ),
         IncidentCase(
           "CLOSE",
@@ -99,8 +99,8 @@ class ViolenceDecisionTreeServiceTest {
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
             IncidentResponse("Question 3", "YES"),
-            IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "NO")
-          )
+            IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "NO"),
+          ),
         ),
         IncidentCase(
           "CLOSE",
@@ -109,8 +109,8 @@ class ViolenceDecisionTreeServiceTest {
             IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "YES"),
             IncidentResponse("Question 2", "YES"),
             IncidentResponse("Question 3", "YES"),
-            IncidentResponse("Question 4", "NO")
-          )
+            IncidentResponse("Question 4", "NO"),
+          ),
         ),
         IncidentCase(
           "DUP",
@@ -119,13 +119,13 @@ class ViolenceDecisionTreeServiceTest {
             IncidentResponse("Question 1", "NO"),
             IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "NO"),
             IncidentResponse("Question 3", "NO"),
-            IncidentResponse("Question 4", "NO")
-          )
-        )
-      )
+            IncidentResponse("Question 4", "NO"),
+          ),
+        ),
+      ),
     )
     val (_, provisionalCategorisation, _, notifySafetyCustodyLead, _, numberOfAssaults, numberOfSeriousAssaults, numberOfNonSeriousAssaults) = service.getViolenceProfile(
-      OFFENDER_1
+      OFFENDER_1,
     )
     Assertions.assertThat(provisionalCategorisation).isEqualTo("C")
     Assertions.assertThat(numberOfAssaults).isEqualTo(3)
@@ -149,8 +149,8 @@ class ViolenceDecisionTreeServiceTest {
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
             IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "YES"),
-            IncidentResponse("Question 4", "NO")
-          )
+            IncidentResponse("Question 4", "NO"),
+          ),
         ),
         IncidentCase(
           "CLOSE",
@@ -159,13 +159,13 @@ class ViolenceDecisionTreeServiceTest {
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
             IncidentResponse("Question 3", "YES"),
-            IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "NO")
-          )
-        )
-      )
+            IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "NO"),
+          ),
+        ),
+      ),
     )
     val (_, provisionalCategorisation, _, _, _, numberOfAssaults, numberOfSeriousAssaults, numberOfNonSeriousAssaults) = service.getViolenceProfile(
-      OFFENDER_1
+      OFFENDER_1,
     )
     Assertions.assertThat(provisionalCategorisation).isEqualTo("C")
     Assertions.assertThat(numberOfAssaults).isEqualTo(2)
@@ -189,13 +189,13 @@ class ViolenceDecisionTreeServiceTest {
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
             IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "NO"),
-            IncidentResponse("Question 4", "NO")
-          )
-        )
-      )
+            IncidentResponse("Question 4", "NO"),
+          ),
+        ),
+      ),
     )
     val (_, provisionalCategorisation, _, _, _, numberOfAssaults, numberOfSeriousAssaults, numberOfNonSeriousAssaults) = service.getViolenceProfile(
-      OFFENDER_1
+      OFFENDER_1,
     )
     Assertions.assertThat(provisionalCategorisation).isEqualTo("C")
     Assertions.assertThat(numberOfAssaults).isEqualTo(1)
@@ -209,7 +209,7 @@ class ViolenceDecisionTreeServiceTest {
     viper.score = BigDecimal("2.49")
     Mockito.`when`(viperRepo.getByKey(ArgumentMatchers.eq(OFFENDER_1))).thenReturn(Optional.of(viper))
     val (_, provisionalCategorisation, _, _, _, numberOfAssaults, numberOfSeriousAssaults) = service.getViolenceProfile(
-      OFFENDER_1
+      OFFENDER_1,
     )
     Assertions.assertThat(provisionalCategorisation).isEqualTo("C")
     Assertions.assertThat(numberOfAssaults).isEqualTo(0)
@@ -231,8 +231,8 @@ class ViolenceDecisionTreeServiceTest {
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
             IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "YES"),
-            IncidentResponse("Question 4", "NO")
-          )
+            IncidentResponse("Question 4", "NO"),
+          ),
         ),
         IncidentCase(
           "CLOSE",
@@ -240,8 +240,8 @@ class ViolenceDecisionTreeServiceTest {
           listOf(
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
-            IncidentResponse("Question 4", "NO")
-          )
+            IncidentResponse("Question 4", "NO"),
+          ),
         ),
         IncidentCase(
           "CLOSE",
@@ -249,13 +249,13 @@ class ViolenceDecisionTreeServiceTest {
           listOf(
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
-            IncidentResponse("Question 4", "NO")
-          )
-        )
-      )
+            IncidentResponse("Question 4", "NO"),
+          ),
+        ),
+      ),
     )
     val (_, provisionalCategorisation, _, notifySafetyCustodyLead, displayAssaults, numberOfAssaults, numberOfSeriousAssaults, numberOfNonSeriousAssaults) = service.getViolenceProfile(
-      OFFENDER_1
+      OFFENDER_1,
     )
     Assertions.assertThat(displayAssaults).isTrue
     Assertions.assertThat(provisionalCategorisation).isEqualTo("C")
@@ -280,8 +280,8 @@ class ViolenceDecisionTreeServiceTest {
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
             IncidentResponse("WAS A SERIOUS INJURY SUSTAINED", "YES"),
-            IncidentResponse("Question 4", "NO")
-          )
+            IncidentResponse("Question 4", "NO"),
+          ),
         ),
         IncidentCase(
           "CLOSE",
@@ -289,8 +289,8 @@ class ViolenceDecisionTreeServiceTest {
           listOf(
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
-            IncidentResponse("Question 4", "NO")
-          )
+            IncidentResponse("Question 4", "NO"),
+          ),
         ),
         IncidentCase(
           "CLOSE",
@@ -298,8 +298,8 @@ class ViolenceDecisionTreeServiceTest {
           listOf(
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
-            IncidentResponse("Question 4", "NO")
-          )
+            IncidentResponse("Question 4", "NO"),
+          ),
         ),
         IncidentCase(
           "OPEN",
@@ -307,8 +307,8 @@ class ViolenceDecisionTreeServiceTest {
           listOf(
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
-            IncidentResponse("Question 4", "NO")
-          )
+            IncidentResponse("Question 4", "NO"),
+          ),
         ),
         IncidentCase(
           "OPEN",
@@ -316,13 +316,13 @@ class ViolenceDecisionTreeServiceTest {
           listOf(
             IncidentResponse("Question 1", "YES"),
             IncidentResponse("Question 2", "NO"),
-            IncidentResponse("Question 4", "NO")
-          )
-        )
-      )
+            IncidentResponse("Question 4", "NO"),
+          ),
+        ),
+      ),
     )
     val (_, provisionalCategorisation, _, notifySafetyCustodyLead, displayAssaults, numberOfAssaults, numberOfSeriousAssaults, numberOfNonSeriousAssaults) = service.getViolenceProfile(
-      OFFENDER_1
+      OFFENDER_1,
     )
     Assertions.assertThat(displayAssaults).isTrue
     Assertions.assertThat(provisionalCategorisation).isEqualTo("B")

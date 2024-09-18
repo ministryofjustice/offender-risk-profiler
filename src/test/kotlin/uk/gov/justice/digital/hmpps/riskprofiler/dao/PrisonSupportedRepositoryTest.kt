@@ -19,6 +19,7 @@ import java.time.LocalDateTime
 class PrisonSupportedRepositoryTest {
   @Autowired
   private lateinit var repository: PrisonSupportedRepository
+
   @Test
   fun givenATransientWhenPersistedItShouldBeRetrievableById() {
     val transientEntity = transientEntity()

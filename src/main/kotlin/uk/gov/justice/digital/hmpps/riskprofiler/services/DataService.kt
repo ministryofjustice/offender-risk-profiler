@@ -25,7 +25,7 @@ class DataService(private val factory: DataRepositoryFactory) {
     }
   }
 
-  private fun isFileShouldBeProcessed(data: DataRepository<out RiskDataSet?>, timestamp: LocalDateTime?): Boolean {
+  private fun isFileShouldBeProcessed(data: DataRepository<out RiskDataSet>, timestamp: LocalDateTime?): Boolean {
     return data.fileTimestamp == null || data.fileTimestamp!! < timestamp
   }
 
