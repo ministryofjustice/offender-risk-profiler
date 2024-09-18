@@ -24,11 +24,12 @@ class RequestLogFilter @Autowired constructor(@Value("\${logging.uris.exclude.re
   OncePerRequestFilter() {
   private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")
   private val excludeUriRegex: Pattern
+
   @Throws(ServletException::class, IOException::class)
   override fun doFilterInternal(
     request: HttpServletRequest,
     @NonNull response: HttpServletResponse,
-    @NonNull filterChain: FilterChain
+    @NonNull filterChain: FilterChain,
   ) {
     if (excludeUriRegex.matcher(request.requestURI).matches()) {
       MDC.put(MdcUtility.SKIP_LOGGING, "true")
@@ -50,7 +51,7 @@ class RequestLogFilter @Autowired constructor(@Value("\${logging.uris.exclude.re
           request.requestURI,
           status,
           start.format(formatter),
-          duration
+          duration,
         )
       }
     } finally {

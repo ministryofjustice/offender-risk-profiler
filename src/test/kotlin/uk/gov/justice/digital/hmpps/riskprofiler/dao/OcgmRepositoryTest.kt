@@ -36,7 +36,7 @@ class OcgmRepositoryTest {
       "Standing Within Ocg",
       "Role: Corrupter",
       "Can the data on this record be disseminated?",
-      "Priority Group"
+      "Priority Group",
     )
     val row2 = listOf(
       "A5015DY",
@@ -67,7 +67,7 @@ class OcgmRepositoryTest {
       "Principal Subject",
       "",
       "",
-      ""
+      "",
     )
     val ocgmList = listOf(row1, row2)
     val repository = OcgmRepository()
@@ -112,7 +112,7 @@ class OcgmRepositoryTest {
       "New Subject",
       "",
       "",
-      ""
+      "",
     )
     val reloader = Thread { repository.process(listOf(row1, newRow2), "Ocgm-new.csv", LocalDateTime.now()) }
     reloader.start()

@@ -79,7 +79,10 @@ class ClientTrackingTelemetryModuleTest {
   private fun createJwt(user: String?, roles: List<String>, duration: Long): String {
     return jwtAuthenticationHelper.createJwt(
       user,
-      java.util.List.of("read", "write"), roles, Duration.ofHours(duration), UUID.randomUUID().toString()
+      java.util.List.of("read", "write"),
+      roles,
+      Duration.ofHours(duration),
+      UUID.randomUUID().toString(),
     )
   }
 }

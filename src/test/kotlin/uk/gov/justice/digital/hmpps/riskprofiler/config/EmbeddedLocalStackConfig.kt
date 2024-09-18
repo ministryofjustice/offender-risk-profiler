@@ -46,12 +46,12 @@ open class EmbeddedLocalStackConfig {
         .withClasspathResourceMapping(
           "/localstack/setup-localstack.sh",
           "/docker-entrypoint-initaws.d/setup-localstack.sh",
-          BindMode.READ_WRITE
+          BindMode.READ_WRITE,
         )
         .withEnv("HOSTNAME_EXTERNAL", "localhost")
         .withEnv("DEFAULT_REGION", "eu-west-2")
         .waitingFor(
-          Wait.forLogMessage(".*All Ready.*", 1) // .withStartupTimeout(Duration.ofMinutes(10))
+          Wait.forLogMessage(".*All Ready.*", 1), // .withStartupTimeout(Duration.ofMinutes(10))
         )
 
     log.info("Started localstack.")
@@ -86,7 +86,7 @@ open class EmbeddedLocalStackConfig {
   open fun queueUrl(
     @Qualifier("awsClientForEvents") awsSqsClient: AmazonSQS,
     @Value("\${sqs.events.queue.name}") queueName: String,
-    @Value("\${sqs.events.dlq.queue.name}") dlqName: String
+    @Value("\${sqs.events.dlq.queue.name}") dlqName: String,
   ): String {
     return queueUrlWorkaroundTestcontainers(awsSqsClient, queueName, dlqName)
   }
@@ -94,7 +94,7 @@ open class EmbeddedLocalStackConfig {
   @Bean("dlqUrl")
   open fun dlqUrl(
     @Qualifier("awsDlqClientForEvents") awsSqsDlqClient: AmazonSQS,
-    @Value("\${sqs.events.dlq.queue.name}") dlqName: String
+    @Value("\${sqs.events.dlq.queue.name}") dlqName: String,
   ): String {
     return awsSqsDlqClient.getQueueUrl(dlqName).queueUrl
   }
@@ -110,9 +110,9 @@ open class EmbeddedLocalStackConfig {
       CreateQueueRequest(queueName).withAttributes(
         mapOf(
           QueueAttributeName.RedrivePolicy.toString() to
-            """{"deadLetterTargetArn":"${dlqArn.attributes["QueueArn"]}","maxReceiveCount":"5"}"""
-        )
-      )
+            """{"deadLetterTargetArn":"${dlqArn.attributes["QueueArn"]}","maxReceiveCount":"5"}""",
+        ),
+      ),
     )
     return queueUrl
   }

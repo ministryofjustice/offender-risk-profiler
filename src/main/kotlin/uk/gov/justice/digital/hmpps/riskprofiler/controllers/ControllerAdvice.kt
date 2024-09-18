@@ -27,7 +27,8 @@ class ControllerAdvice {
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .body(
         ErrorResponse(
-          HttpStatus.INTERNAL_SERVER_ERROR.value(), e.message
+          HttpStatus.INTERNAL_SERVER_ERROR.value(),
+          e.message,
         )
       )
   }
