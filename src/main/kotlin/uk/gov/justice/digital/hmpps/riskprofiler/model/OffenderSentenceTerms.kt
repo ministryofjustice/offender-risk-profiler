@@ -19,13 +19,13 @@ data class OffenderSentenceTerms(
 
   @Schema(
     title = "Sentence number which this sentence follows if consecutive, otherwise concurrent.",
-    example = "2"
+    example = "2",
   )
   private val consecutiveTo: Int? = null,
 
   @Schema(
     title = "Sentence type, using reference data from table SENTENCE_CALC_TYPES.",
-    example = "2"
+    example = "2",
   )
   private val sentenceType: String? = null,
 
@@ -48,7 +48,7 @@ data class OffenderSentenceTerms(
   private val days: Int? = null,
 
   @Schema(required = true, title = "Whether this is a life sentence.")
-  val lifeSentence: Boolean? = null
+  val lifeSentence: Boolean? = null,
 ) : Serializable {
 
   constructor(booking: Long, lifeSentence: Boolean) : this(bookingId = booking, lifeSentence = lifeSentence)

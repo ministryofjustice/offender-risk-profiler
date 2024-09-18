@@ -31,7 +31,7 @@ data class Alert(
     active = active,
     expired = expired,
     alertCode = code,
-    dateCreated = LocalDate.now()
+    dateCreated = LocalDate.now(),
   )
 
   companion object {

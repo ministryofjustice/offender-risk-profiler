@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 @Configuration
 class WebClientConfiguration @Autowired constructor(
-  @Value("\${api.health-timeout:1s}") healthTimeout: Duration
+  @Value("\${api.health-timeout:1s}") healthTimeout: Duration,
 ) {
   @Value("\${elite2api.endpoint.url}")
   private lateinit var elite2apiRootUri: String
@@ -47,7 +47,7 @@ class WebClientConfiguration @Autowired constructor(
   @Bean
   fun authorizedClientManager(
     clientRegistrationRepository: ClientRegistrationRepository?,
-    authorizedClientService: OAuth2AuthorizedClientService?
+    authorizedClientService: OAuth2AuthorizedClientService?,
   ): OAuth2AuthorizedClientManager {
     return AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, authorizedClientService)
   }
@@ -60,7 +60,7 @@ class WebClientConfiguration @Autowired constructor(
       .exchangeStrategies(
         ExchangeStrategies.builder()
           .codecs { configurer: ClientCodecConfigurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024) }
-          .build()
+          .build(),
       )
       .baseUrl(elite2apiRootUri)
       .apply(oauth2Client.oauth2Configuration())

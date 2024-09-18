@@ -17,7 +17,7 @@ class ExtremismDecisionTreeService(private val repository: PathfinderService) {
   private fun decisionProcess(
     nomsId: String,
     previousOffences: Boolean,
-    pathFinder: PathFinder?
+    pathFinder: PathFinder?,
   ): ExtremismProfile {
     val extremism = ExtremismProfile(nomsId = nomsId, provisionalCategorisation = RiskProfile.DEFAULT_CAT)
     pathFinder?.also {

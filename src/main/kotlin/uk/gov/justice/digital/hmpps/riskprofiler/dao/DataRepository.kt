@@ -24,13 +24,15 @@ abstract class DataRepository<F : RiskDataSet> {
     csvData: List<List<String>>,
     filename: String,
     timestamp: LocalDateTime,
-    data: ImportedFile<F>
+    data: ImportedFile<F>,
   )
 
   open fun getByKey(key: String?): Optional<F> {
     return if (data.dataSet != null) {
       Optional.ofNullable(data.dataSet!![key!!])
-    } else Optional.empty()
+    } else {
+      Optional.empty()
+    }
   }
 
   val fileTimestamp: LocalDateTime?

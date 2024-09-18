@@ -13,7 +13,7 @@ class OcgRepository : DataRepository<Ocg>() {
     csvData: List<List<String>>,
     filename: String,
     timestamp: LocalDateTime,
-    data: ImportedFile<Ocg>
+    data: ImportedFile<Ocg>,
   ) {
     data.fileTimestamp = timestamp
     data.fileName = filename

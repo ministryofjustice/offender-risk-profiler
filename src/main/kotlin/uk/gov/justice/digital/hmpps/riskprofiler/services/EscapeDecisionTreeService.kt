@@ -21,7 +21,7 @@ class EscapeDecisionTreeService(private val nomisService: NomisService) {
       escapeListAlerts.isNotEmpty(),
       escapeRiskAlerts.isNotEmpty(),
       escapeRiskAlerts,
-      escapeListAlerts
+      escapeListAlerts,
     )
   }
 

@@ -29,7 +29,7 @@ data class ViolenceProfile(
   @field:Schema(
     title = "The number of non-serious assaults in the last 12 months",
     example = "2",
-  ) val numberOfNonSeriousAssaults: Long
+  ) val numberOfNonSeriousAssaults: Long,
 ) : RiskProfile(nomsId, provisionalCategorisation) {
   constructor() : this("", "", false, false, false, 0, 0, 0)
 
