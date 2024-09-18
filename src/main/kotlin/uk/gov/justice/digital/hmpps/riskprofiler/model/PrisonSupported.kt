@@ -11,7 +11,8 @@ import javax.validation.constraints.NotNull
 @Table(name = "PRISON_SUPPORTED")
 data class PrisonSupported(
   @Id
-  val prisonId: @Length(max = 6) String,
+  @Length(max = 6)
+  val prisonId: String,
 
   val startDateTime: @NotNull LocalDateTime? = null,
 )
