@@ -35,8 +35,8 @@ class PrisonServiceTest {
     prisonService.addPrison(PRISON)
     Mockito.verify(repository).save(
       ArgumentMatchers.any(
-        PrisonSupported::class.java
-      )
+        PrisonSupported::class.java,
+      ),
     )
   }
 

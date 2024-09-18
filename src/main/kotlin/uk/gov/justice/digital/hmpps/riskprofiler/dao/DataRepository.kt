@@ -7,7 +7,7 @@ import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.regex.Pattern
 
-abstract class DataRepository<F : RiskDataSet?> {
+abstract class DataRepository<F : RiskDataSet> {
   @JvmField
   val NOMS_ID_REGEX = Pattern.compile("^[A-Z]\\d{4}[A-Z]{2}$")
   internal open val dataA = ImportedFile<F>()

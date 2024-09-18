@@ -14,13 +14,16 @@ class DataSetInfoContributor @Autowired constructor(private val dataRepositoryFa
   InfoContributor {
   override fun contribute(builder: Info.Builder) {
     val results = HashMap<String, String>()
-    dataRepositoryFactory.getRepositories().forEach { dataRepository: DataRepository<out RiskDataSet?> ->
+    dataRepositoryFactory.getRepositories().forEach { dataRepository: DataRepository<out RiskDataSet> ->
       val data = dataRepository.data
       if (data.fileType != null) {
         results[data.fileType.toString()] = String.format(
           "Processed (%s): %d, Dups: %d, Invalid: %d, Error: %d, Total: %d",
           data.fileTimestamp!!.format(DateTimeFormatter.ISO_DATE_TIME),
-          data.linesProcessed.get(), data.linesDup.get(), data.linesInvalid.get(), data.linesError.get(),
+          data.linesProcessed.get(),
+          data.linesDup.get(),
+          data.linesInvalid.get(),
+          data.linesError.get(),
           data.index.get(),
         )
       }

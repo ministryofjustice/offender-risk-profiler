@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 
 class ViperRepositoryTest {
   private val repository = ViperRepository()
+
   @Before
   fun setup() {
     val row1 = listOf(
@@ -21,7 +22,7 @@ class ViperRepositoryTest {
       "1.620946332",
       "0.384587326",
       "3",
-      "TRUE"
+      "TRUE",
     )
     val row2 = listOf(
       "1431076",
@@ -34,7 +35,7 @@ class ViperRepositoryTest {
       "1.604003179",
       "0.311360479",
       "3",
-      "TRUE"
+      "TRUE",
     )
     val row3 = listOf(
       "1433408",
@@ -47,7 +48,7 @@ class ViperRepositoryTest {
       "1.599064248",
       "0.459304537",
       "3",
-      "TRUE"
+      "TRUE",
     )
     val viperList = listOf(row1, row2, row3)
     repository.process(viperList, "Viper.csv", LocalDateTime.now())

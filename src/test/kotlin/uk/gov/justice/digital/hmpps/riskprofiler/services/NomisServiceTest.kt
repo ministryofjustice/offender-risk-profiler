@@ -41,15 +41,15 @@ class NomisServiceTest {
     Mockito.`when`(
       webClientCallHelper.getForList(
         eq("/api/offenders/A1234AA/alerts/v2?alertCodes=SOC"),
-        isA<ParameterizedTypeReference<List<Alert>>>()
-      )
+        isA<ParameterizedTypeReference<List<Alert>>>(),
+      ),
     )
       .thenReturn(response)
     val alertsForOffender = service.getAlertsForOffender("A1234AA", listOf("SOC"))
     Assertions.assertThat(alertsForOffender).hasSize(1)
     Mockito.verify(webClientCallHelper).getForList(
       eq("/api/offenders/A1234AA/alerts/v2?alertCodes=SOC"),
-      isA<ParameterizedTypeReference<List<Alert>>>()
+      isA<ParameterizedTypeReference<List<Alert>>>(),
     )
     Mockito.verifyNoMoreInteractions(webClientCallHelper)
   }
@@ -58,21 +58,21 @@ class NomisServiceTest {
   @Throws(Exception::class)
   fun testBookingDetail() {
     val body = RestResponsePage<OffenderBooking>(
-      listOf(OffenderBooking(1, "G1234H", "A1234AA", "LIFE"))
+      listOf(OffenderBooking(1, "G1234H", "A1234AA", "LIFE")),
     )
     val response = ResponseEntity(body, HttpStatus.OK)
     Mockito.`when`(
       webClientCallHelper.getPageRestResponse(
         eq("/api/bookings/v2?bookingId=1&legalInfo=true"),
-        isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>()
-      )
+        isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>(),
+      ),
     )
       .thenReturn(response)
     val bookingDetails = service.getBookingDetails(1L)
     Assertions.assertThat(bookingDetails).hasSize(1)
     Mockito.verify(webClientCallHelper).getPageRestResponse(
       eq("/api/bookings/v2?bookingId=1&legalInfo=true"),
-      isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>()
+      isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>(),
     )
     Mockito.verifyNoMoreInteractions(webClientCallHelper)
   }
@@ -87,21 +87,21 @@ class NomisServiceTest {
         OffenderBooking(3, "G1236H", "A1234AC", "LIFE"),
         OffenderBooking(4, "G1237H", "A1234AD", "LIFE"),
         OffenderBooking(5, "G1238H", "A1234AE", "LIFE"),
-      )
+      ),
     )
     val response = ResponseEntity(body, HttpStatus.OK)
     Mockito.`when`(
       webClientCallHelper.getPageRestResponse(
         eq("/api/bookings/v2?prisonId=MDI&size=4000"),
-        isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>()
-      )
+        isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>(),
+      ),
     )
       .thenReturn(response)
     val offenderList = service.getOffendersAtPrison("MDI")
     Assertions.assertThat(offenderList).hasSize(5)
     Mockito.verify(webClientCallHelper).getPageRestResponse(
       eq("/api/bookings/v2?prisonId=MDI&size=4000"),
-      isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>()
+      isA<ParameterizedTypeReference<RestResponsePage<OffenderBooking>>>(),
     )
     Mockito.verifyNoMoreInteractions(webClientCallHelper)
   }
@@ -114,15 +114,15 @@ class NomisServiceTest {
     Mockito.`when`(
       webClientCallHelper.getForList(
         eq("/api/offenders/A1234AA/alerts/v2?alertCodes=XER,XEL"),
-        isA<ParameterizedTypeReference<List<Alert>>>()
-      )
+        isA<ParameterizedTypeReference<List<Alert>>>(),
+      ),
     )
       .thenReturn(response)
     val alertsForOffender = service.getEscapeListAlertsForOffender("A1234AA")
     Assertions.assertThat(alertsForOffender).hasSize(2)
     Mockito.verify(webClientCallHelper).getForList(
       eq("/api/offenders/A1234AA/alerts/v2?alertCodes=XER,XEL"),
-      isA<ParameterizedTypeReference<List<Alert>>>()
+      isA<ParameterizedTypeReference<List<Alert>>>(),
     )
     Mockito.verifyNoMoreInteractions(webClientCallHelper)
   }
@@ -135,15 +135,15 @@ class NomisServiceTest {
     Mockito.`when`(
       webClientCallHelper.getForList(
         eq("/api/offenders/A1234AA/incidents?incidentType=ASSAULTS&participationRoles=ACTINV&participationRoles=ASSIAL"),
-        isA<ParameterizedTypeReference<List<IncidentCase>>>()
-      )
+        isA<ParameterizedTypeReference<List<IncidentCase>>>(),
+      ),
     )
       .thenReturn(response)
     val incidentsForOffender = service.getIncidents("A1234AA")
     Assertions.assertThat(incidentsForOffender).hasSize(2)
     Mockito.verify(webClientCallHelper).getForList(
       eq("/api/offenders/A1234AA/incidents?incidentType=ASSAULTS&participationRoles=ACTINV&participationRoles=ASSIAL"),
-      isA<ParameterizedTypeReference<List<IncidentCase>>>()
+      isA<ParameterizedTypeReference<List<IncidentCase>>>(),
     )
     Mockito.verifyNoMoreInteractions(webClientCallHelper)
   }
@@ -207,7 +207,7 @@ class NomisServiceTest {
   @Throws(Exception::class)
   fun testGetPartiesOfIncident404() {
     Mockito.`when`(webClientCallHelper.get("/api/incidents/123", IncidentCase::class.java)).thenThrow(
-      WebClientResponseException.create(HttpStatus.NOT_FOUND.value(), "test", null, null, null)
+      WebClientResponseException.create(HttpStatus.NOT_FOUND.value(), "test", null, null, null),
     )
     val partiesOfIncident = service.getPartiesOfIncident(123L)
     Assertions.assertThat(partiesOfIncident).asList().isEmpty()

@@ -41,7 +41,7 @@ class SocDecisionTreeServiceTest {
   @Test
   fun testOnPrasFile() {
     Mockito.`when`(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
-      Optional.of(Pras(OFFENDER_1))
+      Optional.of(Pras(OFFENDER_1)),
     )
     val socProfile: SocProfile = service.getSocData(OFFENDER_1)
     Assertions.assertThat(socProfile.provisionalCategorisation).isEqualTo("C")
@@ -58,7 +58,7 @@ class SocDecisionTreeServiceTest {
       .thenReturn(Optional.empty())
 
     Mockito.`when`(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
-      Optional.of(OcgmList(OFFENDER_1, Ocgm(OFFENDER_1, "123", null), null))
+      Optional.of(OcgmList(OFFENDER_1, Ocgm(OFFENDER_1, "123", null), null)),
     )
 
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("123")))
@@ -75,7 +75,7 @@ class SocDecisionTreeServiceTest {
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())
     Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
-      Optional.of(OcgmList(OFFENDER_1, Ocgm(OFFENDER_1, "1234", null), null))
+      Optional.of(OcgmList(OFFENDER_1, Ocgm(OFFENDER_1, "1234", null), null)),
     )
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("1234")))
       .thenReturn(Optional.of(Ocg("id", "2a")))
@@ -93,9 +93,9 @@ class SocDecisionTreeServiceTest {
         OcgmList(
           OFFENDER_1,
           Ocgm(OFFENDER_1, "12345", SocDecisionTreeService.PRINCIPAL_SUBJECT),
-          null
-        )
-      )
+          null,
+        ),
+      ),
     )
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("12345")))
       .thenReturn(Optional.of(Ocg("id", "2a")))
@@ -113,9 +113,9 @@ class SocDecisionTreeServiceTest {
         OcgmList(
           OFFENDER_1,
           Ocgm(OFFENDER_1, "12345", "${SocDecisionTreeService.PRINCIPAL_SUBJECT},${SocDecisionTreeService.PRINCIPAL_SUBJECT},${SocDecisionTreeService.PRINCIPAL_SUBJECT}"),
-          null
-        )
-      )
+          null,
+        ),
+      ),
     )
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("12345")))
       .thenReturn(Optional.of(Ocg("id", "2a")))
@@ -133,9 +133,9 @@ class SocDecisionTreeServiceTest {
         OcgmList(
           OFFENDER_1,
           Ocgm(OFFENDER_1, "12345", null),
-          null
-        )
-      )
+          null,
+        ),
+      ),
     )
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("12345")))
       .thenReturn(Optional.of(Ocg("id", "2a")))
@@ -153,9 +153,9 @@ class SocDecisionTreeServiceTest {
         OcgmList(
           OFFENDER_1,
           Ocgm(OFFENDER_1, "123456", SocDecisionTreeService.PRINCIPAL_SUBJECT),
-          null
-        )
-      )
+          null,
+        ),
+      ),
     )
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("123456")))
       .thenReturn(Optional.of(Ocg("id", "4a")))
@@ -179,9 +179,9 @@ class SocDecisionTreeServiceTest {
         OcgmList(
           OFFENDER_1,
           Ocgm(OFFENDER_1, "123", null),
-          null
-        )
-      )
+          null,
+        ),
+      ),
     )
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("123")))
       .thenReturn(Optional.of(Ocg("id", "5c")))
@@ -202,7 +202,7 @@ class SocDecisionTreeServiceTest {
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())
     Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
-      Optional.empty()
+      Optional.empty(),
     )
     Mockito.`when`<List<Alert>>(nomisService.getSocListAlertsForOffender(OFFENDER_1))
       .thenReturn(java.util.List.of(xfo, xd))
@@ -222,7 +222,7 @@ class SocDecisionTreeServiceTest {
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())
     Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
-      Optional.empty()
+      Optional.empty(),
     )
     Mockito.`when`<List<Alert>>(nomisService.getSocListAlertsForOffender(OFFENDER_1))
       .thenReturn(java.util.List.of(xfo, xd))
@@ -246,9 +246,9 @@ class SocDecisionTreeServiceTest {
         OcgmList(
           OFFENDER_1,
           Ocgm(OFFENDER_1, "123", null),
-          null
-        )
-      )
+          null,
+        ),
+      ),
     )
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("123"))).thenReturn(Optional.empty())
     Mockito.`when`<List<Alert>>(nomisService.getSocListAlertsForOffender(OFFENDER_1))
@@ -266,7 +266,7 @@ class SocDecisionTreeServiceTest {
     val ocgm2 = Ocgm(OFFENDER_1, "1234567", "SomethingElse")
     val ocgmList = OcgmList(OFFENDER_1, null, java.util.List.of(ocgm1, ocgm2))
     Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
-      Optional.of(ocgmList)
+      Optional.of(ocgmList),
     )
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("123456")))
       .thenReturn(Optional.of(Ocg("id", "4a")))
@@ -286,7 +286,7 @@ class SocDecisionTreeServiceTest {
     val ocgm3 = Ocgm(OFFENDER_1, "1234568", SocDecisionTreeService.PRINCIPAL_SUBJECT)
     val ocgmList = OcgmList(OFFENDER_1, null, java.util.List.of(ocgm1, ocgm2, ocgm3))
     Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
-      Optional.of(ocgmList)
+      Optional.of(ocgmList),
     )
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("123456")))
       .thenReturn(Optional.of(Ocg("id", "4a")))
@@ -308,7 +308,7 @@ class SocDecisionTreeServiceTest {
     val ocgm3 = Ocgm(OFFENDER_1, "1234568", "SomethingElse")
     val ocgmList = OcgmList(OFFENDER_1, null, java.util.List.of(ocgm1, ocgm2, ocgm3))
     Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
-      Optional.of(ocgmList)
+      Optional.of(ocgmList),
     )
     Mockito.`when`<Optional<Ocg>>(ocgRepo.getByKey(ArgumentMatchers.eq<String>("123456")))
       .thenReturn(Optional.of(Ocg("id", "4a")))
@@ -330,9 +330,9 @@ class SocDecisionTreeServiceTest {
         OcgmList(
           OFFENDER_1,
           Ocgm(OFFENDER_1, "12345", SocDecisionTreeService.PRINCIPAL_SUBJECT),
-          null
-        )
-      )
+          null,
+        ),
+      ),
     )
 
     // return ocg with no band:
