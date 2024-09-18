@@ -67,7 +67,8 @@ class RiskProfilerResource(
       example = "A1234AA",
       required = true,
     )
-    @PathVariable(value = "nomsId") nomsId: String,
+    @PathVariable(value = "nomsId")
+    nomsId: String,
   ): SocProfile {
     return socDecisionTreeServiceService.getSocData(nomsId)
   }

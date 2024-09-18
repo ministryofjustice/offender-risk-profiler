@@ -33,9 +33,13 @@ class S3FileService(
             o.lastModified.toInstant()
               .atZone(ZoneId.systemDefault())
               .toLocalDateTime(),
-            if (fileType == FileType.VIPER) getViperFile(s3Object.objectContent) else IOUtils.toByteArray(
-              s3Object.objectContent,
-            ),
+            if (fileType == FileType.VIPER) {
+              getViperFile(s3Object.objectContent)
+            } else {
+              IOUtils.toByteArray(
+                s3Object.objectContent,
+              )
+            },
           )
         } catch (e: IOException) {
           return@map null

@@ -85,11 +85,11 @@ class ViolenceDecisionTreeService(
             "violence: Viper score {} is below threshold of {} for {}",
             viper.score,
             viperScoreThreshold,
-            nomsId
+            nomsId,
           )
           violenceProfile.provisionalCategorisation = RiskProfile.DEFAULT_CAT
         }
-      }
+      },
     ) {
       log.debug("violence: No Viper score for {}", nomsId)
       violenceProfile.provisionalCategorisation = "C"
@@ -103,7 +103,7 @@ class ViolenceDecisionTreeService(
   ): Boolean {
     return seriousQuestionAndResponse.question.equals(
       incidentResponse.question,
-      ignoreCase = true
+      ignoreCase = true,
     ) && seriousQuestionAndResponse.needAnswer.equals(incidentResponse.answer, ignoreCase = true)
   }
 
@@ -115,7 +115,7 @@ class ViolenceDecisionTreeService(
       SeriousQuestionAndResponse("WAS THIS A SEXUAL ASSAULT", "YES"),
       SeriousQuestionAndResponse("WAS MEDICAL TREATMENT FOR CONCUSSION OR INTERNAL INJURIES REQUIRED", "YES"),
       SeriousQuestionAndResponse("WAS A SERIOUS INJURY SUSTAINED", "YES"),
-      SeriousQuestionAndResponse("DID INJURIES RESULT IN DETENTION IN OUTSIDE HOSPITAL AS AN IN-PATIENT", "YES")
+      SeriousQuestionAndResponse("DID INJURIES RESULT IN DETENTION IN OUTSIDE HOSPITAL AS AN IN-PATIENT", "YES"),
     )
   }
 

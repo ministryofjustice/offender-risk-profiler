@@ -58,7 +58,7 @@ class PreviousProfileRepositoryTest {
         30,
         14,
         40,
-        ),
+      ),
     )
   }
 }

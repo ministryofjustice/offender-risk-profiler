@@ -115,7 +115,7 @@ class PollPrisonersServiceTest {
     private fun eqProfiles(profile: PreviousProfile): PreviousProfile {
       return argThat { actual ->
         profile.soc == actual.soc && profile.violence == actual.violence && profile.escape == actual.escape && Math.abs(
-          ChronoUnit.SECONDS.between(profile.executeDateTime, actual.executeDateTime)
+          ChronoUnit.SECONDS.between(profile.executeDateTime, actual.executeDateTime),
         ) < 2
       }
     }
@@ -123,7 +123,7 @@ class PollPrisonersServiceTest {
     private fun eqRiskProfileChange(rpc: RiskProfileChange): RiskProfileChange {
       return argThat { (oldProfile, newProfile, offenderNo, executeDateTime) ->
         rpc.newProfile == newProfile && rpc.oldProfile == oldProfile && Math.abs(
-          ChronoUnit.SECONDS.between(rpc.executeDateTime, executeDateTime)
+          ChronoUnit.SECONDS.between(rpc.executeDateTime, executeDateTime),
         ) < 2 && rpc.offenderNo == offenderNo
       }
     }

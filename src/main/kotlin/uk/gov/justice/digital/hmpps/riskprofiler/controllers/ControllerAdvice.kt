@@ -29,7 +29,7 @@ class ControllerAdvice {
         ErrorResponse(
           HttpStatus.INTERNAL_SERVER_ERROR.value(),
           e.message,
-        )
+        ),
       )
   }
 

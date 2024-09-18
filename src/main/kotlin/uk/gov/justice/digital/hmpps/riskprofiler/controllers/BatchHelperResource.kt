@@ -38,9 +38,8 @@ import javax.validation.constraints.NotNull
     ),
   ],
 )
-
 @RestController
-@RequestMapping(value = ["batch-helper"], produces = [MediaType.APPLICATION_JSON_VALUE],)
+@RequestMapping(value = ["batch-helper"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class BatchHelperResource(
   private val pollPrisonersScheduler: PollPrisonersScheduler,
   private val prisonService: PrisonService,
@@ -70,7 +69,7 @@ class BatchHelperResource(
       required = true,
     )
     @PathVariable("prisonId")
-    prisonId: @NotNull String
+    prisonId: @NotNull String,
   ) =
     prisonService.addPrison(prisonId)
 
