@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.camel
 
+import org.apache.commons.lang3.time.DateUtils
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
@@ -7,7 +8,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
 @Service
 class CsvHousekeepingService(private val fileService: FileService) {
 
-  @Scheduled(fixedRateString = "\${data.deletion.period}")
+  @Scheduled(fixedRate = DateUtils.MILLIS_PER_DAY)
   fun cleanupHistoricalCsvFiles() {
     fileService.deleteHistoricalFiles("\${s3.path.ocg}")
     fileService.deleteHistoricalFiles("\${s3.path.ocgm}")

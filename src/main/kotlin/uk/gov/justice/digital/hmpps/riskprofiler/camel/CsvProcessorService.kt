@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService
 @Service
 class CsvProcessorService(private val dataService: DataService, private val fileService: S3FileService) {
 
-  @Scheduled(fixedRateString = "\${viper.period}", fixedDelayString = "\${viper.delay}")
+  @Scheduled(fixedRateString = "\${viper.period}")
   private fun startViperScheduler() {
     val file = fileService.getLatestFile("\${s3.path.viper}}", FileType.VIPER)
 
@@ -45,7 +45,7 @@ class CsvProcessorService(private val dataService: DataService, private val file
     }
   }
 
-  @Scheduled(fixedRateString = "\${pras.period}", fixedDelayString = "\${pras.delay}")
+  @Scheduled(fixedRateString = "\${pras.period}")
   private fun startPrasScehduler() {
     val file = fileService.getLatestFile("\${s3.path.pras}}", FileType.PRAS)
 
