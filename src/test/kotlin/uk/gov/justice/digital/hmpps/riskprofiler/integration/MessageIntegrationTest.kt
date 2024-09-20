@@ -11,7 +11,6 @@ class MessageIntegrationTest : QueueIntegrationTest() {
 
   @Test
   fun `will transfer message from DLQ`() {
-
     val message = javaClass.getResource("/messages/incident.json")?.readText()
 
     awsDlqClientForEvents.sendMessage(dlqUrl, message)

@@ -14,7 +14,7 @@ class OcgmRepository : DataRepository<OcgmList>() {
     csvData: List<List<String>>,
     filename: String,
     timestamp: LocalDateTime,
-    data: ImportedFile<OcgmList>
+    data: ImportedFile<OcgmList>,
   ) {
     data.fileTimestamp = timestamp
     data.fileName = filename
@@ -57,8 +57,12 @@ class OcgmRepository : DataRepository<OcgmList>() {
         }
       }
     log.info(
-      "Lines total {}, processed {}, dups {}, invalid {}, errors {}", data.index.get(),
-      data.linesProcessed.get(), data.linesDup.get(), data.linesInvalid.get(), data.linesError.get()
+      "Lines total {}, processed {}, dups {}, invalid {}, errors {}",
+      data.index.get(),
+      data.linesProcessed.get(),
+      data.linesDup.get(),
+      data.linesInvalid.get(),
+      data.linesError.get(),
     )
   }
 

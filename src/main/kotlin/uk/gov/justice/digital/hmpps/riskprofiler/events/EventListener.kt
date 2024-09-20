@@ -17,7 +17,7 @@ import java.util.function.Consumer
 class EventListener(
   private val nomisService: NomisService,
   private val pollPrisonersService: PollPrisonersService,
-  private val objectMapper: ObjectMapper
+  private val objectMapper: ObjectMapper,
 ) {
   @JmsListener(destination = "\${sqs.events.queue.name}")
   fun eventListener(requestJson: String) {

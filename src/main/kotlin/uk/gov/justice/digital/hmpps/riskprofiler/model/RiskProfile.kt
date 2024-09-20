@@ -11,7 +11,7 @@ abstract class RiskProfile(
   private var nomsId: @NotBlank String = "",
 
   @Schema(required = true, title = "Provisional Categorisation", example = "C")
-  private var provisionalCategorisation: @NotBlank String = "C"
+  private var provisionalCategorisation: @NotBlank String = "C",
 ) {
   @Schema(
     required = true,

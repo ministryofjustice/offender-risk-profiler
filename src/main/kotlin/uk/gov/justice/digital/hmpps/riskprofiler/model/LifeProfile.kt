@@ -8,9 +8,9 @@ data class LifeProfile(
   var provisionalCategorisation: @NotBlank String,
   @field:Schema(
     title = "Indicates offender has a court-issued life sentence",
-    example = "true"
+    example = "true",
   )
-  val life: Boolean
+  val life: Boolean,
 ) : RiskProfile(nomsId, provisionalCategorisation) {
   override fun getRiskType(): RiskType {
     return RiskType.LIFE

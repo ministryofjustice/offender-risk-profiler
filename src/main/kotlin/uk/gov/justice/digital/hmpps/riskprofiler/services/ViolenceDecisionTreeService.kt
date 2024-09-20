@@ -20,7 +20,7 @@ class ViolenceDecisionTreeService(
   nomisService: NomisService,
   @Value("\${app.assaults.min:5}") minNumAssaults: Int,
   @Value("\${app.assaults.check.months:12}") months: Int,
-  @Value("\${app.viper-threshold:5.00}") viperScoreThreshold: BigDecimal
+  @Value("\${app.viper-threshold:5.00}") viperScoreThreshold: BigDecimal,
 ) {
   private val viperScoreThreshold: BigDecimal
   private val minNumAssaults: Int
@@ -30,12 +30,11 @@ class ViolenceDecisionTreeService(
 
   private fun recentAssaults(assault: IncidentCase): Boolean {
     return assault.reportTime != null && assault.reportTime!!.compareTo(
-      LocalDateTime.now().minusMonths(months.toLong())
+      LocalDateTime.now().minusMonths(months.toLong()),
     ) >= 0
   }
 
   fun getViolenceProfile(nomsId: String): ViolenceProfile {
-
     // Check NOMIS Have the individuals had 5 or more assaults in custody? (remove DUPS)
     val assaults = nomisService.getIncidents(nomsId).stream()
       .filter { i: IncidentCase -> "DUP" != i.incidentStatus }.collect(Collectors.toList())
@@ -55,10 +54,13 @@ class ViolenceDecisionTreeService(
       .count() - numberOfSeriousAssaults
     val violenceProfile = ViolenceProfile(
       nomsId,
-      RiskProfile.DEFAULT_CAT, false, false, !assaults.isEmpty(),
+      RiskProfile.DEFAULT_CAT,
+      false,
+      false,
+      !assaults.isEmpty(),
       assaults.size.toLong(),
       numberOfSeriousAssaults,
-      numberOfNonSeriousAssaults
+      numberOfNonSeriousAssaults,
     )
     viperDataRepository.getByKey(nomsId).ifPresentOrElse(
       { viper ->
@@ -83,11 +85,11 @@ class ViolenceDecisionTreeService(
             "violence: Viper score {} is below threshold of {} for {}",
             viper.score,
             viperScoreThreshold,
-            nomsId
+            nomsId,
           )
           violenceProfile.provisionalCategorisation = RiskProfile.DEFAULT_CAT
         }
-      }
+      },
     ) {
       log.debug("violence: No Viper score for {}", nomsId)
       violenceProfile.provisionalCategorisation = "C"
@@ -97,11 +99,11 @@ class ViolenceDecisionTreeService(
 
   private fun isSerious(
     incidentResponse: IncidentResponse,
-    seriousQuestionAndResponse: SeriousQuestionAndResponse
+    seriousQuestionAndResponse: SeriousQuestionAndResponse,
   ): Boolean {
     return seriousQuestionAndResponse.question.equals(
       incidentResponse.question,
-      ignoreCase = true
+      ignoreCase = true,
     ) && seriousQuestionAndResponse.needAnswer.equals(incidentResponse.answer, ignoreCase = true)
   }
 
@@ -113,7 +115,7 @@ class ViolenceDecisionTreeService(
       SeriousQuestionAndResponse("WAS THIS A SEXUAL ASSAULT", "YES"),
       SeriousQuestionAndResponse("WAS MEDICAL TREATMENT FOR CONCUSSION OR INTERNAL INJURIES REQUIRED", "YES"),
       SeriousQuestionAndResponse("WAS A SERIOUS INJURY SUSTAINED", "YES"),
-      SeriousQuestionAndResponse("DID INJURIES RESULT IN DETENTION IN OUTSIDE HOSPITAL AS AN IN-PATIENT", "YES")
+      SeriousQuestionAndResponse("DID INJURIES RESULT IN DETENTION IN OUTSIDE HOSPITAL AS AN IN-PATIENT", "YES"),
     )
   }
 

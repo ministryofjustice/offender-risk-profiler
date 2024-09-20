@@ -33,7 +33,7 @@ class S3FileServiceTest {
   @Before
   fun setup() {
     service = S3FileService(
-      amazonS3Client
+      amazonS3Client,
     )
   }
 

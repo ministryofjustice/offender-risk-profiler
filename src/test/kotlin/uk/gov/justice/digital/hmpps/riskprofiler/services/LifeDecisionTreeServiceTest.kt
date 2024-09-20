@@ -20,6 +20,7 @@ class LifeDecisionTreeServiceTest {
 
   @Mock
   private val nomisService: NomisService? = null
+
   @BeforeEach
   fun setup() {
     service = LifeDecisionTreeService(nomisService!!)

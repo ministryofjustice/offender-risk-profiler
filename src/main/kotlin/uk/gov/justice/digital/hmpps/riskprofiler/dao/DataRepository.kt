@@ -7,7 +7,7 @@ import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.regex.Pattern
 
-abstract class DataRepository<F : RiskDataSet?> {
+abstract class DataRepository<F : RiskDataSet> {
   @JvmField
   val NOMS_ID_REGEX = Pattern.compile("^[A-Z]\\d{4}[A-Z]{2}$")
   internal open val dataA = ImportedFile<F>()
@@ -24,13 +24,15 @@ abstract class DataRepository<F : RiskDataSet?> {
     csvData: List<List<String>>,
     filename: String,
     timestamp: LocalDateTime,
-    data: ImportedFile<F>
+    data: ImportedFile<F>,
   )
 
   open fun getByKey(key: String?): Optional<F> {
     return if (data.dataSet != null) {
       Optional.ofNullable(data.dataSet!![key!!])
-    } else Optional.empty()
+    } else {
+      Optional.empty()
+    }
   }
 
   val fileTimestamp: LocalDateTime?

@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class IncidentResponse(
   var questionnaireQueId: Long,
-  var questionnaireAnsId: Long
+  var questionnaireAnsId: Long,
 ) : Serializable {
 
   constructor(question: String, answer: String) : this(0, 0) {

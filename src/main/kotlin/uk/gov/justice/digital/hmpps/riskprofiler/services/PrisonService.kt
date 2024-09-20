@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 @Transactional(readOnly = true)
 class PrisonService @Autowired constructor(
   private val repository: PrisonSupportedRepository,
-  private val nomisService: NomisService
+  private val nomisService: NomisService,
 ) {
   val prisons: List<PrisonSupported>
     get() = repository.findAll()

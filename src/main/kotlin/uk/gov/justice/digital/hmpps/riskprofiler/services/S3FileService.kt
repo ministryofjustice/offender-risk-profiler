@@ -7,7 +7,6 @@ import com.amazonaws.util.IOUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Viper
@@ -18,7 +17,7 @@ import java.time.ZoneId
 
 @Component
 class S3FileService(
-  @Qualifier("s3Client") private val s3Client: AmazonS3?
+  @Qualifier("s3Client") private val s3Client: AmazonS3?,
 ) : FileService {
 
   override fun getLatestFile(fileLocation: String, fileType: FileType?): PendingFile? {
@@ -34,9 +33,13 @@ class S3FileService(
             o.lastModified.toInstant()
               .atZone(ZoneId.systemDefault())
               .toLocalDateTime(),
-            if (fileType == FileType.VIPER) getViperFile(s3Object.objectContent) else IOUtils.toByteArray(
-              s3Object.objectContent
-            )
+            if (fileType == FileType.VIPER) {
+              getViperFile(s3Object.objectContent)
+            } else {
+              IOUtils.toByteArray(
+                s3Object.objectContent,
+              )
+            },
           )
         } catch (e: IOException) {
           return@map null
@@ -49,11 +52,11 @@ class S3FileService(
     log.info(
       "Found {} data files for data housekeeping in {}",
       s3ObjectResult.objects.size,
-      fileLocation
+      fileLocation,
     )
     s3ObjectResult.objects.stream().sorted(
       Comparator.comparing { obj: S3ObjectSummary -> obj.lastModified }
-        .reversed()
+        .reversed(),
     ).skip(2).forEach { o ->
       s3ObjectResult.amazonS3Client!!.deleteObject(s3ObjectResult.bucketName, o!!.key)
       log.info("Deleted s3 data file: {} from bucket {}", o.key, s3ObjectResult.bucketName)
@@ -89,7 +92,7 @@ class S3FileService(
 
   private data class BucketAndPrefix(
     var bucketName: String?,
-    var prefix: String?
+    var prefix: String?,
   ) {
 
     constructor(fileLocation: String) : this(null, null) {
@@ -103,7 +106,7 @@ class S3FileService(
   private data class ObjectSummaryResult(
     var objects: List<S3ObjectSummary?>,
     val amazonS3Client: AmazonS3?,
-    val bucketName: String
+    val bucketName: String,
   )
 
   companion object {

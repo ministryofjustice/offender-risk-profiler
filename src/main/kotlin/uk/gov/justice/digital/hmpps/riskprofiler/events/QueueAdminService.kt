@@ -45,7 +45,7 @@ class QueueAdminService(
         telemetryClient?.trackEvent(
           TelemetryEvents.TRANSFERRED_EVENT_DLQ.name,
           mapOf("messages-on-queue" to total.toString()),
-          null
+          null,
         )
       }
   }

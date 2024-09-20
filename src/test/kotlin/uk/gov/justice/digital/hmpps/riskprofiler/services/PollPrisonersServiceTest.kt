@@ -36,17 +36,19 @@ class PollPrisonersServiceTest {
   private val SOC_1 = SocProfile(OFFENDER_1, "C", false)
   private val VIOLENCE_1 = ViolenceProfile(OFFENDER_1, "C", false, false, false, 0, 0, 0)
   private val ESCAPE_1 = EscapeProfile(
-    OFFENDER_1, "C", false,
+    OFFENDER_1,
+    "C",
+    false,
     true,
     listOf(Alert(alertCode = "XER", dateCreated = LocalDate.parse("2016-01-13"), active = true, expired = false)),
-    null
+    null,
   )
   private val PROFILE_1 = PreviousProfile(
     OFFENDER_1,
     """{"nomsId":"$OFFENDER_1","provisionalCategorisation":"C","activeEscapeList":false,"activeEscapeRisk":true,"escapeRiskAlerts":[{"alertCode":"XER","dateCreated":"2016-01-13","expired":false,"active":true}],"riskType":"ESCAPE"}""",
     """{"nomsId":"$OFFENDER_1","provisionalCategorisation":"C","transferToSecurity":false,"riskType":"SOC"}""",
     """{"nomsId":"$OFFENDER_1","provisionalCategorisation":"C","veryHighRiskViolentOffender":false,"notifySafetyCustodyLead":false,"displayAssaults":false,"numberOfAssaults":0,"numberOfSeriousAssaults":0,"numberOfNonSeriousAssaults":0,"riskType":"VIOLENCE"}""",
-    LocalDateTime.now()
+    LocalDateTime.now(),
   )
 
   @BeforeEach
@@ -57,7 +59,7 @@ class PollPrisonersServiceTest {
       escapeDecisionTreeService,
       previousProfileRepository,
       telemetryClient,
-      sqsService
+      sqsService,
     )
   }
 
@@ -74,7 +76,7 @@ class PollPrisonersServiceTest {
       ProfileMessagePayload(ESCAPE_1, SOC_1, VIOLENCE_1),
       ProfileMessagePayload(ESCAPE_1, SocProfile(OFFENDER_1, "C", true), VIOLENCE_1),
       OFFENDER_1,
-      LocalDateTime.now()
+      LocalDateTime.now(),
     )
     verify(sqsService).sendRiskProfileChangeMessage(eqRiskProfileChange(rpc))
     verify(previousProfileRepository, never()).save(any())
@@ -113,7 +115,7 @@ class PollPrisonersServiceTest {
     private fun eqProfiles(profile: PreviousProfile): PreviousProfile {
       return argThat { actual ->
         profile.soc == actual.soc && profile.violence == actual.violence && profile.escape == actual.escape && Math.abs(
-          ChronoUnit.SECONDS.between(profile.executeDateTime, actual.executeDateTime)
+          ChronoUnit.SECONDS.between(profile.executeDateTime, actual.executeDateTime),
         ) < 2
       }
     }
@@ -121,7 +123,7 @@ class PollPrisonersServiceTest {
     private fun eqRiskProfileChange(rpc: RiskProfileChange): RiskProfileChange {
       return argThat { (oldProfile, newProfile, offenderNo, executeDateTime) ->
         rpc.newProfile == newProfile && rpc.oldProfile == oldProfile && Math.abs(
-          ChronoUnit.SECONDS.between(rpc.executeDateTime, executeDateTime)
+          ChronoUnit.SECONDS.between(rpc.executeDateTime, executeDateTime),
         ) < 2 && rpc.offenderNo == offenderNo
       }
     }

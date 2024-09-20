@@ -8,10 +8,10 @@ configurations {
   implementation { exclude(group = "tomcat-jdbc") }
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
   all {
-    exclude (group="net.minidev", module="json-smart" )
-    exclude(group="software.amazon.ion", module = "ion-java")
-    exclude(group="ch.qos.logback", module = "logback-core")
-    exclude(group="ch.qos.logback", module = "logback-classic")
+    exclude(group = "net.minidev", module = "json-smart")
+    exclude(group = "software.amazon.ion", module = "ion-java")
+    exclude(group = "ch.qos.logback", module = "logback-core")
+    exclude(group = "ch.qos.logback", module = "logback-classic")
   }
 }
 
@@ -107,8 +107,6 @@ dependencies {
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
 
-  //testImplementation("org.springframework.security:spring-security-test")
-
   testImplementation("com.jayway.jsonpath:json-path:2.9.0")
   testImplementation("jakarta.xml.bind:jakarta.xml.bind-api:2.3.3")
   testImplementation("org.assertj:assertj-core:3.22.0")
@@ -122,7 +120,6 @@ dependencies {
   testImplementation("org.xmlunit:xmlunit-core:2.9.1")
 
   testImplementation("org.springframework.security:spring-security-test")
-
 }
 
 java {
@@ -135,26 +132,6 @@ tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
       jvmTarget = "18"
-    }
-  }
-  withType<org.gradle.api.Task> {
-    ktlintCheck {
-      enabled = false
-    }
-  }
-  withType<org.gradle.api.Task> {
-    ktlintTestSourceSetCheck {
-      enabled = false
-    }
-  }
-  withType<org.gradle.api.Task> {
-    ktlintMainSourceSetCheck {
-      enabled = false
-    }
-  }
-  withType<org.gradle.api.Task> {
-    ktlintKotlinScriptCheck {
-      enabled = false
     }
   }
 }

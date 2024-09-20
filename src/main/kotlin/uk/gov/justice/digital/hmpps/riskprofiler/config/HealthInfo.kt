@@ -24,10 +24,10 @@ class HealthInfo : HealthIndicator {
 
   override fun health(): Health {
     val allAvailable = dataRepositoryFactory.getRepositories()
-      .stream().map { obj: DataRepository<out RiskDataSet?> -> obj.dataAvailable() }
+      .stream().map { obj: DataRepository<out RiskDataSet> -> obj.dataAvailable() }
       .reduce { accumulator: Boolean, dataAvailable: Boolean -> accumulator && dataAvailable }
     return Health.status(
-      if (allAvailable.orElse(false)) Status.UP else Status.OUT_OF_SERVICE
+      if (allAvailable.orElse(false)) Status.UP else Status.OUT_OF_SERVICE,
     )
       .withDetail("version", version).build()
   }

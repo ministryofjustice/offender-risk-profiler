@@ -28,7 +28,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.ViolenceDecisionTreeSe
 
 @Tag(
   name = "risk-profile",
-  description = "Provides Offender Risk Profile Information on SOC, Escape, Violence, Extremism"
+  description = "Provides Offender Risk Profile Information on SOC, Escape, Violence, Extremism",
 )
 @ApiResponses(
   value = [
@@ -36,14 +36,14 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.ViolenceDecisionTreeSe
     ApiResponse(
       responseCode = "400",
       description = "Invalid request.",
-      content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
     ),
     ApiResponse(
       responseCode = "500",
       description = "Unrecoverable error occurred whilst processing request.",
-      content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
     ),
-  ]
+  ],
 )
 @RestController
 @RequestMapping(value = ["risk-profile"], produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -52,7 +52,7 @@ class RiskProfilerResource(
   private val violenceDecisionTreeService: ViolenceDecisionTreeService,
   private val escapeDecisionTreeService: EscapeDecisionTreeService,
   private val extremismDecisionTreeService: ExtremismDecisionTreeService,
-  private val lifeDecisionTreeService: LifeDecisionTreeService
+  private val lifeDecisionTreeService: LifeDecisionTreeService,
 ) {
   @Operation(
     summary = "Return SOC Risk for offender",
@@ -65,8 +65,10 @@ class RiskProfilerResource(
       name = "nomsId",
       description = "NOMS ID of the offender",
       example = "A1234AA",
-      required = true
-    ) @PathVariable(value = "nomsId") nomsId: String
+      required = true,
+    )
+    @PathVariable(value = "nomsId")
+    nomsId: String,
   ): SocProfile {
     return socDecisionTreeServiceService.getSocData(nomsId)
   }
@@ -82,8 +84,10 @@ class RiskProfilerResource(
       name = "nomsId",
       description = "NOMS ID of the offender",
       example = "A1234AA",
-      required = true
-    ) @PathVariable("nomsId") nomsId: String
+      required = true,
+    )
+    @PathVariable("nomsId")
+    nomsId: String,
   ): EscapeProfile {
     return escapeDecisionTreeService.getEscapeProfile(nomsId)
   }
@@ -99,8 +103,10 @@ class RiskProfilerResource(
       name = "nomsId",
       description = "NOMS ID of the offender",
       example = "A1234AA",
-      required = true
-    ) @PathVariable("nomsId") nomsId: String
+      required = true,
+    )
+    @PathVariable("nomsId")
+    nomsId: String,
   ): ViolenceProfile {
     return violenceDecisionTreeService.getViolenceProfile(nomsId)
   }
@@ -116,14 +122,18 @@ class RiskProfilerResource(
       name = "nomsId",
       description = "NOMS ID of the offender",
       example = "A1234AA",
-      required = true
-    ) @PathVariable("nomsId") nomsId: String,
+      required = true,
+    )
+    @PathVariable("nomsId")
+    nomsId: String,
     @Parameter(
       name = "previousOffences",
       description = "Previous Offences under Terrorism Act listed on the person's PNC record",
       required = false,
-      example = "false"
-    ) @RequestParam(value = "previousOffences", required = false) previousOffences: Boolean?
+      example = "false",
+    )
+    @RequestParam(value = "previousOffences", required = false)
+    previousOffences: Boolean?,
   ): ExtremismProfile {
     return extremismDecisionTreeService.getExtremismProfile(nomsId, previousOffences)
   }
@@ -138,8 +148,10 @@ class RiskProfilerResource(
       name = "nomsId",
       description = "NOMS ID of the offender",
       example = "A1234AA",
-      required = true
-    ) @PathVariable("nomsId") nomsId: String
+      required = true,
+    )
+    @PathVariable("nomsId")
+    nomsId: String,
   ): LifeProfile {
     return lifeDecisionTreeService.getLifeProfile(nomsId)
   }

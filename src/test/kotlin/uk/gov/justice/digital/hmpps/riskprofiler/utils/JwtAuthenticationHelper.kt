@@ -16,7 +16,7 @@ class JwtAuthenticationHelper(private val keyPair: KeyPair) {
     scope: List<String>? = listOf(),
     roles: List<String>? = listOf(),
     expiryTime: Duration = Duration.ofHours(1),
-    jwtId: String = UUID.randomUUID().toString()
+    jwtId: String = UUID.randomUUID().toString(),
   ): String =
     mutableMapOf<String, Any>()
       .also { subject?.let { subject -> it["user_name"] = subject } }

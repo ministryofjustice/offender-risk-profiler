@@ -15,6 +15,7 @@ class PrisonException(message: String?) : RuntimeException(message), Supplier<Pr
   companion object {
     private const val INVALID_PRISON = "Prison [%s] is invalid."
     private const val PRISON_EXISTS = "Prison [%s] is already present."
+
     @JvmStatic
     fun exists(id: String?): PrisonException {
       return PrisonException(String.format(PRISON_EXISTS, id))

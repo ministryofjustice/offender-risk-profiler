@@ -29,7 +29,7 @@ class LifeDecisionTreeService(private val nomisService: NomisService) {
     val imprisonmentData = nomisService.getBookingDetails(bookingId)
     return imprisonmentData.stream().anyMatch { (_, _, _, imprisonmentStatus) ->
       imprisonmentStatus != null && LIFE_STATUS.contains(
-        imprisonmentStatus
+        imprisonmentStatus,
       )
     }
   }
@@ -48,7 +48,7 @@ class LifeDecisionTreeService(private val nomisService: NomisService) {
      */
     private val LIFE_STATUS = listOf(
       "ALP", "ALP_LASPO", "CFLIFE", "DFL", "DLP", "DIED", "HMPL",
-      "LIFE", "MLP", "SEC90_03", "SEC93", "SEC93_03", "SEC94", "SEC19_3B"
+      "LIFE", "MLP", "SEC90_03", "SEC93", "SEC93_03", "SEC94", "SEC19_3B",
     )
   }
 }

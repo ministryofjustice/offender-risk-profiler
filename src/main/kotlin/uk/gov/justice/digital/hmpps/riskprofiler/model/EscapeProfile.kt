@@ -18,7 +18,7 @@ data class EscapeProfile(
 
   @field:Schema(title = "Active escape risk alerts") val escapeRiskAlerts: List<Alert>?,
 
-  @field:Schema(title = "Active escape list alerts") val escapeListAlerts: List<Alert>?
+  @field:Schema(title = "Active escape list alerts") val escapeListAlerts: List<Alert>?,
 
 ) : RiskProfile(nomsId, provisionalCategorisation) {
 

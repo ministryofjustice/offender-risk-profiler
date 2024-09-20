@@ -17,7 +17,7 @@ abstract class HealthCheck(private val webClient: WebClient) : HealthIndicator {
       .flatMap { Mono.just(Health.up().withDetail("HttpStatus", it?.statusCode).build()) }
       .onErrorResume(WebClientResponseException::class.java) {
         Mono.just(
-          Health.down(it).withDetail("body", it.responseBodyAsString).withDetail("HttpStatus", it.statusCode).build()
+          Health.down(it).withDetail("body", it.responseBodyAsString).withDetail("HttpStatus", it.statusCode).build(),
         )
       }
       .onErrorResume(Exception::class.java) { Mono.just(Health.down(it).build()) }

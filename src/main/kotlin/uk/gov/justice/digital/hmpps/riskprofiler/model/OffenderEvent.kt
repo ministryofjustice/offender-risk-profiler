@@ -9,7 +9,7 @@ import java.time.LocalDateTime
  * A COPY of the custody-api class
  */
 data class OffenderEvent(
-  var offenderId: Long? = null
+  var offenderId: Long? = null,
 ) {
   constructor() : this(null)
 

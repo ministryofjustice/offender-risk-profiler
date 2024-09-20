@@ -10,7 +10,7 @@ data class ErrorResponse(
   val status: Int,
 
   @Schema(required = false, title = "Develop Information message", example = "System is down")
-  val developerMessage: String? = null
+  val developerMessage: String? = null,
 ) {
   @Schema(required = true, title = "Internal Error Code", example = "20012")
   private val errorCode: Int? = null
@@ -21,7 +21,7 @@ data class ErrorResponse(
   @Schema(
     required = false,
     title = "Additional information about the error",
-    example = "Hard disk failure"
+    example = "Hard disk failure",
   )
   private val moreInfo: String? = null
 }
