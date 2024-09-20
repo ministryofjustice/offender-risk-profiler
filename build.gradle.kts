@@ -59,7 +59,7 @@ dependencies {
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
   implementation("org.springframework.data:spring-data-redis")
   // Note spring-data-redis 2.6.2 does not support Jedis 4.x
-  implementation("redis.clients:jedis:3.8.0")
+  implementation("redis.clients:jedis:5.1.5")
 
   implementation("org.springframework:spring-jms:5.3.24")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
