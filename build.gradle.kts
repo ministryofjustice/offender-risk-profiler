@@ -19,7 +19,6 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-val camelVersion = "3.20.2"
 val awssdkVersion = "1.12.468"
 
 dependencies {
@@ -64,14 +63,6 @@ dependencies {
   implementation("org.springframework:spring-jms:5.3.24")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
-  implementation("org.apache.camel.springboot:camel-spring-boot:$camelVersion")
-  implementation("org.apache.camel:camel-bean:$camelVersion")
-  implementation("org.apache.camel:camel-csv:$camelVersion")
-  implementation("org.apache.camel:camel-aws2-s3:$camelVersion")
-  implementation("org.apache.camel:camel-aws2-sqs:$camelVersion")
-  implementation("org.apache.camel:camel-xml-jaxp:$camelVersion")
-  implementation("org.apache.camel:camel-timer:$camelVersion")
-
   implementation("net.javacrumbs.shedlock:shedlock-spring:5.2.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.42.0")
 
@@ -81,6 +72,9 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
 
   implementation("io.jsonwebtoken:jjwt:0.9.1")
+
+  implementation("com.opencsv:opencsv:5.9")
+  implementation("commons-io:commons-io:2.16.1")
 
   implementation("org.apache.commons:commons-lang3:3.12.0")
   implementation("org.apache.commons:commons-text:1.10.0")
@@ -100,7 +94,6 @@ dependencies {
   testImplementation("net.minidev:json-smart:2.4.9")
   testImplementation("junit:junit:4.13.2")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
-  testImplementation("org.apache.camel:camel-test-spring:$camelVersion")
   testImplementation("org.testcontainers:localstack:1.17.6")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("com.google.code.gson:gson:2.10.1")
