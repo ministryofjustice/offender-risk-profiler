@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services
 
-import org.apache.camel.ExchangeProperty
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepository
@@ -13,8 +12,8 @@ import java.time.LocalDateTime
 class DataService(private val factory: DataRepositoryFactory) {
   fun process(
     csvData: List<List<String>>,
-    @ExchangeProperty("fileType") fileType: FileType,
-    @ExchangeProperty("fileInfo") fileInfo: PendingFile,
+    fileType: FileType,
+    fileInfo: PendingFile,
   ) {
     val repository = factory.getRepository(fileType.type)
     if (isFileShouldBeProcessed(repository, fileInfo.fileTimestamp)) {
