@@ -2,11 +2,11 @@ package uk.gov.justice.digital.hmpps.riskprofiler.camel
 
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.riskprofiler.services.FileService
+import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService
 
-@Service
-class CsvHousekeepingService(private val fileService: FileService) {
+@Component
+class CsvHousekeepingService(private val fileService: S3FileService) {
 
   @Scheduled(fixedRate = DateUtils.MILLIS_PER_DAY)
   fun cleanupHistoricalCsvFiles() {

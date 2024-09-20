@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.camel
 
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService
@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService
 /**
  * Polls the 4 s3 folders for pras, ocgm, ocg and viper
  */
-@Service
+@Component
 class CsvProcessorService(private val dataService: DataService, private val fileService: S3FileService) {
 
   @Scheduled(cron = "\${viper.period}")
@@ -23,6 +23,7 @@ class CsvProcessorService(private val dataService: DataService, private val file
     }
   }
 
+  @Scheduled(fixedDelayString = "\${ocg.delay}")
   @Scheduled(cron = "\${ocg.period}")
   private fun startOcgScheduler() {
     val file = fileService.getLatestFile("\${s3.path.ocg}}", FileType.OCG)
@@ -34,6 +35,7 @@ class CsvProcessorService(private val dataService: DataService, private val file
     }
   }
 
+  @Scheduled(fixedDelayString = "\${ocgm.delay}")
   @Scheduled(cron = "\${ocgm.period}")
   private fun startOcgmScheduler() {
     val file = fileService.getLatestFile("\${s3.path.ocgm}}", FileType.OCGM)

@@ -118,18 +118,18 @@ s3:
 
 # every 12 hours with delay of 30 seconds
 ocgm:
-  period: '0 */12 * * *'
-  delay: '*/30 * * * *'
+  period: '0 0 */12 * * *'
+  delay: '30000'
 
 # every 12 hours with minute delay
 ocg:
-  period: '0 */12 * * *'
-  delay: * * * * *
+  period: '0 0 */12 * * *'
+  delay: '60000'
 
 # every 12 hours
 pras:
-  period: '0 */12 * * *'
+  period: '0 0 */12 * * *'
 
 # every 6 hours
 viper:
-  period: '0 */6 * * *'
+  period: '0 0 */6 * * *'
