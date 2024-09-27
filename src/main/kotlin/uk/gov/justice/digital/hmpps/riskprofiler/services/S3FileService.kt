@@ -12,6 +12,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Viper
 import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.time.ZoneId
 
@@ -36,9 +37,7 @@ class S3FileService(
             if (fileType == FileType.VIPER) {
               getViperFile(s3Object.objectContent)
             } else {
-              IOUtils.toByteArray(
-                s3Object.objectContent,
-              )
+                s3Object.objectContent.delegateStream
             },
           )
         } catch (e: IOException) {
@@ -63,7 +62,7 @@ class S3FileService(
     }
   }
 
-  private fun getViperFile(s3ObjectContent: S3ObjectInputStream): ByteArray {
+  private fun getViperFile(s3ObjectContent: S3ObjectInputStream): InputStream {
     val reader = BufferedReader(InputStreamReader(s3ObjectContent))
     var row: List<String>
     val rowList = mutableListOf<String>()
@@ -78,7 +77,7 @@ class S3FileService(
     s3ObjectContent.close()
 
     val csv = rowList.joinToString(System.lineSeparator())
-    return csv.toByteArray()
+    return csv.toByteArray().inputStream()
   }
 
   private fun getObjectSummaries(fileLocation: String): ObjectSummaryResult {
