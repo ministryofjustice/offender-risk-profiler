@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.riskprofiler.services
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.S3ObjectInputStream
 import com.amazonaws.services.s3.model.S3ObjectSummary
-import com.amazonaws.util.IOUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
@@ -37,7 +36,7 @@ class S3FileService(
             if (fileType == FileType.VIPER) {
               getViperFile(s3Object.objectContent)
             } else {
-                s3Object.objectContent.delegateStream
+              s3Object.objectContent.delegateStream
             },
           )
         } catch (e: IOException) {

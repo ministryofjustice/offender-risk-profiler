@@ -13,7 +13,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.PendingFile
 import uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService
 import java.io.InputStreamReader
 
-
 /**
  * Polls the 4 s3 folders for pras, ocgm, ocg and viper
  */
@@ -76,14 +75,10 @@ class CsvProcessorService(private val dataService: DataService, private val file
   }
 
   private fun unmarshallCsv(file: PendingFile?): ArrayList<List<String>> {
-    // unmarshal csv
     val records = ArrayList<List<String>>()
     val csvReader = CSVReader(InputStreamReader(file!!.data))
 
-
-    // csvReader.skip(1)
-
-    var values: Array<String?>? = null
+    var values: Array<String?>?
     while ((csvReader.readNext().also { values = it }) != null) {
       records.add(values!!.toList() as List<String>)
     }
