@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.riskprofiler.camel
+package uk.gov.justice.digital.hmpps.riskprofiler.file
 
 import com.opencsv.CSVReader
 import org.slf4j.LoggerFactory

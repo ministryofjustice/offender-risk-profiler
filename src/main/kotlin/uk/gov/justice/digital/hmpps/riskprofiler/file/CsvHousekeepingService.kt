@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.riskprofiler.camel
+package uk.gov.justice.digital.hmpps.riskprofiler.file
 
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Value
