@@ -69,6 +69,7 @@ class CsvProcessorService(private val dataService: DataService, private val file
   public fun startPrasScehduler() {
     log.info("Starting PRAS Scheduler - Checking for csv")
     val file = fileService.getLatestFile(prasPath, FileType.PRAS)
+
     if (file != null) {
       dataService.process(unmarshallCsv(file), FileType.PRAS, file)
     }
@@ -86,6 +87,6 @@ class CsvProcessorService(private val dataService: DataService, private val file
   }
 
   companion object {
-    private val log = LoggerFactory.getLogger(OcgmRepository::class.java)
+    private val log = LoggerFactory.getLogger(CsvProcessorService::class.java)
   }
 }
