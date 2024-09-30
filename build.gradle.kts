@@ -24,6 +24,9 @@ val awssdkVersion = "1.12.468"
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+  implementation("org.slf4j:slf4j-simple:2.0.16")
+  implementation("org.slf4j:slf4j-api:2.0.16")
+
   runtimeOnly("com.h2database:h2:2.1.214")
   runtimeOnly("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.7.2")

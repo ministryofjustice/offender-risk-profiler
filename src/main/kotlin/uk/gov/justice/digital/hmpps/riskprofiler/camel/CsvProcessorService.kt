@@ -1,7 +1,11 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.camel
 
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
+import uk.gov.justice.digital.hmpps.riskprofiler.dao.OcgmRepository
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService
@@ -9,12 +13,26 @@ import uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService
 /**
  * Polls the 4 s3 folders for pras, ocgm, ocg and viper
  */
-@Service
+@Component
 class CsvProcessorService(private val dataService: DataService, private val fileService: S3FileService) {
 
-  @Scheduled(fixedRateString = "\${viper.period}", fixedDelayString = "\${viper.delay}")
-  private fun startViperScheduler() {
-    val file = fileService.getLatestFile("\${s3.path.viper}}", FileType.VIPER)
+  @Value("\${s3.path.ocg}")
+  private val ocgPath: String = "/ocg-data"
+
+  @Value("\${s3.path.ocgm}")
+  private val ocgmPath: String = "/ocgm"
+
+  @Value("\${s3.path.pras}")
+  private val prasPath: String = "/pras"
+
+  @Value("\${s3.path.viper}")
+  private val viperPath: String = "/viper"
+
+  @Scheduled(cron = "\${viper.period}")
+  @Async
+  public fun startViperScheduler() {
+    log.info("Starting VIPER Scheduler - Checking for csv")
+    val file = fileService.getLatestFile(viperPath, FileType.VIPER)
 
     // unmarshal csv
 
@@ -23,9 +41,11 @@ class CsvProcessorService(private val dataService: DataService, private val file
     }
   }
 
-  @Scheduled(fixedRateString = "\${ocg.period}", fixedDelayString = "\${ocg.delay}")
-  private fun startOcgScheduler() {
-    val file = fileService.getLatestFile("\${s3.path.ocg}}", FileType.OCG)
+  @Scheduled(cron = "\${ocg.period}")
+  @Async
+  public fun startOcgScheduler() {
+    log.info("Starting OCG Scheduler - Checking for csv")
+    val file = fileService.getLatestFile(ocgPath, FileType.OCG)
 
     // unmarshal csv
 
@@ -34,9 +54,11 @@ class CsvProcessorService(private val dataService: DataService, private val file
     }
   }
 
-  @Scheduled(fixedRateString = "\${ocgm.period}", fixedDelayString = "\${ocgm.delay}")
-  private fun startOcgmScheduler() {
-    val file = fileService.getLatestFile("\${s3.path.ocgm}}", FileType.OCGM)
+  @Scheduled(cron = "\${ocgm.period}")
+  @Async
+  public fun startOcgmScheduler() {
+    log.info("Starting OCGM Scheduler - Checking for csv")
+    val file = fileService.getLatestFile(ocgmPath, FileType.OCGM)
 
     // unmarshal csv
 
@@ -45,14 +67,20 @@ class CsvProcessorService(private val dataService: DataService, private val file
     }
   }
 
-  @Scheduled(fixedRateString = "\${pras.period}", fixedDelayString = "\${pras.delay}")
-  private fun startPrasScehduler() {
-    val file = fileService.getLatestFile("\${s3.path.pras}}", FileType.PRAS)
+  @Scheduled(cron = "\${pras.period}")
+  @Async
+  public fun startPrasScehduler() {
+    log.info("Starting PRAS Scheduler - Checking for csv")
+    val file = fileService.getLatestFile(prasPath, FileType.PRAS)
 
     // unmarshal csv
 
     if (file != null) {
       dataService.process(emptyList(), FileType.PRAS, file)
     }
+  }
+
+  companion object {
+    private val log = LoggerFactory.getLogger(OcgmRepository::class.java)
   }
 }
