@@ -33,10 +33,10 @@ class CsvProcessorService(private val dataService: DataService, private val file
 
   // start all schedulers once as before when Camel was used
   init {
-    startViperScheduler()
-    startOcgScheduler()
-    startOcgmScheduler()
-    startPrasScehduler()
+ //   startViperScheduler()
+ //   startOcgScheduler()
+  //  startOcgmScheduler()
+ //   startPrasScehduler()
   }
 
   @Scheduled(cron = "\${viper.period}")
