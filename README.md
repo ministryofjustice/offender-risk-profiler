@@ -108,7 +108,7 @@ offenderRiskProfilerApplication$Companion : Started OffenderRiskProfilerApplicat
 #### Integration Testing
 Integration tests uses the 'localstack-embedded' profile is which runs localstack in a thread and configures it with the necessary queues.
 
-You can also run the tests against loval docker images constructed from docker-compose. To do this change the following properites in test/a[[lication-localstack.properties:
+You can also run the tests against local docker images constructed from docker-compose. To do this change the following properites in test/a[[lication-localstack.properties:
 
 sqs.provider=localstack
 s3.provider=localstack
