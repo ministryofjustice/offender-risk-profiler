@@ -31,6 +31,14 @@ class CsvProcessorService(private val dataService: DataService, private val file
   @Value("\${s3.path.viper}")
   private val viperPath: String = "/viper"
 
+  // start all schedulers once as before when Camel was used
+  init {
+    startViperScheduler()
+    startOcgScheduler()
+    startOcgmScheduler()
+    startPrasScehduler()
+  }
+
   @Scheduled(cron = "\${viper.period}")
   @Async
   public fun startViperScheduler() {
