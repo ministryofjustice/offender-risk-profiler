@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.S3Object
 import com.amazonaws.services.s3.model.S3ObjectSummary
 import com.amazonaws.util.StringInputStream
 import com.google.common.collect.ImmutableList
+import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -17,6 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.readResourceAsText
 import java.io.InputStream
+import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
@@ -48,7 +50,11 @@ class S3FileServiceTest {
     service = S3FileService(amazonS3Client)
 
     val pendingFile = service.getLatestFile("risk-profiler/viper/file.csv", FileType.VIPER)
-    assertThat(String(pendingFile?.data!!)).isEqualTo(viperFile.split(System.lineSeparator())[0])
+    assertThat(convertToString(pendingFile?.data!!)).isEqualTo(viperFile.split(System.lineSeparator())[0])
+  }
+
+  fun convertToString(inputStream: InputStream): String {
+    return IOUtils.toString(inputStream, StandardCharsets.UTF_8.name())
   }
 
   @Test
@@ -60,7 +66,7 @@ class S3FileServiceTest {
 
     val pendingFile = service.getLatestFile("risk-profiler/ocgm/file.csv", null)
 
-    assertThat(String(pendingFile?.data!!))
+    assertThat(convertToString(pendingFile?.data!!))
       .isEqualTo("classpath:localstack/buckets/ocgm/OCGM-Dummy.csv".readResourceAsText())
   }
 

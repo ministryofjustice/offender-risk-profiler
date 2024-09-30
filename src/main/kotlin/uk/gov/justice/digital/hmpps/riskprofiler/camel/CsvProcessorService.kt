@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.camel
 
+import com.opencsv.CSVReader
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Async
@@ -8,7 +9,9 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.OcgmRepository
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService
+import uk.gov.justice.digital.hmpps.riskprofiler.services.PendingFile
 import uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService
+import java.io.InputStreamReader
 
 /**
  * Polls the 4 s3 folders for pras, ocgm, ocg and viper
@@ -34,10 +37,8 @@ class CsvProcessorService(private val dataService: DataService, private val file
     log.info("Starting VIPER Scheduler - Checking for csv")
     val file = fileService.getLatestFile(viperPath, FileType.VIPER)
 
-    // unmarshal csv
-
     if (file != null) {
-      dataService.process(emptyList(), FileType.VIPER, file)
+      dataService.process(unmarshallCsv(file), FileType.VIPER, file)
     }
   }
 
@@ -47,10 +48,8 @@ class CsvProcessorService(private val dataService: DataService, private val file
     log.info("Starting OCG Scheduler - Checking for csv")
     val file = fileService.getLatestFile(ocgPath, FileType.OCG)
 
-    // unmarshal csv
-
     if (file != null) {
-      dataService.process(emptyList(), FileType.OCG, file)
+      dataService.process(unmarshallCsv(file), FileType.OCG, file)
     }
   }
 
@@ -60,10 +59,8 @@ class CsvProcessorService(private val dataService: DataService, private val file
     log.info("Starting OCGM Scheduler - Checking for csv")
     val file = fileService.getLatestFile(ocgmPath, FileType.OCGM)
 
-    // unmarshal csv
-
     if (file != null) {
-      dataService.process(emptyList(), FileType.OCGM, file)
+      dataService.process(unmarshallCsv(file), FileType.OCGM, file)
     }
   }
 
@@ -72,12 +69,20 @@ class CsvProcessorService(private val dataService: DataService, private val file
   public fun startPrasScehduler() {
     log.info("Starting PRAS Scheduler - Checking for csv")
     val file = fileService.getLatestFile(prasPath, FileType.PRAS)
-
-    // unmarshal csv
-
     if (file != null) {
-      dataService.process(emptyList(), FileType.PRAS, file)
+      dataService.process(unmarshallCsv(file), FileType.PRAS, file)
     }
+  }
+
+  private fun unmarshallCsv(file: PendingFile?): ArrayList<List<String>> {
+    val records = ArrayList<List<String>>()
+    val csvReader = CSVReader(InputStreamReader(file!!.data))
+
+    var values: Array<String?>?
+    while ((csvReader.readNext().also { values = it }) != null) {
+      records.add(values!!.toList() as List<String>)
+    }
+    return records
   }
 
   companion object {
