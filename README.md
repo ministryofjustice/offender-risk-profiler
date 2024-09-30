@@ -62,24 +62,23 @@ Set up a run configuration in Intellij and add the following:
 - If Risk Profiler is up and running successfully we would expect to see in the logs:
 
 `
-o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoint(s) beneath base path '' |  
-o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '' |  
-o.a.c.impl.engine.AbstractCamelContext   : Apache Camel 3.20.2 (camel-1) is starting |  
-o.a.c.impl.engine.AbstractCamelContext   : Routes startup (started:5) |  
-o.a.c.impl.engine.AbstractCamelContext   :     Started route1 (timer://data-deletion-schedule) |  
-o.a.c.impl.engine.AbstractCamelContext   :     Started route2 (timer://pras-schedule) |  
-o.a.c.impl.engine.AbstractCamelContext   :     Started route3 (timer://ocgm-schedule) |  
-o.a.c.impl.engine.AbstractCamelContext   :     Started route4 (timer://ocg-schedule) |  
-o.a.c.impl.engine.AbstractCamelContext   :     Started route5 (timer://viper-schedule) |  
-o.a.c.impl.engine.AbstractCamelContext   : Apache Camel 3.20.2 (camel-1) started in 167ms (build:31ms init:128ms start:8ms) |  
-offenderRiskProfilerApplication$Companion : Started OffenderRiskProfilerApplication.Companion in 13.605 seconds (JVM running for 16.21) |
+[main] INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+[main] INFO uk.gov.justice.digital.hmpps.riskprofiler.OffenderRiskProfilerApplication$Companion - Started OffenderRiskProfilerApplication.Companion in 12.131 seconds (JVM running for 12.615)
+[main] INFO uk.gov.justice.digital.hmpps.riskprofiler.config.VersionOutputter - Version 2024-10-01 started
+[pool-2-thread-1] INFO uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService - Found 1 data files for data housekeeping in testbucket/ocg-data
+[pool-2-thread-1] INFO uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService - Found 1 data files for data housekeeping in testbucket/pras
+[pool-2-thread-1] INFO uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService - Found 1 data files for data housekeeping in testbucket/ocgm
+[pool-2-thread-1] INFO uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService - Found 1 data files for data housekeeping in testbucket/viper
+Oct 01, 2024 8:07:50 AM org.apache.catalina.core.ApplicationContext log
+INFO: Initializing Spring DispatcherServlet 'dispatcherServlet'
+[RMI TCP Connection(3)-192.168.0.60] INFO org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+[RMI TCP Connection(3)-192.168.0.60] INFO org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
 `
 
 **The logs above tells us the following:**
 
 - The three sqs endpoints have started and the application has binded with them. 
-- The Risk Profiler application has started on port 8080. 
-- The s3 endpoints exist and Apache Camel is listening on those s3 bucket folders.
+- The Risk Profiler application has started on port 8080.
 
 ### RiskProfiler Components
 
@@ -107,6 +106,11 @@ offenderRiskProfilerApplication$Companion : Started OffenderRiskProfilerApplicat
 
 #### Integration Testing
 Integration tests uses the 'localstack-embedded' profile is which runs localstack in a thread and configures it with the necessary queues.
+
+You can also run the tests against local docker images constructed from docker-compose. To do this change the following properties in test/application-localstack.properties:
+
+sqs.provider=localstack
+s3.provider=localstack
 
 #### Tests
 

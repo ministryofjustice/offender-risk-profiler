@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.hmpps.riskprofiler.dao.OcgmRepository
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.PendingFile
@@ -69,6 +68,7 @@ class CsvProcessorService(private val dataService: DataService, private val file
   public fun startPrasScehduler() {
     log.info("Starting PRAS Scheduler - Checking for csv")
     val file = fileService.getLatestFile(prasPath, FileType.PRAS)
+
     if (file != null) {
       dataService.process(unmarshallCsv(file), FileType.PRAS, file)
     }
@@ -86,6 +86,6 @@ class CsvProcessorService(private val dataService: DataService, private val file
   }
 
   companion object {
-    private val log = LoggerFactory.getLogger(OcgmRepository::class.java)
+    private val log = LoggerFactory.getLogger(CsvProcessorService::class.java)
   }
 }
