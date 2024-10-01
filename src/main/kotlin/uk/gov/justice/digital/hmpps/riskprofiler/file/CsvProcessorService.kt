@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.riskprofiler.file
 import com.opencsv.CSVReader
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
