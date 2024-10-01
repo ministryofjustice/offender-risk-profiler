@@ -62,7 +62,7 @@ dependencies {
   // Note spring-data-redis 2.6.2 does not support Jedis 4.x
   implementation("redis.clients:jedis:3.8.0")
 
-  implementation("org.springframework:spring-jms:5.3.24")
+  implementation("org.springframework:spring-jms:6.1.13")
   implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
 
   implementation("net.javacrumbs.shedlock:shedlock-spring:5.2.0")
