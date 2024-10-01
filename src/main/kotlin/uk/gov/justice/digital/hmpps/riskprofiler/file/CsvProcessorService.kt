@@ -16,19 +16,21 @@ import java.io.InputStreamReader
  * Polls the 4 s3 folders for pras, ocgm, ocg and viper
  */
 @Component
-class CsvProcessorService(private val dataService: DataService, private val fileService: S3FileService) {
+class CsvProcessorService(
+  private val dataService: DataService,
+  private val fileService: S3FileService,
+  @Value("\${s3.path.ocg}") private val ocgPath: String = "/ocg-data",
+  @Value("\${s3.path.ocgm}") private val ocgmPath: String = "/ocgm",
+  @Value("\${s3.path.pras}") private val prasPath: String = "/pras",
+  @Value("\${s3.path.viper}") private val viperPath: String = "/viper"
+  ) {
 
-  @Value("\${s3.path.ocg}")
-  private val ocgPath: String = "/ocg-data"
-
-  @Value("\${s3.path.ocgm}")
-  private val ocgmPath: String = "/ocgm"
-
-  @Value("\${s3.path.pras}")
-  private val prasPath: String = "/pras"
-
-  @Value("\${s3.path.viper}")
-  private val viperPath: String = "/viper"
+  init {
+    startViperScheduler()
+    startOcgScheduler()
+    startOcgmScheduler()
+    startPrasScehduler()
+  }
 
   @Scheduled(cron = "\${viper.period}")
   @Async
