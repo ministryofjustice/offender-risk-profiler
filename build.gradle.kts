@@ -63,7 +63,7 @@ dependencies {
   implementation("redis.clients:jedis:3.8.0")
 
   implementation("org.springframework:spring-jms:5.3.24")
-  implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.1.2")
+  implementation("com.amazonaws:amazon-sqs-java-messaging-lib:2.1.3")
 
   implementation("net.javacrumbs.shedlock:shedlock-spring:5.2.0")
   implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.42.0")
