@@ -8,7 +8,6 @@ configurations {
   implementation { exclude(group = "tomcat-jdbc") }
   implementation { exclude(module = "spring-boot-graceful-shutdown") }
   all {
-    exclude(group = "net.minidev", module = "json-smart")
     exclude(group = "software.amazon.ion", module = "ion-java")
     exclude(group = "ch.qos.logback", module = "logback-core")
     exclude(group = "ch.qos.logback", module = "logback-classic")
@@ -94,7 +93,6 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
-  testImplementation("net.minidev:json-smart:2.4.9")
   testImplementation("junit:junit:4.13.2")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.testcontainers:localstack:1.17.6")
