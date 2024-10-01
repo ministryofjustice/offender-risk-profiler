@@ -62,9 +62,18 @@ Set up a run configuration in Intellij and add the following:
 - If Risk Profiler is up and running successfully we would expect to see in the logs:
 
 `
-o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoint(s) beneath base path '' |  
-o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '' |   
-offenderRiskProfilerApplication$Companion : Started OffenderRiskProfilerApplication.Companion in 13.605 seconds (JVM running for 16.21) |
+[main] INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+[main] INFO uk.gov.justice.digital.hmpps.riskprofiler.OffenderRiskProfilerApplication$Companion - Started OffenderRiskProfilerApplication.Companion in 12.131 seconds (JVM running for 12.615)
+[main] INFO uk.gov.justice.digital.hmpps.riskprofiler.config.VersionOutputter - Version 2024-10-01 started
+[pool-2-thread-1] INFO uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService - Found 1 data files for data housekeeping in testbucket/ocg-data
+[pool-2-thread-1] INFO uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService - Found 1 data files for data housekeeping in testbucket/pras
+[pool-2-thread-1] INFO uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService - Found 1 data files for data housekeeping in testbucket/ocgm
+[pool-2-thread-1] INFO uk.gov.justice.digital.hmpps.riskprofiler.services.S3FileService - Found 1 data files for data housekeeping in testbucket/viper
+Oct 01, 2024 8:07:50 AM org.apache.catalina.core.ApplicationContext log
+INFO: Initializing Spring DispatcherServlet 'dispatcherServlet'
+[RMI TCP Connection(3)-192.168.0.60] INFO org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+[RMI TCP Connection(3)-192.168.0.60] INFO org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+`
 
 **The logs above tells us the following:**
 
