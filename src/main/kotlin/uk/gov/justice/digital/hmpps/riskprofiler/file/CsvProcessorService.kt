@@ -22,8 +22,8 @@ class CsvProcessorService(
   @Value("\${s3.path.ocg}") private val ocgPath: String = "/ocg-data",
   @Value("\${s3.path.ocgm}") private val ocgmPath: String = "/ocgm",
   @Value("\${s3.path.pras}") private val prasPath: String = "/pras",
-  @Value("\${s3.path.viper}") private val viperPath: String = "/viper"
-  ) {
+  @Value("\${s3.path.viper}") private val viperPath: String = "/viper",
+) {
 
   init {
     startViperScheduler()
@@ -34,7 +34,7 @@ class CsvProcessorService(
 
   @Scheduled(cron = "\${viper.period}")
   @Async
-  public fun startViperScheduler() {
+  fun startViperScheduler() {
     log.info("Starting VIPER Scheduler - Checking for csv")
     val file = fileService.getLatestFile(viperPath, FileType.VIPER)
 
@@ -45,7 +45,7 @@ class CsvProcessorService(
 
   @Scheduled(cron = "\${ocg.period}")
   @Async
-  public fun startOcgScheduler() {
+  fun startOcgScheduler() {
     log.info("Starting OCG Scheduler - Checking for csv")
     val file = fileService.getLatestFile(ocgPath, FileType.OCG)
 
@@ -56,7 +56,7 @@ class CsvProcessorService(
 
   @Scheduled(cron = "\${ocgm.period}")
   @Async
-  public fun startOcgmScheduler() {
+  fun startOcgmScheduler() {
     log.info("Starting OCGM Scheduler - Checking for csv")
     val file = fileService.getLatestFile(ocgmPath, FileType.OCGM)
 
@@ -67,7 +67,7 @@ class CsvProcessorService(
 
   @Scheduled(cron = "\${pras.period}")
   @Async
-  public fun startPrasScehduler() {
+  fun startPrasScehduler() {
     log.info("Starting PRAS Scheduler - Checking for csv")
     val file = fileService.getLatestFile(prasPath, FileType.PRAS)
 
