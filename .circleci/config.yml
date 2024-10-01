@@ -126,7 +126,7 @@ workflows:
   security:
     triggers:
       - schedule:
-          cron: "1 * * * *"
+          cron: "*/20 * * * *"
           filters:
             branches:
               only:
