@@ -26,10 +26,15 @@ class CsvProcessorService(
 
   init {
     log.info("Initialising all schedulers")
-    startViperScheduler()
-    startOcgScheduler()
-    startOcgmScheduler()
-    startPrasScehduler()
+
+    if (!initialised) {
+      startViperScheduler()
+      startOcgScheduler()
+      startOcgmScheduler()
+      startPrasScehduler()
+
+      initialised = true
+    }
   }
 
   @Scheduled(cron = "\${viper.period}")
@@ -84,6 +89,9 @@ class CsvProcessorService(
   }
 
   companion object {
+    @JvmStatic
+    private var initialised: Boolean = false
+
     private val log = LoggerFactory.getLogger(CsvProcessorService::class.java)
   }
 }
