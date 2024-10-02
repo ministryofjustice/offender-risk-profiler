@@ -39,7 +39,7 @@ class CsvProcessorService(
 
   @Scheduled(cron = "\${viper.period}")
   fun startViperScheduler() {
-    log.info("Starting VIPER Scheduler - Checking for csv at \${viper.period}")
+    log.info("Starting VIPER Scheduler - Checking for csv")
     val file = fileService.getLatestFile(viperPath, FileType.VIPER)
 
     if (file != null) {
