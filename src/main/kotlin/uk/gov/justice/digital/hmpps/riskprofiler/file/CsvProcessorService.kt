@@ -4,7 +4,7 @@ import com.opencsv.CSVReader
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.services.DataService
 import uk.gov.justice.digital.hmpps.riskprofiler.services.PendingFile
@@ -14,7 +14,7 @@ import java.io.InputStreamReader
 /**
  * Polls the 4 s3 folders for pras, ocgm, ocg and viper
  */
-@Component
+@Service
 class CsvProcessorService(
   private val dataService: DataService,
   private val fileService: S3FileService,
