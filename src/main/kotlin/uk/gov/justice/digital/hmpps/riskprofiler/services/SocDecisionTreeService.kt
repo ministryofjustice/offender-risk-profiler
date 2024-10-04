@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.services
 
+import jakarta.validation.constraints.NotNull
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.riskprofiler.dao.DataRepositoryFactory
@@ -10,7 +11,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Pras
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RiskProfile
 import uk.gov.justice.digital.hmpps.riskprofiler.model.SocProfile
 import java.time.LocalDate
-import javax.validation.constraints.NotNull
 
 @Service
 class SocDecisionTreeService(
