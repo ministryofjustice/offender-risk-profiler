@@ -13,9 +13,11 @@ class RestResponsePage<T> : PageImpl<T> {
     @JsonProperty("number") number: Int,
     @JsonProperty("size") size: Int,
     @JsonProperty("totalElements") totalElements: Long?,
-    @Suppress("UNUSED_PARAMETER") @JsonProperty(
+    @Suppress("UNUSED_PARAMETER")
+    @JsonProperty(
       "pageable",
-    ) pageable: JsonNode,
+    )
+    pageable: JsonNode,
   ) : super(content, PageRequest.of(number, size), totalElements!!)
   constructor(content: List<T>) : super(content)
 }
