@@ -17,7 +17,7 @@ class RestResponsePage<T> : PageImpl<T> {
     @JsonProperty(
       "pageable",
     )
-    pageable: JsonNode,
+    pageable: JsonNode?,
   ) : super(content, PageRequest.of(number, size), totalElements!!)
   constructor(content: List<T>) : super(content)
 }
