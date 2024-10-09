@@ -1,0 +1,14 @@
+flowchart TD
+    A[START] --> B{Band in 1a, 1b, 1c, 2a, 2b, 2c, 3a, 3b, 3c}
+    B --> |yes| C{PRINCIPAL_SUBJECT?}
+    C --> |yes| C_SEC[Suggest Cat C & refer to security]
+    C --> |no| C_NOSEC[Suggest Cat C]
+    B --> |no| G{PRINCIPAL_SUBJECT?}
+    G --> |yes| C_SEC
+    G --> |no| CHECK_ALERTS{Active alerts?}
+    CHECK_ALERTS --> |yes| C_NOSEC
+    CHECK_ALERTS --> |no| C_NOSEC
+    style C_SEC color:red
+    style C_NOSEC color:green
+    linkStyle 1,2,5,7 color:green
+    linkStyle 3,4,6,8 color:red
