@@ -93,6 +93,9 @@ dependencies {
   implementation("com.amazonaws:aws-java-sdk-sts:$awssdkVersion")
   implementation("com.amazonaws:jmespath-java:$awssdkVersion")
 
+  implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
+  implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
+
   testImplementation("junit:junit:4.13.2")
   testImplementation("io.github.http-builder-ng:http-builder-ng-apache:1.0.4")
   testImplementation("org.testcontainers:localstack:1.17.6")
