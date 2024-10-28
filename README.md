@@ -26,7 +26,6 @@ Risk Profiler API provides a Risk profile of each prisoner in a prison. Prisons 
 
 This risk profile information is used by the Offender Categorisation tool to allow users to help judge level of risk when defining a categorisation of a nominal.
 
-
 ## Local Setup
 
 Setup risk profiler dependencies on localstack by running docker-compose-local:
@@ -85,7 +84,7 @@ INFO: Initializing Spring DispatcherServlet 'dispatcherServlet'
 1. **Events Listener** - Listens to events queue  for an Alert or Incident and either clears the Redis cache or polls the Prisoner service. If the prisoners service is triggered The soc, violenceescape dcision trees are updated. The current profile stored in the Risk Profiler table will be queired to see if anything has changed, if so it is updated with the latest information. 
 2. **SQS Service** - Sends Risk Profiler change messages to the sqs.rpc.queue.url=risk_profiler_change. These publishd messages are read by the CAT UI. To update the UI accordingly.
 3. **Queue Scheduler** - Will check if any messages have ended up on the Events Dead Letter Queue. If they have it will release them for a retry. This is called periodically. You will the following in the log: `Starting: Event DLQ` and `Complete: Event DLQ` 
-4. **Csv S3 Processor** - Will poll the S3 folders to check for any CSV files. IF they are it will process them. Importing data from the csv file in to the relevant repository.
+4. **Csv S3 Processor** - Usinf a Spring scheduler to poll the S3 folders to check for any CSV files. If a file is found it will process it. Importing data from the csv file in to the relevant repository. The schedulers are setup in the application.yaml file.
 5. **Rest API** - Provides developer support for manually triggering Risk Profiler Processes.
 - `/startPollPrisoners` - Start a batch job run.
 - `/prison/{prisonId}` - Add prison with prison id to the config. The overnight polling batch will then include this prison.
