@@ -29,7 +29,7 @@ parameters:
 executors:
   java-machine:
     machine:
-      image: ubuntu-2204:current
+      image: ubuntu-2204:2022.04.2
     environment:
       _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
     working_directory: ~/app
