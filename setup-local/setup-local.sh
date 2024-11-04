@@ -23,6 +23,7 @@ aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name risk_prof
 aws --endpoint-url=http://localhost:4566 s3 mb s3://testbucket
 
 aws --endpoint-url=http://localhost:4566 s3 cp /etc/localstack/init/ready.d/buckets/VIPER-Dummy.csv s3://testbucket/viper/VIPER-Dummy.csv
+aws --endpoint-url=http://localhost:4566 s3 cp /etc/localstack/init/ready.d/buckets/VIPER_2_2024_10_29.csv s3://testbucket/viper/VIPER_2_2024_10_29.csv
 aws --endpoint-url=http://localhost:4566 s3 cp /etc/localstack/init/ready.d/buckets/OCGM-Dummy.csv s3://testbucket/ocgm/OCGM-Dummy.csv
 aws --endpoint-url=http://localhost:4566 s3 cp /etc/localstack/init/ready.d/buckets/OCG-Dummy.csv s3://testbucket/ocg-data/OCG-Dummy.csv
 aws --endpoint-url=http://localhost:4566 s3 cp /etc/localstack/init/ready.d/buckets/PRAS-Dummy.csv s3://testbucket/pras/PRAS-Dummy.csv

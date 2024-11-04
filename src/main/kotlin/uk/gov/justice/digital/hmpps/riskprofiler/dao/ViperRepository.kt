@@ -21,10 +21,10 @@ class ViperRepository : DataRepository<Viper>() {
     data.fileName = filename
     data.fileType = FileType.VIPER
     data.reset()
-    csvData.forEach(
-      Consumer { p: List<String> ->
+    csvData.stream().filter { data.index.getAndIncrement() > 0 }
+      .forEach { p: List<String> ->
         try {
-          val key = p[Viper.NOMIS_ID_POSITION]
+          val key = p[Viper.V2_NOMIS_ID_POSITION]
           if (StringUtils.isNotBlank(key)) {
             if (!NOMS_ID_REGEX.matcher(key).matches()) {
               log.warn("Invalid Key in line {} for Key {}", data.index.get(), key)
@@ -34,7 +34,7 @@ class ViperRepository : DataRepository<Viper>() {
                 log.warn("Duplicate key found in line {} for key {}", data.index.get(), key)
                 data.linesDup.incrementAndGet()
               } else {
-                val viperScore = p[Viper.SCORE_POSITION]
+                val viperScore = p[Viper.V2_SCORE_POSITION]
                 if (StringUtils.isBlank(viperScore)) {
                   log.warn("No Score in line {} for Key {}", data.index.get(), key)
                   data.linesInvalid.incrementAndGet()
@@ -54,9 +54,7 @@ class ViperRepository : DataRepository<Viper>() {
           log.warn("Error in Line {} data [{}]", data.index.get(), p)
           data.linesError.incrementAndGet()
         }
-        data.index.getAndIncrement()
-      },
-    )
+      }
     log.info(
       "Lines total {}, processed {}, dups {}, invalid {}, errors {}",
       data.index.get(),

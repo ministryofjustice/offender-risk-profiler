@@ -15,6 +15,7 @@ echo 'S3 bucket for risk profiler'
 aws --endpoint-url=http://localhost:4572 s3 mb s3://testbucket
 
 aws --endpoint-url=http://localhost:4572 s3 cp /docker-entrypoint-initaws.d/buckets/viper/VIPER-Dummy.csv s3://testbucket/viper/VIPER-Dummy.csv
+aws --endpoint-url=http://localhost:4572 s3 cp /docker-entrypoint-initaws.d/buckets/viper/VIPER-Dummy.csv s3://testbucket/viper/VIPER-Dummy.csv
 aws --endpoint-url=http://localhost:4572 s3 cp /docker-entrypoint-initaws.d/buckets/ocgm/OCGM-Dummy.csv s3://testbucket/ocgm/OCGM-Dummy.csv
 aws --endpoint-url=http://localhost:4572 s3 cp /docker-entrypoint-initaws.d/buckets/ocg/OCG-Dummy.csv s3://testbucket/ocg/OCG-Dummy.csv
 aws --endpoint-url=http://localhost:4572 s3 cp /docker-entrypoint-initaws.d/buckets/pras/PRAS-Dummy.csv s3://testbucket/pras/PRAS-Dummy.csv
