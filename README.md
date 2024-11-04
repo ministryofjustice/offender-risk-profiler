@@ -26,6 +26,9 @@ Risk Profiler API provides a Risk profile of each prisoner in a prison. Prisons 
 
 This risk profile information is used by the Offender Categorisation tool to allow users to help judge level of risk when defining a categorisation of a nominal.
 
+## Viper v2
+
+Risk Profiler no processes the Viper 2.0 file. This file now contains a header and data is in double quotes.
 
 ## Local Setup
 
