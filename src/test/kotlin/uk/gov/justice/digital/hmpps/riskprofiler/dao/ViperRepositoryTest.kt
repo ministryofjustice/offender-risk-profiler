@@ -11,46 +11,59 @@ class ViperRepositoryTest {
 
   @Before
   fun setup() {
+    val header = listOf(
+      "offender_id_display",
+      "root_offender_id",
+      "viper_2",
+      "birth_date",
+      "age",
+      "days_since_last_assault",
+      "assault_rate_lifetime",
+      "assaults_lifetime",
+      "years_custody_lifetime",
+      "assault_rate_past_12_months",
+      "assaults_past_12_months",
+    )
     val row1 = listOf(
-      "1419276",
       "A5015DY",
+      "1419276",
+      "1.620946332",
       "09/06/1980",
       "2.474015192",
       "0.337144724",
       "-0.853068861",
       "0.185042824",
-      "1.620946332",
       "0.384587326",
       "3",
       "TRUE",
     )
     val row2 = listOf(
-      "1431076",
       "A5015DX",
+      "1431076",
+      "1.604003179",
       "04/04/1990",
       "2.202153377",
       "0.25044519",
       "-0.598150198",
       "0.18499339",
-      "1.604003179",
       "0.311360479",
       "3",
       "TRUE",
     )
     val row3 = listOf(
-      "1433408",
       "A5015DZ",
+      "1433408",
+      "1.599064248",
       "01/05/1980",
       "2.661700472",
       "0.420323148",
       "-1.062636224",
       "0.185173187",
-      "1.599064248",
       "0.459304537",
       "3",
       "TRUE",
     )
-    val viperList = listOf(row1, row2, row3)
+    val viperList = listOf(header, row1, row2, row3)
     repository.process(viperList, "Viper.csv", LocalDateTime.now())
   }
 
