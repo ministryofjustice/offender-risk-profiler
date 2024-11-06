@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Viper
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.function.Consumer
 
 @Repository
 class ViperRepository : DataRepository<Viper>() {

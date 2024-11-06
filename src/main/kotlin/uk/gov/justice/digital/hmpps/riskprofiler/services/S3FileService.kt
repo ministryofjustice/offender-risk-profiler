@@ -47,18 +47,18 @@ class S3FileService(
     log.info("Found {} objects in {}", s3Result.objects.size, fileLocation)
 
     return s3Result.objects.stream()
-      .filter(){ o -> o?.key?.contains("VIPER_2_") == true }
+      .filter { o -> o?.key?.contains("VIPER_2_") == true }
       .max(Comparator.comparing { t -> t!!.lastModified })
       .map { o ->
         try {
           val s3Object = s3Result.amazonS3Client!!.getObject(s3Result.bucketName, o!!.key)
-              return@map PendingFile(
-                o.key,
-                o.lastModified.toInstant()
-                  .atZone(ZoneId.systemDefault())
-                  .toLocalDateTime(),
-                s3Object.objectContent.delegateStream
-              )
+          return@map PendingFile(
+            o.key,
+            o.lastModified.toInstant()
+              .atZone(ZoneId.systemDefault())
+              .toLocalDateTime(),
+            s3Object.objectContent.delegateStream,
+          )
         } catch (e: IOException) {
           return@map null
         }
