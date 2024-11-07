@@ -17,6 +17,7 @@ import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.FileType
 import uk.gov.justice.digital.hmpps.riskprofiler.utils.readResourceAsText
+import java.io.File
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
@@ -41,20 +42,25 @@ class S3FileServiceTest {
 
   @Test
   fun testProcessingViperFile() {
-    val viperFile = """
-      1209658,X0099AK,,0.283760332148618,0.52756476251039,-0.767545791412149,0.185067326935523,-0.483785459263531,0.55908361999052,2,FALSE
-      0,A5015DY,,5.09880356645588e-05,1.09626459573684,-2.95133056520195,0.188235111383585,-2.95138155323762,1.1123077456458,3,FALSE
-    """.trimIndent()
+    val viperFile = loadTestData("VIPER_2_2024_10_29.csv")
+    //   1209658,X0099AK,,0.283760332148618,0.52756476251039,-0.767545791412149,0.185067326935523,-0.483785459263531,0.55908361999052,2,FALSE
+    //    0,A5015DY,,5.09880356645588e-05,1.09626459573684,-2.95133056520195,0.188235111383585,-2.95138155323762,1.1123077456458,3,FALSE
+    //  """.trimIndent()
 
-    amazonS3Client = mockS3Client("viper/file.csv", viperFile)
+    amazonS3Client = mockS3Client("viper/VIPER_2_file.csv", viperFile)
     service = S3FileService(amazonS3Client)
 
-    val pendingFile = service.getLatestFile("risk-profiler/viper/file.csv", FileType.VIPER)
-    assertThat(convertToString(pendingFile?.data!!)).isEqualTo(viperFile.split(System.lineSeparator())[0])
+    val pendingFile = service.getLatestFile("risk-profiler/viper/VIPER_2_file.csv", FileType.VIPER)
+    assertThat(convertToString(pendingFile?.data!!)).isEqualTo(viperFile)
   }
 
   fun convertToString(inputStream: InputStream): String {
     return IOUtils.toString(inputStream, StandardCharsets.UTF_8.name())
+  }
+
+  fun loadTestData(filename: String): String {
+    val inputStream: InputStream = File("src/test/resources/testdata/$filename").inputStream()
+    return inputStream.bufferedReader().use { it.readText() }
   }
 
   @Test
@@ -102,12 +108,14 @@ class S3FileServiceTest {
     s3ObjectSummary.key = key
 
     Mockito.`when`(listObjectsV2Result.objectSummaries).thenReturn(ImmutableList.of(s3ObjectSummary))
-    Mockito.`when`(amazonS3Client.listObjectsV2(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(listObjectsV2Result)
+    Mockito.`when`(amazonS3Client.listObjectsV2(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      .thenReturn(listObjectsV2Result)
 
     val testInputStream: InputStream = StringInputStream(fileToProcess)
     val s3Object = S3Object()
     s3Object.setObjectContent(testInputStream)
-    Mockito.`when`(amazonS3Client.getObject(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(s3Object)
+    Mockito.`when`(amazonS3Client.getObject(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+      .thenReturn(s3Object)
     return amazonS3Client
   }
 }
