@@ -89,21 +89,14 @@ dependencies {
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
 }
 
-java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(21))
-  }
+kotlin {
+  jvmToolchain(21)
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
       jvmTarget = "21"
-    }
-  }
-  withType<Task> {
-    ktlintCheck {
-      enabled = false
     }
   }
   withType<Task> {

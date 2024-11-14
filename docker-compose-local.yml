@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
   risk-profiler-db:
-    image: postgres
+    image: postgres:16
     networks:
       - hmpps
     container_name: risk-profiler-db
