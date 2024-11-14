@@ -41,6 +41,7 @@ services:
     volumes:
       - './setup-local/setup-local.sh:/etc/localstack/init/ready.d/init-aws.sh'
       - './setup-local/VIPER-Dummy.csv:/etc/localstack/init/ready.d/buckets/VIPER-Dummy.csv'
+      - './setup-local/VIPER_2_2024_10_29.csv:/etc/localstack/init/ready.d/buckets/VIPER_2_2024_10_29.csv'
       - './setup-local/PRAS-Dummy.csv:/etc/localstack/init/ready.d/buckets/PRAS-Dummy.csv'
       - './setup-local/OCG-Dummy.csv:/etc/localstack/init/ready.d/buckets/OCG-Dummy.csv'
       - './setup-local/OCGM-Dummy.csv:/etc/localstack/init/ready.d/buckets/OCGM-Dummy.csv'

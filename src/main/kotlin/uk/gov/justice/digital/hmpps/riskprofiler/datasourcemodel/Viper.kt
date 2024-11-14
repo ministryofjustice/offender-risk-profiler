@@ -14,6 +14,12 @@ data class Viper(private val nomisId: String) : RiskDataSet {
     var NOMIS_ID_POSITION = 1
 
     @JvmField
+    var V2_NOMIS_ID_POSITION = 0
+
+    @JvmField
     var SCORE_POSITION = 7
+
+    @JvmField
+    var V2_SCORE_POSITION = 2
   }
 }
