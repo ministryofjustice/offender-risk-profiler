@@ -26,21 +26,13 @@ parameters:
     type: string
     default: dps-releases
 
-executors:
-  java-machine:
-    docker:
-      - image: cimg/openjdk:21.0.0
-      - image: localstack/localstack:0.10.5
-        environment:
-          - SERVICES=s3,sqs
-          - DATA_DIR=/tmp/localstack/data
-          - TMPDIR=/private
-          - DEFAULT_REGION=eu-west-2
-    working_directory: ~/app
-
 jobs:
   validate:
-    executor: java-machine
+    executor:
+      name: hmpps/java
+      jdk_tag: "21.0"
+    environment:
+      _JAVA_OPTIONS: -Xmx800m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false
     steps:
       - checkout
       - hmpps/install_aws_cli
