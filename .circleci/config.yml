@@ -45,6 +45,13 @@ jobs:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
       - run:
+          name: Install OpenJDK 18
+          command: |
+            sudo apt-get update && sudo apt-get install openjdk-18-jdk
+            sudo update-alternatives --set java /usr/lib/jvm/java-18-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-18-openjdk-amd64/bin/javac
+            java -version
+      - run:
           command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
           background: true
       - run:
