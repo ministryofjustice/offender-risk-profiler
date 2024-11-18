@@ -30,9 +30,7 @@ jobs:
   validate:
     executor:
       name: hmpps/java
-      tag: "21.0"
-    environment:
-      _JAVA_OPTIONS: -Xmx800m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false
+      tag: "18.0"
     steps:
       - checkout
       - hmpps/install_aws_cli
@@ -40,9 +38,6 @@ jobs:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
-      - run:
-          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
-          background: true
       - run:
           command: ./gradlew check
       - save_cache:
