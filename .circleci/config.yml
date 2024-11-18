@@ -26,11 +26,17 @@ parameters:
     type: string
     default: dps-releases
 
+executors:
+  java-machine:
+    machine:
+      image: ubuntu-2204:2024.08.1
+    environment:
+      _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
+    working_directory: ~/app
+
 jobs:
   validate:
-    executor:
-      name: hmpps/java
-      tag: "18.0"
+    executor: java-machine
     steps:
       - checkout
       - hmpps/install_aws_cli
@@ -38,6 +44,16 @@ jobs:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
+      - run:
+          name: Install OpenJDK 18
+          command: |
+            sudo apt-get update && sudo apt-get install openjdk-18-jdk
+            sudo update-alternatives --set java /usr/lib/jvm/java-18-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-18-openjdk-amd64/bin/javac
+            java -version
+      - run:
+          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
+          background: true
       - run:
           command: ./gradlew check
       - save_cache:
