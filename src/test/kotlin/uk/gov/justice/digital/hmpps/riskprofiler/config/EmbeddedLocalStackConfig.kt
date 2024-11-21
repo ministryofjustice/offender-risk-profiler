@@ -40,16 +40,18 @@ open class EmbeddedLocalStackConfig {
     log.info("Starting localstack...")
     val logConsumer = Slf4jLogConsumer(log).withPrefix("localstack")
     val localStackContainer: LocalStackContainer =
-      LocalStackContainer(DockerImageName.parse("localstack/localstack"))
+      LocalStackContainer(DockerImageName.parse("localstack/localstack:3.0.0"))
         .withServices(LocalStackContainer.Service.SQS, LocalStackContainer.Service.SNS, LocalStackContainer.Service.S3)
         .withClasspathResourceMapping("/localstack/buckets", "/docker-entrypoint-initaws.d/buckets", BindMode.READ_WRITE)
+        .withEnv("HOSTNAME_EXTERNAL", "localhost")
+        .withEnv("AWS_ACCESS_KEY_ID", "foo")
+        .withEnv("AWS_SECRET_ACCESS_KEY", "bar")
+        .withEnv("AWS_DEFAULT_REGION", "eu-west-2")
         .withClasspathResourceMapping(
           "/localstack/setup-localstack.sh",
           "/docker-entrypoint-initaws.d/setup-localstack.sh",
           BindMode.READ_WRITE,
         )
-        .withEnv("HOSTNAME_EXTERNAL", "localhost")
-        .withEnv("DEFAULT_REGION", "eu-west-2")
         .waitingFor(
           Wait.forLogMessage(".*All Ready.*", 1), // .withStartupTimeout(Duration.ofMinutes(10))
         )
@@ -61,6 +63,22 @@ open class EmbeddedLocalStackConfig {
     return localStackContainer
   }
 
+  @Bean("awsClientForEvents", "awsDlqClientForEvents", "awsSqsClient")
+  @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "localstack")
+  @Primary
+  fun awsSqsClientLocalstack(
+    @Value("\${sqs.events.endpoint.url}") serviceEndpoint: String?,
+    @Value("\${sqs.events.endpoint.region}") region: String?,
+    @Value("\${sqs.aws.access.key.id}") accessKey: String,
+    @Value("\${sqs.aws.secret.access.key}") secretKey: String,
+  ): AmazonSQSAsync {
+    return AmazonSQSAsyncClientBuilder.standard()
+      .withCredentials(AWSStaticCredentialsProvider(BasicAWSCredentials(accessKey, secretKey)))
+      .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration(serviceEndpoint, region))
+      .build()
+  }
+
+  /*
   @Bean
   open fun awsClientForEvents(localStackContainer: LocalStackContainer): AmazonSQS = AmazonSQSClientBuilder.standard()
     .withEndpointConfiguration(localStackContainer.getEndpointConfiguration(LocalStackContainer.Service.SQS))
@@ -81,7 +99,7 @@ open class EmbeddedLocalStackConfig {
       .withEndpointConfiguration(localStackContainer.getEndpointConfiguration(LocalStackContainer.Service.SQS))
       .withCredentials(localStackContainer.defaultCredentialsProvider)
       .build()
-
+*/
   @Bean("queueUrl")
   open fun queueUrl(
     @Qualifier("awsClientForEvents") awsSqsClient: AmazonSQS,
