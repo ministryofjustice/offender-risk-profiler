@@ -16,21 +16,21 @@ aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name risk_prof
 
 aws --endpoint-url=http://localhost:4566 s3 mb s3://testbucket
 
-aws --endpoint-url=http://localhost:4566 s3 cp /etc/localstack/init/ready.d/buckets/VIPER-Dummy.csv s3://testbucket/viper/VIPER-Dummy.csv
-aws --endpoint-url=http://localhost:4566 s3 cp /etc/localstack/init/ready.d/buckets/VIPER_2_2024_10_29.csv s3://testbucket/viper/VIPER_2_2024_10_29.csv
-aws --endpoint-url=http://localhost:4566 s3 cp /etc/localstack/init/ready.d/buckets/OCGM-Dummy.csv s3://testbucket/ocgm/OCGM-Dummy.csv
-aws --endpoint-url=http://localhost:4566 s3 cp /etc/localstack/init/ready.d/buckets/OCG-Dummy.csv s3://testbucket/ocg-data/OCG-Dummy.csv
-aws --endpoint-url=http://localhost:4566 s3 cp /etc/localstack/init/ready.d/buckets/PRAS-Dummy.csv s3://testbucket/pras/PRAS-Dummy.csv
+aws --endpoint-url=http://localhost:4566 s3 cp /docker-entrypoint-initaws.d/buckets/VIPER-Dummy.csv s3://testbucket/viper/VIPER-Dummy.csv
+aws --endpoint-url=http://localhost:4566 s3 cp /docker-entrypoint-initaws.d/buckets/VIPER_2_2024_10_29.csv s3://testbucket/viper/VIPER_2_2024_10_29.csv
+aws --endpoint-url=http://localhost:4566 s3 cp /docker-entrypoint-initaws.d/buckets/OCGM-Dummy.csv s3://testbucket/ocgm/OCGM-Dummy.csv
+aws --endpoint-url=http://localhost:4566 s3 cp /docker-entrypoint-initaws.d/buckets/OCG-Dummy.csv s3://testbucket/ocg-data/OCG-Dummy.csv
+aws --endpoint-url=http://localhost:4566 s3 cp /docker-entrypoint-initaws.d/buckets/PRAS-Dummy.csv s3://testbucket/pras/PRAS-Dummy.csv
 
 echo 'Finished localstack bucket setup'
 
-aws --endpoint-url=http://localstack:4566 s3 ls
+aws --endpoint-url=http://localhost:4566 s3 ls
 
-aws --endpoint-url=http://localstack:4566 s3 ls s3://testbucket --recursive
+aws --endpoint-url=http://localhost:4566 s3 ls s3://testbucket --recursive
 
 echo 'Listing all queues in Localstack'
 
-aws --endpoint-url=http://localstack:4566 sqs list-queues
+aws --endpoint-url=http://localhost:4566 sqs list-queues
 
 aws configure list
 
