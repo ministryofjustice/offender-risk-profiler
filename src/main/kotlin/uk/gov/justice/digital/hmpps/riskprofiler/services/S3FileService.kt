@@ -100,8 +100,6 @@ class S3FileService(
   }
 
   private fun getObjectSummaries(fileLocation: String): ObjectSummaryResult {
-    log.info("list buckets " + s3Client!!.listBuckets())
-
     val bucketAndPrefix = BucketAndPrefix(fileLocation)
     val bucketName = bucketAndPrefix.bucketName!!
     val prefix = bucketAndPrefix.prefix
