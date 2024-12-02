@@ -26,6 +26,7 @@ import org.testcontainers.containers.localstack.LocalStackContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.DockerImageName
+import java.time.Duration
 
 @Configuration
 @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "localstack-embedded")
@@ -49,9 +50,11 @@ open class EmbeddedLocalStackConfig {
           BindMode.READ_WRITE,
         )
         .withEnv("HOSTNAME_EXTERNAL", "localhost")
-        .withEnv("DEFAULT_REGION", "eu-west-2")
+        .withEnv("AWS_ACCESS_KEY_ID", "foo")
+        .withEnv("AWS_SECRET_ACCESS_KEY", "bar")
+        .withEnv("AWS_DEFAULT_REGION", "eu-west-2")
         .waitingFor(
-          Wait.forLogMessage(".*All Ready.*", 1), // .withStartupTimeout(Duration.ofMinutes(10))
+          Wait.forLogMessage(".*All Ready.*", 1).withStartupTimeout(Duration.ofMinutes(10))
         )
 
     log.info("Started localstack.")
@@ -61,6 +64,19 @@ open class EmbeddedLocalStackConfig {
     return localStackContainer
   }
 
+  @Bean("awsClientForEvents", "awsDlqClientForEvents", "awsSqsClient")
+  @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "localstack-embedded")
+  @Primary
+  fun awsSqsClientLocalstack(
+    @Autowired localStackContainer: LocalStackContainer,
+  ): AmazonSQSAsync {
+    return AmazonSQSAsyncClientBuilder.standard()
+      .withCredentials(AWSStaticCredentialsProvider(BasicAWSCredentials("foo", "bar")))
+      .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration("http://localhost:${localStackContainer.getMappedPort(4566)}", "eu-west-2"))
+      .build()
+  }
+
+  /*
   @Bean
   open fun awsClientForEvents(localStackContainer: LocalStackContainer): AmazonSQS = AmazonSQSClientBuilder.standard()
     .withEndpointConfiguration(localStackContainer.getEndpointConfiguration(LocalStackContainer.Service.SQS))
@@ -81,12 +97,13 @@ open class EmbeddedLocalStackConfig {
       .withEndpointConfiguration(localStackContainer.getEndpointConfiguration(LocalStackContainer.Service.SQS))
       .withCredentials(localStackContainer.defaultCredentialsProvider)
       .build()
-
+*/
   @Bean("queueUrl")
   open fun queueUrl(
     @Qualifier("awsClientForEvents") awsSqsClient: AmazonSQS,
     @Value("\${sqs.events.queue.name}") queueName: String,
     @Value("\${sqs.events.dlq.queue.name}") dlqName: String,
+    @Autowired localStackContainer: LocalStackContainer,
   ): String {
     return queueUrlWorkaroundTestcontainers(awsSqsClient, queueName, dlqName)
   }
@@ -100,6 +117,7 @@ open class EmbeddedLocalStackConfig {
   }
 
   private fun queueUrlWorkaroundTestcontainers(awsSqsClient: AmazonSQS, queueName: String, dlqName: String): String {
+    log.info(awsSqsClient.listQueues().toString())
     val queueUrl = awsSqsClient.getQueueUrl(queueName).queueUrl
     val dlqUrl = awsSqsClient.getQueueUrl(dlqName).queueUrl
     // This is necessary due to a bug in localstack when running in testcontainers that the redrive policy gets lost
@@ -129,7 +147,7 @@ open class EmbeddedLocalStackConfig {
       .withPathStyleAccessEnabled(true)
       .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration("http://localhost:${localStackContainer.getMappedPort(4566)}", region))
       // Cannot supply anonymous credentials here since only a subset of S3 APIs will accept unsigned requests
-      .withCredentials(AWSStaticCredentialsProvider(BasicAWSCredentials(accessKey, secretKey)))
+      .withCredentials(AWSStaticCredentialsProvider(BasicAWSCredentials("foo", "bar")))
       .build()
   }
 }

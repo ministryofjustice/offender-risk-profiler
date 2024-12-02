@@ -23,29 +23,30 @@ import org.springframework.boot.info.BuildProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.SecurityFilterChain
 import javax.sql.DataSource
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
+@EnableMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 @EnableScheduling
 @EnableSchedulerLock(defaultLockAtLeastFor = "PT10S", defaultLockAtMostFor = "PT12H")
-class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
+class ResourceServerConfiguration {
   @Autowired(required = false)
   private val buildProperties: BuildProperties? = null
 
-  @Throws(Exception::class)
-  public override fun configure(http: HttpSecurity) {
-    http
-      .sessionManagement()
-      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-      .and().headers().frameOptions().sameOrigin() // Can't have CSRF protection as requires session
-      .and().csrf().disable()
-      .authorizeRequests { auth ->
-        auth.antMatchers(
+  @Bean
+  fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    http {
+      headers { frameOptions { disable() } }
+      sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+      // Can't have CSRF protection as requires session
+      csrf { disable() }
+      authorizeHttpRequests {
+        listOf(
           "/webjars/**",
           "/favicon.ico",
           "/csrf",
@@ -53,16 +54,22 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
           "/info",
           "/ping",
           "/h2-console/**",
-          "/v3/api-docs",
-          "/swagger-ui.html",
+          "/v3/api-docs/**",
           "/swagger-ui/**",
-          "/swagger-resources/**",
-        ).permitAll().anyRequest().authenticated()
-      }.oauth2ResourceServer().jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())
+          "/swagger-ui.html",
+          "/queue-admin/retry-all-dlqs",
+          // This endpoint is secured in the ingress rather than the app so that it can be called from within the namespace without requiring authentication
+        ).forEach { authorize(it, permitAll) }
+        authorize(anyRequest, authenticated)
+      }
+      oauth2ResourceServer { jwt { jwtAuthenticationConverter = AuthAwareTokenConverter() } }
+    }
+    return http.build()
   }
 
   @Bean
   fun api(): OpenAPI {
+
     return OpenAPI()
       .components(
         Components().addSecuritySchemes(
@@ -72,8 +79,8 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
             .scheme("bearer")
             .bearerFormat("JWT")
             .`in`(SecurityScheme.In.HEADER)
-            .name("Authorization"),
-        ),
+            .name("Authorization")
+        )
       )
       .info(
         Info().title("Offender Risk Profiler API Documentation")
@@ -82,9 +89,9 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
           .license(
             License()
               .name("Open Government Licence v3.0")
-              .url("https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"),
+              .url("https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/")
           )
-          .contact(Contact().name("HMPPS Digital Studio").email("dps-hmpps@digital.justice.gov.uk")),
+          .contact(Contact().name("HMPPS Digital Studio").email("dps-hmpps@digital.justice.gov.uk"))
       )
       .addSecurityItem(SecurityRequirement().addList("bearer-jwt", listOf("read", "write")))
   }
@@ -98,7 +105,7 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
   @Bean
   @ConditionalOnProperty(name = ["s3.provider"], havingValue = "aws")
   fun s3Client(
-    @Value("\${s3.endpoint.region}") region: String?,
+    @Value("\${s3.endpoint.region}") region: String?
   ): AmazonS3 {
     return AmazonS3ClientBuilder.standard()
       .withRegion(region)
