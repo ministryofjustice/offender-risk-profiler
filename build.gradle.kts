@@ -92,13 +92,13 @@ dependencies {
 }
 
 kotlin {
-  jvmToolchain(JavaVersion.VERSION_21.toString())
+  jvmToolchain(21)
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-      jvmTarget = JavaVersion.VERSION_21.toString()
+      jvmTarget = "21"
     }
   }
   withType<Task> {
