@@ -38,7 +38,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-  implementation("io.projectreactor.netty:reactor-netty-core:1.0.39")
+  implementation("io.projectreactor.netty:reactor-netty-core:1.2.0")
   implementation("io.projectreactor.netty:reactor-netty-http:1.0.39")
   implementation("io.netty:netty-codec-http2:4.1.112.Final")
   implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.93")
