@@ -40,7 +40,7 @@ executors:
 jobs:
   validate:
     executor:
-      name: hmpps/java_localstack_postgres_with_db_name
+      name: hmpps/java_localstack_redis_postgres_with_db_name
       jdk_tag: "21.0"
       java_options: << pipeline.parameters.java-options >>
       localstack_tag: "3"
