@@ -13,7 +13,7 @@ main_branch: &main_branch
         - main
 
 orbs:
-  hmpps: ministryofjustice/hmpps@dev:050048e
+  hmpps: ministryofjustice/hmpps@9
 
 parameters:
   alerts-slack-channel:
@@ -29,32 +29,18 @@ parameters:
     type: string
     default: -Xmx512m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dkotlin.compiler.execution.strategy=in-process -Dorg.gradle.workers.max=1
 
-executors:
-  java-machine:
-    machine:
-      image: ubuntu-2204:2024.08.1
-    environment:
-      _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport -Dkotlin.compiler.execution.strategy=in-process
-    working_directory: ~/app
-
 jobs:
   validate:
     executor:
-      name: hmpps/java_localstack_redis_postgres_with_db_name
+      name: hmpps/java_postgres
       jdk_tag: "21.0"
-      java_options: << pipeline.parameters.java-options >>
-      localstack_tag: "3"
       postgres_tag: "16"
-      postgres_password: "risk-profiler"
-      postgres_username: "risk-profiler"
-      postgres_db: "risk-profiler"
-      redis_tag: "6.2.6"
-      services: "sqs,sns,s3"
+      postgres_db: "form-builder"
+      postgres_username: "form-builder"
+      postgres_password: "form-builder"
     environment:
-      DB_SERVER: localhost
-      DB_NAME: "risk-profiler"
-      DB_USER: "risk-profiler"
-      DB_PASS: "risk-profiler"
+      _JAVA_OPTIONS: -Xmx800m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false
+
     steps:
       - checkout
       - hmpps/install_aws_cli
