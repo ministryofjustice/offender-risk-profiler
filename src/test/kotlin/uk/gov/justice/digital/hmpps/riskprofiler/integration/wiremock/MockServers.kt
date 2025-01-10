@@ -77,57 +77,6 @@ class PrisonMockServer : WireMockServer(8080) {
     )
   }
 
-  // Warning: will be cached by REDIS !
-  fun stubAlerts() {
-    val recent = LocalDate.of(2021, 6, 14)
-    val alert1 = Alert(
-      1234,
-      12,
-      "A1234AB",
-      "POR",
-      "desc",
-      "DUM",
-      "desc",
-      "comment",
-      recent,
-      null,
-      false,
-      true,
-      null,
-      null,
-      null,
-      null,
-      1,
-    )
-    val alert2 = Alert(
-      5678,
-      12,
-      "A1234AB",
-      "POR",
-      "desc",
-      "DUM",
-      "desc",
-      "comment",
-      recent,
-      null,
-      false,
-      true,
-      null,
-      null,
-      null,
-      null,
-      1,
-    )
-    stubFor(
-      WireMock.get(WireMock.urlMatching("/api/offenders/.+/alerts/v2\\?alertCodes=.+"))
-        .willReturn(
-          WireMock.aResponse()
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(gson.toJson(listOf(alert1, alert2))),
-        ),
-    )
-  }
-
   fun stubBookingDetails(bookingId: Int) {
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/api/bookings/v2?bookingId=$bookingId&legalInfo=true"))
@@ -254,6 +203,80 @@ class PathfinderMockServer : WireMockServer(8083) {
   }
               """.trimIndent(),
             ),
+        ),
+    )
+  }
+}
+
+class PrisonerAlertsApiMockServer : WireMockServer(8084) {
+
+  companion object {
+    @JvmStatic
+    val prisonerAlertsApiMockServer = PrisonerAlertsApiMockServer().apply { start() }
+  }
+
+  private val gson = GsonBuilder().registerTypeAdapter(
+    LocalDate::class.java,
+    PrisonMockServer.LocalDateTypeAdapter().nullSafe(),
+  ).create()
+
+  fun stubPing() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/health/ping"))
+        .willReturn(
+          WireMock.aResponse()
+            .withBody("pong"),
+        ),
+    )
+  }
+
+  // Warning: will be cached by REDIS !
+  fun stubAlerts() {
+    val recent = LocalDate.of(2021, 6, 14)
+    val alert1 = Alert(
+      1234,
+      12,
+      "A1234AB",
+      "POR",
+      "desc",
+      "DUM",
+      "desc",
+      "comment",
+      recent,
+      null,
+      false,
+      true,
+      null,
+      null,
+      null,
+      null,
+      1,
+    )
+    val alert2 = Alert(
+      5678,
+      12,
+      "A1234AB",
+      "POR",
+      "desc",
+      "DUM",
+      "desc",
+      "comment",
+      recent,
+      null,
+      false,
+      true,
+      null,
+      null,
+      null,
+      null,
+      1,
+    )
+    stubFor(
+      WireMock.get(WireMock.urlMatching("/prisoners/.+/alerts\\?alertCodes=.+"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(gson.toJson(listOf(alert1, alert2))),
         ),
     )
   }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonerAlertsApiMockServer
 
 class RiskProfilerResourceTest : ResourceTest() {
 
@@ -16,7 +17,7 @@ class RiskProfilerResourceTest : ResourceTest() {
     OAuthMockServer.oauthMockServer.stubGrantToken()
     PrisonMockServer.prisonMockServer.stubBookingDetails(12)
     PrisonMockServer.prisonMockServer.stubOffender("A1234AB")
-    PrisonMockServer.prisonMockServer.stubAlerts()
+    PrisonerAlertsApiMockServer.prisonerAlertsApiMockServer.stubAlerts()
     PrisonMockServer.prisonMockServer.stubIncidents()
     PrisonMockServer.prisonMockServer.stubSentences(12)
     PrisonMockServer.prisonMockServer.stubMainOffence(12)

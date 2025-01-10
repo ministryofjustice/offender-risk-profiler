@@ -14,6 +14,7 @@ import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import uk.gov.justice.digital.hmpps.riskprofiler.clent.PrisonerAlertsApiClient
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
 import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase
@@ -27,31 +28,33 @@ class NomisServiceTest {
   @Mock
   private lateinit var webClientCallHelper: WebClientCallHelper
 
+  @Mock
+  private lateinit var prisonerAlertsApiClient: PrisonerAlertsApiClient
+
   @Before
   fun setup() {
     MockitoAnnotations.openMocks(webClientCallHelper)
-    service = NomisService(webClientCallHelper, listOf("ASSAULTS"), listOf("ACTINV", "ASSIAL"))
+    MockitoAnnotations.openMocks(prisonerAlertsApiClient)
+    service = NomisService(webClientCallHelper, prisonerAlertsApiClient, listOf("ASSAULTS"), listOf("ACTINV", "ASSIAL"))
   }
 
   @Test
   @Throws(Exception::class)
   fun testAlertCall() {
-    val body = listOf(Alert(false, false, "SOC"))
-    val response = ResponseEntity(body, HttpStatus.OK)
     Mockito.`when`(
-      webClientCallHelper.getForList(
-        eq("/api/offenders/A1234AA/alerts/v2?alertCodes=SOC"),
-        isA<ParameterizedTypeReference<List<Alert>>>(),
+      prisonerAlertsApiClient.findPrisonerAlerts(
+        "A1234AA",
+        listOf("SOC")
       ),
     )
-      .thenReturn(response)
+      .thenReturn(listOf(Alert(false, false, "SOC")))
     val alertsForOffender = service.getAlertsForOffender("A1234AA", listOf("SOC"))
     Assertions.assertThat(alertsForOffender).hasSize(1)
-    Mockito.verify(webClientCallHelper).getForList(
-      eq("/api/offenders/A1234AA/alerts/v2?alertCodes=SOC"),
-      isA<ParameterizedTypeReference<List<Alert>>>(),
+    Mockito.verify(prisonerAlertsApiClient).findPrisonerAlerts(
+      "A1234AA",
+      listOf("SOC")
     )
-    Mockito.verifyNoMoreInteractions(webClientCallHelper)
+    Mockito.verifyNoMoreInteractions(prisonerAlertsApiClient)
   }
 
   @Test

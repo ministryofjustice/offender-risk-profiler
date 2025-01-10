@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import uk.gov.justice.digital.hmpps.riskprofiler.clent.PrisonerAlertsApiClient
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
 import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails
 import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase
@@ -19,6 +20,7 @@ import java.util.stream.Collectors
 @Service
 class NomisService(
   private val webClientCallHelper: WebClientCallHelper,
+  private val prisonerAlertsApiClient: PrisonerAlertsApiClient,
   @param:Value("\${app.assaults.incident.types:ASSAULT}") private val incidentTypes: List<String?>,
   @param:Value("\${app.assaults.participation.roles}") private val participationRoles: List<String>,
 ) {
@@ -34,7 +36,7 @@ class NomisService(
   }
 
   @Cacheable("socAlert")
-  fun getSocListAlertsForOffender(nomsId: String?): List<Alert> {
+  fun getSocListAlertsForOffender(nomsId: String): List<Alert> {
     log.info("Getting soc list alerts for noms id {}", nomsId)
     return getAlertsForOffender(nomsId, SOC_ALERT_TYPES)
   }
@@ -44,13 +46,8 @@ class NomisService(
     log.info("Evicting {} from socAlert cache", nomsId)
   }
 
-  fun getAlertsForOffender(nomsId: String?, alertCodeList: List<String?>): List<Alert> {
-    log.info("Getting alerts for noms id {} and codes {}", nomsId, alertCodeList)
-    val alertCodes = alertCodeList.stream()
-      .collect(Collectors.joining(","))
-    val uriAlertsForOffenderByType =
-      String.format("/api/offenders/$nomsId/alerts/v2?alertCodes=$alertCodes")
-    return webClientCallHelper.getForList(uriAlertsForOffenderByType, ALERTS).body!!
+  fun getAlertsForOffender(nomsId: String, alertCodeList: List<String>): List<Alert> {
+    return prisonerAlertsApiClient.findPrisonerAlerts(nomsId, alertCodeList)!!
   }
 
   fun getSentencesForOffender(bookingId: Long?): List<OffenderSentenceTerms> {

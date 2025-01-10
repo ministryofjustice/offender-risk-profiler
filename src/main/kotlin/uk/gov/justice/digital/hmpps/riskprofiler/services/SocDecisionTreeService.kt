@@ -54,7 +54,7 @@ class SocDecisionTreeService(
     return SocProfile(nomsId, RiskProfile.DEFAULT_CAT, false)
   }
 
-  private fun checkBand(nomsId: @NotNull String?, soc: SocProfile, ocgm: Ocgm, ocg: Ocg) {
+  private fun checkBand(nomsId: @NotNull String, soc: SocProfile, ocgm: Ocgm, ocg: Ocg) {
     // Check OCGM Band = 1a, 1b, 1c, 2a, 2b, 2c, 3a, 3b, 3c?
     // If band info is missing, we should assume it is effectively 5c
     if (ocg.ocgmBand != null && OCGM_BANDS.contains(ocg.ocgmBand)) {
@@ -76,7 +76,7 @@ class SocDecisionTreeService(
     }
   }
 
-  private fun checkAlerts(nomsId: @NotNull String?, soc: SocProfile, defaultCat: String) {
+  private fun checkAlerts(nomsId: @NotNull String, soc: SocProfile, defaultCat: String) {
     if (isHasActiveSocAlerts(nomsId)) {
       log.debug("SOC: active alerts for {}", nomsId)
       // TODO: NOT MVP - we will trigger a notification to security
@@ -87,7 +87,7 @@ class SocDecisionTreeService(
     }
   }
 
-  private fun isHasActiveSocAlerts(nomsId: String?): Boolean {
+  private fun isHasActiveSocAlerts(nomsId: String): Boolean {
     return nomisService.getSocListAlertsForOffender(nomsId).stream()
       .anyMatch { alert -> alert.active && !alert.expired && alert.dateCreated.isAfter(LocalDate.now().minusYears(1)) }
   }
