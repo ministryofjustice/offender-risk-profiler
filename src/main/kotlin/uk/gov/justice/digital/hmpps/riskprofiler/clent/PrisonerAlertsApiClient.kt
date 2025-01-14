@@ -3,6 +3,8 @@ package uk.gov.justice.digital.hmpps.riskprofiler.clent
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
+import uk.gov.justice.digital.hmpps.hmppsmanageprisonvisitsorchestration.dto.RestPage
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
 import java.util.stream.Collectors
 
@@ -17,8 +19,9 @@ class PrisonerAlertsApiClient(
     return webClient.get()
       .uri("/prisoners/$prisonerNumber/alerts?alertCodes=$commaSeparatedAlertCodes")
       .retrieve()
-      .bodyToFlux(Alert::class.java)
-      .collect(Collectors.toList())
-      .block()
+      .bodyToMono<RestPage<Alert>>()
+      .block()!!
+      .content
+      .toList()
   }
 }
