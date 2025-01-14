@@ -9,7 +9,9 @@ import com.google.gson.GsonBuilder
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.MockUtility.Companion.getJsonString
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
+import uk.gov.justice.digital.hmpps.riskprofiler.model.RestPage
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -276,7 +278,8 @@ class PrisonerAlertsApiMockServer : WireMockServer(8084) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(gson.toJson(listOf(alert1, alert2))),
+            .withStatus(200)
+            .withBody(getJsonString(RestPage(listOf(alert1, alert2), 1, 100, 2))),
         ),
     )
   }
