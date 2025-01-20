@@ -15,11 +15,11 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import uk.gov.justice.digital.hmpps.riskprofiler.clent.PrisonerAlertsApiClient
-import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
-import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails
-import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase
-import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentParty
-import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderBooking
+import uk.gov.justice.digital.hmpps.riskprofiler.dto.prisonerAlert.PrisonerAlertCodeSummaryDto
+import uk.gov.justice.digital.hmpps.riskprofiler.factories.dto.prisonerAlert.TestPrisonerAlertCodeSummaryDtoFactory
+import uk.gov.justice.digital.hmpps.riskprofiler.factories.dto.prisonerAlert.TestPrisonerAlertResponseDtoFactory
+import uk.gov.justice.digital.hmpps.riskprofiler.model.*
+import java.time.LocalDate
 
 @RunWith(MockitoJUnitRunner::class)
 class NomisServiceTest {
@@ -38,16 +38,25 @@ class NomisServiceTest {
     service = NomisService(webClientCallHelper, prisonerAlertsApiClient, listOf("ASSAULTS"), listOf("ACTINV", "ASSIAL"))
   }
 
-  @Test
   @Throws(Exception::class)
+  @Test
   fun testAlertCall() {
+    val testAlertsResponse = listOf(
+      (TestPrisonerAlertResponseDtoFactory())
+        .withActive(false)
+        .withActiveTo(LocalDate.now().minusMonths(1))
+        .withAlertCodeSummary((TestPrisonerAlertCodeSummaryDtoFactory()).withAlertCode("SOC").build())
+        .build()
+    )
     Mockito.`when`(
       prisonerAlertsApiClient.findPrisonerAlerts(
         "A1234AA",
         listOf("SOC")
       ),
     )
-      .thenReturn(listOf(Alert(false, false, "SOC")))
+      .thenReturn(
+        RestPage(testAlertsResponse, 1, testAlertsResponse.size, 1)
+      )
     val alertsForOffender = service.getAlertsForOffender("A1234AA", listOf("SOC"))
     Assertions.assertThat(alertsForOffender).hasSize(1)
     Mockito.verify(prisonerAlertsApiClient).findPrisonerAlerts(
@@ -112,15 +121,28 @@ class NomisServiceTest {
   @Test
   @Throws(Exception::class)
   fun testEscapeListCall() {
-    val body = listOf(Alert(false, false, "XER"), Alert(false, false, "XEL"))
-    val response = ResponseEntity(body, HttpStatus.OK)
+    val testEscapeRiskAlertsResponse = (TestPrisonerAlertResponseDtoFactory())
+        .withActive(false)
+        .withActiveTo(LocalDate.now().minusMonths(1))
+        .withAlertCodeSummary((TestPrisonerAlertCodeSummaryDtoFactory()).withAlertCode(PrisonerAlertCodeSummaryDto.ALERT_CODE_ESCAPE_RISK).build())
+        .build()
+    val testEscapeListAlertsResponse = (TestPrisonerAlertResponseDtoFactory())
+        .withActive(false)
+        .withActiveTo(LocalDate.now().minusMonths(1))
+        .withAlertCodeSummary((TestPrisonerAlertCodeSummaryDtoFactory()).withAlertCode(PrisonerAlertCodeSummaryDto.ALERT_CODE_ESCAPE_LIST).build())
+        .build()
+    val testAlertsResponse = listOf(testEscapeRiskAlertsResponse, testEscapeListAlertsResponse)
+
     Mockito.`when`(
-      webClientCallHelper.getForList(
-        eq("/api/offenders/A1234AA/alerts/v2?alertCodes=XER,XEL"),
-        isA<ParameterizedTypeReference<List<Alert>>>(),
+      prisonerAlertsApiClient.findPrisonerAlerts(
+        "A1234AA",
+        listOf(PrisonerAlertCodeSummaryDto.ALERT_CODE_ESCAPE_RISK, PrisonerAlertCodeSummaryDto.ALERT_CODE_ESCAPE_LIST)
       ),
     )
-      .thenReturn(response)
+      .thenReturn(
+        RestPage(testAlertsResponse, 1, testAlertsResponse.size, 2)
+      )
+
     val alertsForOffender = service.getEscapeListAlertsForOffender("A1234AA")
     Assertions.assertThat(alertsForOffender).hasSize(2)
     Mockito.verify(webClientCallHelper).getForList(

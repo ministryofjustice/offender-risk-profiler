@@ -9,11 +9,9 @@ import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import uk.gov.justice.digital.hmpps.riskprofiler.clent.PrisonerAlertsApiClient
-import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
-import uk.gov.justice.digital.hmpps.riskprofiler.model.BookingDetails
-import uk.gov.justice.digital.hmpps.riskprofiler.model.IncidentCase
-import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderBooking
-import uk.gov.justice.digital.hmpps.riskprofiler.model.OffenderSentenceTerms
+import uk.gov.justice.digital.hmpps.riskprofiler.dto.prisonerAlert.PrisonerAlertCodeSummaryDto.Companion.ALERT_CODE_ESCAPE_RISK
+import uk.gov.justice.digital.hmpps.riskprofiler.mappers.prisonerAlert.PrisonerAlertResponseDtoMapper
+import uk.gov.justice.digital.hmpps.riskprofiler.model.*
 import java.util.Objects
 import java.util.stream.Collectors
 
@@ -47,7 +45,11 @@ class NomisService(
   }
 
   fun getAlertsForOffender(nomsId: String, alertCodeList: List<String>): List<Alert> {
-    return prisonerAlertsApiClient.findPrisonerAlerts(nomsId, alertCodeList)!!
+    return PrisonerAlertResponseDtoMapper.mapAllToAlerts(
+      prisonerAlertsApiClient
+      .findPrisonerAlerts(nomsId, alertCodeList)
+      .content
+    )
   }
 
   fun getSentencesForOffender(bookingId: Long?): List<OffenderSentenceTerms> {
@@ -141,7 +143,6 @@ class NomisService(
 
   companion object {
     private val log = LoggerFactory.getLogger(NomisService::class.java)
-    private val ALERTS: ParameterizedTypeReference<List<Alert>> = object : ParameterizedTypeReference<List<Alert>>() {}
     private val INCIDENTS: ParameterizedTypeReference<List<IncidentCase>> =
       object : ParameterizedTypeReference<List<IncidentCase>>() {}
     private val MAP: ParameterizedTypeReference<List<Map<*, *>>> =
@@ -152,7 +153,7 @@ class NomisService(
       object : ParameterizedTypeReference<RestResponsePage<OffenderBooking>>() {}
     private val SENTENCE_TERMS: ParameterizedTypeReference<List<OffenderSentenceTerms>> =
       object : ParameterizedTypeReference<List<OffenderSentenceTerms>>() {}
-    val ESCAPE_LIST_ALERT_TYPES = java.util.List.of("XER", "XEL")
+    val ESCAPE_LIST_ALERT_TYPES = java.util.List.of(ALERT_CODE_ESCAPE_RISK, "XEL")
     val SOC_ALERT_TYPES = java.util.List.of(
       "PL3", "PVN", "HPI", "XCO", "XD", "XEAN", "XEBM",
       "XFO", "XGANG", "XOCGN", "XP", "XSC",

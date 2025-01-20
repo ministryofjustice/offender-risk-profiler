@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.riskprofiler.clent
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
+import reactor.core.publisher.Mono
+import uk.gov.justice.digital.hmpps.riskprofiler.dto.prisonerAlert.PrisonerAlertResponseDto
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RestPage
 import java.util.stream.Collectors
 
@@ -13,15 +15,25 @@ class PrisonerAlertsApiClient(
   @Qualifier("prisonerAlertsSystemWebClient") private val webClient: WebClient,
 ) {
 
-  fun findPrisonerAlerts(prisonerNumber: String, alertCodes: List<String>): List<Alert>? {
+  fun findPrisonerAlerts(prisonerId: String, alertCodes: List<String>): RestPage<PrisonerAlertResponseDto> {
+    return getPrisonerAlertsAsMono(prisonerId, alertCodes).block()
+      ?: throw IllegalStateException("Unable to retrieve alerts for prisoner, possibly due to timeout $prisonerId")
+  }
+
+  private fun getPrisonerAlertsAsMono(prisonerNumber: String, alertCodes: List<String>): Mono<RestPage<PrisonerAlertResponseDto>> {
     val commaSeparatedAlertCodes = alertCodes.stream().collect(Collectors.joining(","))
+    val uri = "/prisoners/$prisonerNumber/alerts?alertCodes=$commaSeparatedAlertCodes"
 
     return webClient.get()
-      .uri("/prisoners/$prisonerNumber/alerts?alertCodes=$commaSeparatedAlertCodes")
+      .uri(uri)
       .retrieve()
-      .bodyToMono<RestPage<Alert>>()
-      .block()!!
-      .content
-      .toList()
+      .bodyToMono<RestPage<PrisonerAlertResponseDto>>()
+      .doOnError { e ->
+        log.error("getPrisonerAlertsAsMono Failed for get request $uri, exception - $e")
+      }
+  }
+
+  companion object {
+    private val log = LoggerFactory.getLogger(this::class.java)
   }
 }

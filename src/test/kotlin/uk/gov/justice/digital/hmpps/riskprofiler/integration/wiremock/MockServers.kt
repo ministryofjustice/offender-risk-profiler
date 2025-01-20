@@ -9,6 +9,8 @@ import com.google.gson.GsonBuilder
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import uk.gov.justice.digital.hmpps.riskprofiler.factories.dto.prisonerAlert.TestPrisonerAlertCodeSummaryDtoFactory
+import uk.gov.justice.digital.hmpps.riskprofiler.factories.dto.prisonerAlert.TestPrisonerAlertResponseDtoFactory
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.MockUtility.Companion.getJsonString
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
 import uk.gov.justice.digital.hmpps.riskprofiler.model.RestPage
@@ -235,44 +237,28 @@ class PrisonerAlertsApiMockServer : WireMockServer(8084) {
   // Warning: will be cached by REDIS !
   fun stubAlerts() {
     val recent = LocalDate.of(2021, 6, 14)
-    val alert1 = Alert(
-      1234,
-      12,
-      "A1234AB",
-      "POR",
-      "desc",
-      "DUM",
-      "desc",
-      "comment",
-      recent,
-      null,
-      false,
-      true,
-      null,
-      null,
-      null,
-      null,
-      1,
-    )
-    val alert2 = Alert(
-      5678,
-      12,
-      "A1234AB",
-      "POR",
-      "desc",
-      "DUM",
-      "desc",
-      "comment",
-      recent,
-      null,
-      false,
-      true,
-      null,
-      null,
-      null,
-      null,
-      1,
-    )
+    val alert1 = (TestPrisonerAlertResponseDtoFactory())
+      .withAlertCodeSummary((TestPrisonerAlertCodeSummaryDtoFactory())
+        .withAlertCode("DUM")
+        .withAlertDescription("desc")
+        .build()
+      )
+      .withActive(true)
+      .withCreatedAt(recent)
+      .withActiveTo(null)
+      .build()
+
+    val alert2 = (TestPrisonerAlertResponseDtoFactory())
+      .withAlertCodeSummary((TestPrisonerAlertCodeSummaryDtoFactory())
+        .withAlertCode("DUM")
+        .withAlertDescription("desc")
+        .build()
+      )
+      .withActive(true)
+      .withCreatedAt(recent)
+      .withActiveTo(null)
+      .build()
+
     stubFor(
       WireMock.get(WireMock.urlMatching("/prisoners/.+/alerts\\?alertCodes=.+"))
         .willReturn(

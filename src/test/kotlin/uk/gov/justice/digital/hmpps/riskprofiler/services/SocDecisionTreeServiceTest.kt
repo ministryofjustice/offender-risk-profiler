@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocg
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Ocgm
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.OcgmList
 import uk.gov.justice.digital.hmpps.riskprofiler.datasourcemodel.Pras
+import uk.gov.justice.digital.hmpps.riskprofiler.factories.model.TestAlertFactory
 import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
 import uk.gov.justice.digital.hmpps.riskprofiler.model.SocProfile
 import java.time.LocalDate
@@ -50,10 +51,18 @@ class SocDecisionTreeServiceTest {
 
   @Test
   fun testNotOnPrasFileAndBandNotInList() {
-    val xfo = Alert(true, false, "XFO")
-    xfo.dateCreated = LocalDate.now().minusMonths(11)
-    val xd = Alert(false, false, "XD")
-    xd.dateExpires = LocalDate.now().minusYears(2)
+    val xfo = (TestAlertFactory())
+      .withActive(true)
+      .withDateExpires(LocalDate.now().plusMonths(1))
+      .withDateCreated(LocalDate.now().minusMonths(11))
+      .withAlertCode("XFO")
+      .build()
+    val xd = (TestAlertFactory())
+      .withActive(false)
+      .withDateExpires(LocalDate.now().plusMonths(1))
+      .withDateCreated(LocalDate.now().minusYears(2))
+      .withAlertCode("XD")
+      .build()
     Mockito.`when`(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())
 
@@ -166,12 +175,18 @@ class SocDecisionTreeServiceTest {
 
   @Test
   fun testNotOnPrasFileAndBandNotInListWithOldAlerts() {
-    val now = LocalDate.now()
-    val xfo = Alert(true, false, "XFO")
-    xfo.dateCreated = now.minusMonths(13)
-    val xd = Alert(false, false, "XD")
-    xd.dateExpires = now.minusMonths(16)
-    xd.expired = true
+    val xfo = (TestAlertFactory())
+      .withActive(true)
+      .withDateExpires(LocalDate.now().plusMonths(1))
+      .withDateCreated(LocalDate.now().minusMonths(13))
+      .withAlertCode("XFO")
+      .build()
+    val xd = (TestAlertFactory())
+      .withActive(false)
+      .withDateExpires(LocalDate.now().minusMonths(16))
+      .withDateCreated(LocalDate.now().minusYears(2))
+      .withAlertCode("XD")
+      .build()
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())
     Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
@@ -194,11 +209,18 @@ class SocDecisionTreeServiceTest {
 
   @Test
   fun testNotOnPrasFileAndNoOcgmWithActiveAlerts() {
-    val now = LocalDate.now()
-    val xfo = Alert(true, false, "XFO")
-    xfo.dateCreated = now.minusMonths(11)
-    val xd = Alert(false, false, "XD")
-    xd.dateExpires = now.minusYears(2)
+    val xfo = (TestAlertFactory())
+      .withActive(true)
+      .withDateExpires(LocalDate.now().plusMonths(1))
+      .withDateCreated(LocalDate.now().minusMonths(11))
+      .withAlertCode("XFO")
+      .build()
+    val xd = (TestAlertFactory())
+      .withActive(false)
+      .withDateExpires(LocalDate.now().minusYears(2))
+      .withDateCreated(LocalDate.now().minusYears(2))
+      .withAlertCode("XD")
+      .build()
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())
     Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
@@ -213,12 +235,19 @@ class SocDecisionTreeServiceTest {
 
   @Test
   fun testNotOnPrasFileAndNoOcgmWithOldAlerts() {
-    val now = LocalDate.now()
-    val xfo = Alert(true, false, "XFO")
-    xfo.dateCreated = now.minusMonths(13)
-    val xd = Alert(false, false, "XD")
-    xd.dateExpires = now.minusMonths(16)
-    xd.expired = true
+    val xfo = (TestAlertFactory())
+      .withActive(true)
+      .withDateExpires(LocalDate.now().plusMonths(1))
+      .withDateCreated(LocalDate.now().minusMonths(13))
+      .withAlertCode("XFO")
+      .build()
+    val xd = (TestAlertFactory())
+      .withActive(false)
+      .withDateExpires(LocalDate.now().minusMonths(16))
+      .withDateCreated(LocalDate.now().minusYears(2))
+      .withAlertCode("XD")
+      .build()
+
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())
     Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(
@@ -233,12 +262,18 @@ class SocDecisionTreeServiceTest {
 
   @Test
   fun testNotOnPrasFileAndHasOcgmNotNoOcgWithOldAlerts() {
-    val now = LocalDate.now()
-    val xfo = Alert(true, false, "XFO")
-    xfo.dateCreated = now.minusMonths(13)
-    val xd = Alert(false, false, "XD")
-    xd.dateExpires = now.minusMonths(16)
-    xd.expired = true
+    val xfo = (TestAlertFactory())
+      .withActive(true)
+      .withDateExpires(LocalDate.now().plusMonths(1))
+      .withDateCreated(LocalDate.now().minusMonths(13))
+      .withAlertCode("XFO")
+      .build()
+    val xd = (TestAlertFactory())
+      .withActive(false)
+      .withDateExpires(LocalDate.now().minusYears(2))
+      .withDateCreated(LocalDate.now().minusMonths(16))
+      .withAlertCode("XD")
+      .build()
     Mockito.`when`<Optional<Pras>>(prasRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1)))
       .thenReturn(Optional.empty())
     Mockito.`when`<Optional<OcgmList>>(ocgmRepo.getByKey(ArgumentMatchers.eq<String>(OFFENDER_1))).thenReturn(

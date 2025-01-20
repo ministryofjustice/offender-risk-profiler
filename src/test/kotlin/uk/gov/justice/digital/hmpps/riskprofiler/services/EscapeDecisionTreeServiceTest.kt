@@ -7,7 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
-import uk.gov.justice.digital.hmpps.riskprofiler.model.Alert
+import uk.gov.justice.digital.hmpps.riskprofiler.dto.prisonerAlert.PrisonerAlertCodeSummaryDto
+import uk.gov.justice.digital.hmpps.riskprofiler.factories.model.TestAlertFactory
+import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class EscapeDecisionTreeServiceTest {
@@ -100,10 +102,35 @@ class EscapeDecisionTreeServiceTest {
 
   companion object {
     private const val OFFENDER_1 = "AB1234A"
-    private val activeListAlert = Alert(true, false, "XEL")
-    private val activeRiskAlert = Alert(true, false, "XER")
-    private val inactiveRiskAlert = Alert(false, false, "XER")
-    private val inactiveListAlert = Alert(false, false, "XEL")
-    private val expiredListAlert = Alert(true, true, "XEL")
+    private val activeListAlert = (TestAlertFactory())
+      .withActive(true)
+      .withActiveFrom(LocalDate.now().minusMonths(1))
+      .withDateExpires(LocalDate.now().plusMonths(1))
+      .withAlertCode(PrisonerAlertCodeSummaryDto.ALERT_CODE_ESCAPE_LIST)
+      .build()
+    private val activeRiskAlert = (TestAlertFactory())
+      .withActive(true)
+      .withActiveFrom(LocalDate.now().minusMonths(1))
+      .withDateExpires(LocalDate.now().plusMonths(1))
+      .withAlertCode(PrisonerAlertCodeSummaryDto.ALERT_CODE_ESCAPE_RISK)
+      .build()
+    private val inactiveListAlert = (TestAlertFactory())
+      .withActive(false)
+      .withActiveFrom(LocalDate.now().minusMonths(1))
+      .withDateExpires(LocalDate.now().plusMonths(1))
+      .withAlertCode(PrisonerAlertCodeSummaryDto.ALERT_CODE_ESCAPE_LIST)
+      .build()
+    private val inactiveRiskAlert = (TestAlertFactory())
+      .withActive(false)
+      .withActiveFrom(LocalDate.now().minusMonths(1))
+      .withDateExpires(LocalDate.now().plusMonths(1))
+      .withAlertCode(PrisonerAlertCodeSummaryDto.ALERT_CODE_ESCAPE_RISK)
+      .build()
+    private val expiredListAlert = (TestAlertFactory())
+      .withActive(true)
+      .withActiveFrom(LocalDate.now().minusMonths(2))
+      .withDateExpires(LocalDate.now().minusMonths(1))
+      .withAlertCode(PrisonerAlertCodeSummaryDto.ALERT_CODE_ESCAPE_LIST)
+      .build()
   }
 }

@@ -89,7 +89,7 @@ class SocDecisionTreeService(
 
   private fun isHasActiveSocAlerts(nomsId: String): Boolean {
     return nomisService.getSocListAlertsForOffender(nomsId).stream()
-      .anyMatch { alert -> alert.active && !alert.expired && alert.dateCreated.isAfter(LocalDate.now().minusYears(1)) }
+      .anyMatch { alert -> alert.active && alert.activeFrom.isAfter(LocalDate.now().minusYears(1)) }
   }
 
   companion object {
