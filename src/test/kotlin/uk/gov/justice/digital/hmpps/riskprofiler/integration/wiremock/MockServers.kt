@@ -260,7 +260,7 @@ class PrisonerAlertsApiMockServer : WireMockServer(8084) {
       .build()
 
     stubFor(
-      WireMock.get(WireMock.urlMatching("/prisoners/.+/alerts\\?alertCodes=.+"))
+      WireMock.get(WireMock.urlMatching("/prisoners/.+/alerts\\?alertCode=.+"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

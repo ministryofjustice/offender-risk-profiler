@@ -146,7 +146,7 @@ class NomisServiceTest {
     val alertsForOffender = service.getEscapeListAlertsForOffender("A1234AA")
     Assertions.assertThat(alertsForOffender).hasSize(2)
     Mockito.verify(webClientCallHelper).getForList(
-      eq("/api/offenders/A1234AA/alerts/v2?alertCodes=XER,XEL"),
+      eq("/api/offenders/A1234AA/alerts/v2?alertCode=XER,XEL"),
       isA<ParameterizedTypeReference<List<Alert>>>(),
     )
     Mockito.verifyNoMoreInteractions(webClientCallHelper)

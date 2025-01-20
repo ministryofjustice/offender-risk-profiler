@@ -22,7 +22,7 @@ class PrisonerAlertsApiClient(
 
   private fun getPrisonerAlertsAsMono(prisonerNumber: String, alertCodes: List<String>): Mono<RestPage<PrisonerAlertResponseDto>> {
     val commaSeparatedAlertCodes = alertCodes.stream().collect(Collectors.joining(","))
-    val uri = "/prisoners/$prisonerNumber/alerts?alertCodes=$commaSeparatedAlertCodes"
+    val uri = "/prisoners/$prisonerNumber/alerts?alertCode=$commaSeparatedAlertCodes"
 
     log.info("ALERTS_ENDPOINT: $uri")
 
