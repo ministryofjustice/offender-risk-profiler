@@ -73,7 +73,7 @@ class RiskProfilerResourceTest : ResourceTest() {
     )
     assertThatStatus(response, 200)
     assertThat(response.body)
-      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"C","activeEscapeList":false,"activeEscapeRisk":true,"escapeRiskAlerts":[{"alertCode":"DUM","dateCreated":"2021-06-14","expired":false,"active":true},{"alertCode":"DUM","dateCreated":"2021-06-14","expired":false,"active":true}],"escapeListAlerts":[],"riskType":"ESCAPE"}""")
+      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"C","activeEscapeList":false,"activeEscapeRisk":true,"escapeRiskAlerts":[{"alertCode":"DUM","dateCreated":"2021-06-14","activeFrom":"2024-05-01","active":true,"expired":false},{"alertCode":"DUM","dateCreated":"2021-06-14","activeFrom":"2024-05-01","active":true,"expired":false}],"escapeListAlerts":[],"riskType":"ESCAPE"}""")
   }
 
   @Test
