@@ -24,6 +24,8 @@ class PrisonerAlertsApiClient(
     val commaSeparatedAlertCodes = alertCodes.stream().collect(Collectors.joining(","))
     val uri = "/prisoners/$prisonerNumber/alerts?alertCodes=$commaSeparatedAlertCodes"
 
+    log.info("ALERTS_ENDPOINT: $uri")
+
     return webClient.get()
       .uri(uri)
       .retrieve()
