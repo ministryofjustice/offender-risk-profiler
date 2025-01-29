@@ -33,3 +33,7 @@ out
 /.editorconfig
 
 .DS_Store
+
+volume
+postgres-data
+.editorconfig

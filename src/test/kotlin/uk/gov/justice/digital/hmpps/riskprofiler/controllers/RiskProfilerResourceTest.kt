@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.OAuthMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonerAlertsApiMockServer
 
 class RiskProfilerResourceTest : ResourceTest() {
 
@@ -16,7 +17,7 @@ class RiskProfilerResourceTest : ResourceTest() {
     OAuthMockServer.oauthMockServer.stubGrantToken()
     PrisonMockServer.prisonMockServer.stubBookingDetails(12)
     PrisonMockServer.prisonMockServer.stubOffender("A1234AB")
-    PrisonMockServer.prisonMockServer.stubAlerts()
+    PrisonerAlertsApiMockServer.prisonerAlertsApiMockServer.stubAlerts()
     PrisonMockServer.prisonMockServer.stubIncidents()
     PrisonMockServer.prisonMockServer.stubSentences(12)
     PrisonMockServer.prisonMockServer.stubMainOffence(12)
@@ -72,7 +73,7 @@ class RiskProfilerResourceTest : ResourceTest() {
     )
     assertThatStatus(response, 200)
     assertThat(response.body)
-      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"C","activeEscapeList":false,"activeEscapeRisk":true,"escapeRiskAlerts":[{"alertCode":"DUM","dateCreated":"2021-06-14","expired":false,"active":true},{"alertCode":"DUM","dateCreated":"2021-06-14","expired":false,"active":true}],"escapeListAlerts":[],"riskType":"ESCAPE"}""")
+      .isEqualTo("""{"nomsId":"A1234AB","provisionalCategorisation":"C","activeEscapeList":false,"activeEscapeRisk":true,"escapeRiskAlerts":[{"alertCode":"DUM","dateCreated":"2021-06-14","activeFrom":"2024-05-01","active":true,"expired":false},{"alertCode":"DUM","dateCreated":"2021-06-14","activeFrom":"2024-05-01","active":true,"expired":false}],"escapeListAlerts":[],"riskType":"ESCAPE"}""")
   }
 
   @Test

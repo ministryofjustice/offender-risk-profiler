@@ -31,3 +31,7 @@ constructor(@Qualifier("elite2ApiHealthWebClient") webClient: WebClient) : Healt
 @Component
 class PathfinderApiHealth
 constructor(@Qualifier("pathfinderApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)
+
+@Component
+class PrisonerAlertsApiHealth
+constructor(@Qualifier("prisonerAlertsApiHealthWebClient") webClient: WebClient) : HealthCheck(webClient)

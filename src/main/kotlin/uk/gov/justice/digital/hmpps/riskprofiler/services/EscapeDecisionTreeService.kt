@@ -10,7 +10,7 @@ import java.util.stream.Collectors
 class EscapeDecisionTreeService(private val nomisService: NomisService) {
   fun getEscapeProfile(nomsId: String): EscapeProfile {
     val escapeData = nomisService.getEscapeListAlertsForOffender(nomsId)
-    val splitLists = escapeData.stream().filter { alert -> alert.active && !alert.expired }
+    val splitLists = escapeData.stream().filter { alert -> alert.active && !alert.isExpired() }
       .collect(Collectors.partitioningBy { alert -> alert.alertCode == "XEL" })
     val escapeListAlerts = splitLists[true]!!
     val escapeRiskAlerts = splitLists[false]!!

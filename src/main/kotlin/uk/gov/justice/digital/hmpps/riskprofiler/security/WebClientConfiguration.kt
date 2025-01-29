@@ -32,6 +32,9 @@ class WebClientConfiguration @Autowired constructor(
   @Value("\${pathfinderapi.endpoint.url}")
   private lateinit var pathfinderApiRootUri: String
 
+  @Value("\${prisoner.alerts.api.endpoint.url}")
+  private lateinit var prisonerAlertsApiRootUri: String
+
   private val connector: ClientHttpConnector
 
   @Bean
@@ -42,6 +45,11 @@ class WebClientConfiguration @Autowired constructor(
   @Bean
   fun elite2ApiHealthWebClient(): WebClient {
     return WebClient.builder().baseUrl(elite2apiRootUri).clientConnector(connector).build()
+  }
+
+  @Bean
+  fun prisonerAlertsApiHealthWebClient(): WebClient {
+    return WebClient.builder().baseUrl(prisonerAlertsApiRootUri).clientConnector(connector).build()
   }
 
   @Bean
@@ -73,6 +81,16 @@ class WebClientConfiguration @Autowired constructor(
     oauth2Client.setDefaultClientRegistrationId("api")
     return WebClient.builder()
       .baseUrl(pathfinderApiRootUri)
+      .apply(oauth2Client.oauth2Configuration())
+      .build()
+  }
+
+  @Bean
+  fun prisonerAlertsSystemWebClient(authorizedClientManager: OAuth2AuthorizedClientManager?): WebClient {
+    val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
+    oauth2Client.setDefaultClientRegistrationId("api")
+    return WebClient.builder()
+      .baseUrl(prisonerAlertsApiRootUri)
       .apply(oauth2Client.oauth2Configuration())
       .build()
   }

@@ -7,32 +7,19 @@ import java.time.LocalDate
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Alert(
 
-  private val alertId: Long? = null,
-  private val bookingId: Long? = null,
-  private val offenderNo: String? = null,
-  private val alertType: String? = null,
-  private val alertTypeDescription: String? = null,
   val alertCode: String,
-  private val alertCodeDescription: String? = null,
-  private val comment: String? = null,
   var dateCreated: LocalDate,
+  val activeFrom: LocalDate,
   var dateExpires: LocalDate? = null,
-  var expired: Boolean,
   val active: Boolean,
-  private val addedByFirstName: String? = null,
-  private val addedByLastName: String? = null,
-  private val expiredByFirstName: String? = null,
-  private val expiredByLastName: String? = null,
-  private val ranking: Int? = 0,
 ) : Serializable {
 
-  /** for tests */
-  constructor(active: Boolean, expired: Boolean, code: String) : this(
-    active = active,
-    expired = expired,
-    alertCode = code,
-    dateCreated = LocalDate.now(),
-  )
+  fun isExpired(): Boolean {
+    if (this.dateExpires != null) {
+      return this.dateExpires!!.isBefore(LocalDate.now())
+    }
+    return false
+  }
 
   companion object {
     private const val serialVersionUID: Long = 1

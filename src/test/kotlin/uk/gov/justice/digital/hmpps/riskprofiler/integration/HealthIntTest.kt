@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.riskprofiler.controllers.ResourceTest
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PathfinderMockServer
 import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonMockServer
+import uk.gov.justice.digital.hmpps.riskprofiler.integration.wiremock.PrisonerAlertsApiMockServer
 
 class HealthIntTest : ResourceTest() {
 
@@ -12,6 +13,7 @@ class HealthIntTest : ResourceTest() {
   fun init() {
     PrisonMockServer.prisonMockServer.stubPing()
     PathfinderMockServer.pathfinderMockServer.stubPing()
+    PrisonerAlertsApiMockServer.prisonerAlertsApiMockServer.stubPing()
   }
 
   @Test
