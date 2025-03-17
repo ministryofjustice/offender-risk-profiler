@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.3"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "7.1.4"
   kotlin("plugin.spring") version "1.9.22"
   kotlin("plugin.jpa") version "1.9.22"
 }
@@ -22,6 +22,7 @@ dependencyCheck {
 val awssdkVersion = "1.12.468"
 
 dependencies {
+
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   implementation("org.slf4j:slf4j-simple:2.0.16")
@@ -58,7 +59,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-ui:1.6.15")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.15")
   implementation("org.springdoc:springdoc-openapi-security:1.6.15")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.1")
 
   implementation("io.jsonwebtoken:jjwt:0.12.3")
 
