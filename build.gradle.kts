@@ -39,8 +39,8 @@ dependencies {
 
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
-  implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
-  implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
+  implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.7.10")
+  implementation("com.microsoft.azure:applicationinsights-logging-logback:2.7.10")
 
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
@@ -58,7 +58,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-ui:1.6.15")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.15")
   implementation("org.springdoc:springdoc-openapi-security:1.6.15")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.1")
 
   implementation("io.jsonwebtoken:jjwt:0.12.3")
 
@@ -89,6 +89,10 @@ dependencies {
   testImplementation("com.google.code.gson:gson:2.10.1")
   testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
+}
+
+plugins {
+  id("org.jlleitschuh.gradle.ktlint") version "11.0.0"  // Use the latest version of the ktlint plugin
 }
 
 kotlin {
