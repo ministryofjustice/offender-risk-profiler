@@ -22,6 +22,7 @@ dependencyCheck {
 val awssdkVersion = "1.12.468"
 
 dependencies {
+
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   implementation("org.slf4j:slf4j-simple:2.0.16")
@@ -36,6 +37,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.4.0")
 
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
