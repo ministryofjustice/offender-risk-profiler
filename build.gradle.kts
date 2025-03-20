@@ -41,8 +41,8 @@ dependencies {
 
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
-  implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.7.10")
-  implementation("com.microsoft.azure:applicationinsights-logging-logback:2.7.10")
+  implementation("com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4")
+  implementation("com.microsoft.azure:applicationinsights-logging-logback:2.6.4")
 
   // NOTE spring-boot-devtools does not currently play nicely with spring-data-redis,
   // see https://github.com/spring-projects/spring-boot/issues/11822, which claims to be fixed but is not.
