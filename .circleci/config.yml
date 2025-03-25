@@ -133,13 +133,12 @@ workflows:
   security:
     triggers:
       - schedule:
-          cron: "30 22 * * 1-5"
+          cron: "30 13 * * 1-5"
           filters:
             branches:
               only:
                 - main
                 - develop
-                - feature/SI-1487-scans
     jobs:
       - hmpps/gradle_owasp_dependency_check:
           cache_key: "v2_0"
