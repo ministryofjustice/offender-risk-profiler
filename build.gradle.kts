@@ -29,8 +29,8 @@ dependencies {
   implementation("org.slf4j:slf4j-api:2.0.16")
 
   runtimeOnly("com.h2database:h2:2.1.214")
-  runtimeOnly("org.flywaydb:flyway-core:10.0.0")
-  runtimeOnly("org.flywaydb:flyway-database-postgresql:10.0.0")
+  runtimeOnly("org.flywaydb:flyway-core:10.20.1")
+  runtimeOnly("org.flywaydb:flyway-database-postgresql:10.20.1")
   runtimeOnly("org.postgresql:postgresql:42.7.2")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
