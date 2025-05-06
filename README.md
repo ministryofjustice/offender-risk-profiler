@@ -116,5 +116,3 @@ s3.provider=localstack
 
 Note that **Redis** needs to be running for the unit / integration tests.
 
-
-
